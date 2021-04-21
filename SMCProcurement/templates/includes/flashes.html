@@ -1,0 +1,39 @@
+{% with messages = get_flashed_messages(category_filter="message") %}
+   {% if messages %}
+      {% for message in messages %}
+        <div class="alert alert-success" role="alert">
+         {{ message }}
+        </div>
+      {% endfor %}
+   {% endif %}
+{% endwith %}
+
+{% with errors = get_flashed_messages(category_filter="error") %}
+   {% if errors %}
+      {% for error in errors %}
+        <div class="alert alert-danger" role="alert">
+         {{ error }}
+        </div>
+      {% endfor %}
+   {% endif %}
+{% endwith %}
+
+{% with warnings = get_flashed_messages(category_filter="warning") %}
+   {% if warnings %}
+      {% for warning in warnings %}
+        <div class="alert alert-warning" role="alert">
+         {{ warning }}
+        </div>
+      {% endfor %}
+   {% endif %}
+{% endwith %}
+
+{% with infos = get_flashed_messages(category_filter="info") %}
+   {% if infos %}
+      {% for info in infos %}
+        <div class="alert alert-info" role="alert">
+         {{ info }}
+        </div>
+      {% endfor %}
+   {% endif %}
+{% endwith %}

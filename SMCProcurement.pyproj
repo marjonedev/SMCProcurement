@@ -1,0 +1,385 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003" ToolsVersion="4.0">
+  <PropertyGroup>
+    <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>3d443c02-9cab-4834-afe2-2fac5b70a6ed</ProjectGuid>
+    <ProjectHome>.</ProjectHome>
+    <ProjectTypeGuids>{789894c7-04a9-4a11-a6b5-3f4435165112};{1b580a1a-fdb3-4b32-83e1-6407eb2722e6};{349c5851-65df-11da-9384-00065b846f21};{888888a0-9f3d-457c-b088-3a5042f75d52}</ProjectTypeGuids>
+    <StartupFile>app.py</StartupFile>
+    <SearchPath>
+    </SearchPath>
+    <WorkingDirectory>.</WorkingDirectory>
+    <LaunchProvider>Web launcher</LaunchProvider>
+    <WebBrowserUrl>http://localhost</WebBrowserUrl>
+    <OutputPath>.</OutputPath>
+    <SuppressCollectPythonCloudServiceFiles>true</SuppressCollectPythonCloudServiceFiles>
+    <Name>SMCProcurement</Name>
+    <RootNamespace>SMCProcurement</RootNamespace>
+    <InterpreterId>MSBuild|env|$(MSBuildProjectFullPath)</InterpreterId>
+    <WebBrowserPort>5555</WebBrowserPort>
+    <TestFramework>unittest</TestFramework>
+    <UnitTestPattern>test*.py</UnitTestPattern>
+    <UnitTestRootDirectory>tests</UnitTestRootDirectory>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)' == 'Debug' ">
+    <DebugSymbols>true</DebugSymbols>
+    <EnableUnmanagedDebugging>false</EnableUnmanagedDebugging>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)' == 'Release' ">
+    <DebugSymbols>true</DebugSymbols>
+    <EnableUnmanagedDebugging>false</EnableUnmanagedDebugging>
+  </PropertyGroup>
+  <ItemGroup>
+    <Compile Include="app.py" />
+    <Compile Include="SMCProcurement\base\forms.py" />
+    <Compile Include="SMCProcurement\base\models.py" />
+    <Compile Include="SMCProcurement\base\routes.py" />
+    <Compile Include="SMCProcurement\base\util.py" />
+    <Compile Include="SMCProcurement\base\__init__.py" />
+    <Compile Include="SMCProcurement\home\routes.py" />
+    <Compile Include="SMCProcurement\home\__init__.py" />
+    <Compile Include="SMCProcurement\__init__.py" />
+    <Compile Include="config.py" />
+    <Compile Include="gunicorn-cfg.py" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="SMCProcurement\base\" />
+    <Folder Include="SMCProcurement\base\static\" />
+    <Folder Include="SMCProcurement\base\static\assets\" />
+    <Folder Include="SMCProcurement\base\static\assets\css\" />
+    <Folder Include="SMCProcurement\base\static\assets\css\plugins\" />
+    <Folder Include="SMCProcurement\base\static\assets\fonts\" />
+    <Folder Include="SMCProcurement\base\static\assets\fonts\poppins\" />
+    <Folder Include="SMCProcurement\base\static\assets\images\" />
+    <Folder Include="SMCProcurement\base\static\assets\images\auth\" />
+    <Folder Include="SMCProcurement\base\static\assets\images\browser\" />
+    <Folder Include="SMCProcurement\base\static\assets\images\gallery-grid\" />
+    <Folder Include="SMCProcurement\base\static\assets\images\git\" />
+    <Folder Include="SMCProcurement\base\static\assets\images\hover-effect\" />
+    <Folder Include="SMCProcurement\base\static\assets\images\light-box\" />
+    <Folder Include="SMCProcurement\base\static\assets\images\maintance\" />
+    <Folder Include="SMCProcurement\base\static\assets\images\product\" />
+    <Folder Include="SMCProcurement\base\static\assets\images\profile\" />
+    <Folder Include="SMCProcurement\base\static\assets\images\slider\" />
+    <Folder Include="SMCProcurement\base\static\assets\images\ticket\" />
+    <Folder Include="SMCProcurement\base\static\assets\images\user\" />
+    <Folder Include="SMCProcurement\base\static\assets\images\widget\" />
+    <Folder Include="SMCProcurement\base\static\assets\json\" />
+    <Folder Include="SMCProcurement\base\static\assets\js\" />
+    <Folder Include="SMCProcurement\base\static\assets\js\pages\" />
+    <Folder Include="SMCProcurement\base\static\assets\js\plugins\" />
+    <Folder Include="SMCProcurement\base\templates\" />
+    <Folder Include="SMCProcurement\base\templates\accounts\" />
+    <Folder Include="SMCProcurement\base\templates\includes\" />
+    <Folder Include="SMCProcurement\base\templates\layouts\" />
+    <Folder Include="SMCProcurement\home\" />
+    <Folder Include="SMCProcurement\home\templates\" />
+    <Folder Include="media\" />
+    <Folder Include="nginx\" />
+    <Folder Include="SMCProcurement\" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include=".env" />
+    <Content Include=".gitignore" />
+    <Content Include="SMCProcurement\base\static\assets\css\plugins\animate.min.css" />
+    <Content Include="SMCProcurement\base\static\assets\css\plugins\bootstrap.min.css" />
+    <Content Include="SMCProcurement\base\static\assets\css\plugins\perfect-scrollbar.css" />
+    <Content Include="SMCProcurement\base\static\assets\css\plugins\prism-coy.css" />
+    <Content Include="SMCProcurement\base\static\assets\css\style.css" />
+    <Content Include="SMCProcurement\base\static\assets\fonts\fa-brands-400.eot" />
+    <Content Include="SMCProcurement\base\static\assets\fonts\fa-brands-400.svg" />
+    <Content Include="SMCProcurement\base\static\assets\fonts\fa-brands-400.ttf" />
+    <Content Include="SMCProcurement\base\static\assets\fonts\fa-brands-400.woff" />
+    <Content Include="SMCProcurement\base\static\assets\fonts\fa-brands-400.woff2" />
+    <Content Include="SMCProcurement\base\static\assets\fonts\fa-regular-400.eot" />
+    <Content Include="SMCProcurement\base\static\assets\fonts\fa-regular-400.svg" />
+    <Content Include="SMCProcurement\base\static\assets\fonts\fa-regular-400.ttf" />
+    <Content Include="SMCProcurement\base\static\assets\fonts\fa-regular-400.woff" />
+    <Content Include="SMCProcurement\base\static\assets\fonts\fa-regular-400.woff2" />
+    <Content Include="SMCProcurement\base\static\assets\fonts\fa-solid-900.eot" />
+    <Content Include="SMCProcurement\base\static\assets\fonts\fa-solid-900.svg" />
+    <Content Include="SMCProcurement\base\static\assets\fonts\fa-solid-900.ttf" />
+    <Content Include="SMCProcurement\base\static\assets\fonts\fa-solid-900.woff" />
+    <Content Include="SMCProcurement\base\static\assets\fonts\fa-solid-900.woff2" />
+    <Content Include="SMCProcurement\base\static\assets\fonts\feather.eot" />
+    <Content Include="SMCProcurement\base\static\assets\fonts\feather.svg" />
+    <Content Include="SMCProcurement\base\static\assets\fonts\feather.ttf" />
+    <Content Include="SMCProcurement\base\static\assets\fonts\feather.woff" />
+    <Content Include="SMCProcurement\base\static\assets\fonts\Flaticon.eot" />
+    <Content Include="SMCProcurement\base\static\assets\fonts\Flaticon.svg" />
+    <Content Include="SMCProcurement\base\static\assets\fonts\Flaticon.ttf" />
+    <Content Include="SMCProcurement\base\static\assets\fonts\Flaticon.woff" />
+    <Content Include="SMCProcurement\base\static\assets\fonts\Flaticon.woff2" />
+    <Content Include="SMCProcurement\base\static\assets\fonts\pct.eot" />
+    <Content Include="SMCProcurement\base\static\assets\fonts\pct.svg" />
+    <Content Include="SMCProcurement\base\static\assets\fonts\pct.ttf" />
+    <Content Include="SMCProcurement\base\static\assets\fonts\pct.woff" />
+    <Content Include="SMCProcurement\base\static\assets\fonts\poppins\pxiByp8kv8JHgFVrLEj6Z11lFc-K.woff2" />
+    <Content Include="SMCProcurement\base\static\assets\fonts\poppins\pxiByp8kv8JHgFVrLEj6Z1JlFc-K.woff2" />
+    <Content Include="SMCProcurement\base\static\assets\fonts\poppins\pxiByp8kv8JHgFVrLEj6Z1xlFQ.woff2" />
+    <Content Include="SMCProcurement\base\static\assets\fonts\poppins\pxiByp8kv8JHgFVrLGT9Z11lFc-K.woff2" />
+    <Content Include="SMCProcurement\base\static\assets\fonts\poppins\pxiByp8kv8JHgFVrLGT9Z1JlFc-K.woff2" />
+    <Content Include="SMCProcurement\base\static\assets\fonts\poppins\pxiByp8kv8JHgFVrLGT9Z1xlFQ.woff2" />
+    <Content Include="SMCProcurement\base\static\assets\fonts\poppins\pxiEyp8kv8JHgFVrJJfecg.woff2" />
+    <Content Include="SMCProcurement\base\static\assets\fonts\poppins\pxiEyp8kv8JHgFVrJJnecmNE.woff2" />
+    <Content Include="SMCProcurement\base\static\assets\images\auth\auth-logo-dark.png" />
+    <Content Include="SMCProcurement\base\static\assets\images\auth\auth-logo.png" />
+    <Content Include="SMCProcurement\base\static\assets\images\auth\img-auth-big.jpg" />
+    <Content Include="SMCProcurement\base\static\assets\images\browser\chrome.png" />
+    <Content Include="SMCProcurement\base\static\assets\images\browser\firefox.png" />
+    <Content Include="SMCProcurement\base\static\assets\images\browser\ie.png" />
+    <Content Include="SMCProcurement\base\static\assets\images\browser\opera.png" />
+    <Content Include="SMCProcurement\base\static\assets\images\browser\safari.png" />
+    <Content Include="SMCProcurement\base\static\assets\images\cd-arrow.svg" />
+    <Content Include="SMCProcurement\base\static\assets\images\close.png" />
+    <Content Include="SMCProcurement\base\static\assets\images\complete.png" />
+    <Content Include="SMCProcurement\base\static\assets\images\favicon.ico" />
+    <Content Include="SMCProcurement\base\static\assets\images\gallery-grid\img-grd-gal-1.jpg" />
+    <Content Include="SMCProcurement\base\static\assets\images\gallery-grid\img-grd-gal-2.jpg" />
+    <Content Include="SMCProcurement\base\static\assets\images\gallery-grid\img-grd-gal-3.jpg" />
+    <Content Include="SMCProcurement\base\static\assets\images\gallery-grid\img-grd-gal-4.jpg" />
+    <Content Include="SMCProcurement\base\static\assets\images\gallery-grid\img-grd-gal-5.jpg" />
+    <Content Include="SMCProcurement\base\static\assets\images\gallery-grid\img-grd-gal-6.jpg" />
+    <Content Include="SMCProcurement\base\static\assets\images\gallery-grid\masonry-1.jpg" />
+    <Content Include="SMCProcurement\base\static\assets\images\gallery-grid\masonry-2.jpg" />
+    <Content Include="SMCProcurement\base\static\assets\images\gallery-grid\masonry-3.jpg" />
+    <Content Include="SMCProcurement\base\static\assets\images\gallery-grid\masonry-4.jpg" />
+    <Content Include="SMCProcurement\base\static\assets\images\gallery-grid\masonry-5.jpg" />
+    <Content Include="SMCProcurement\base\static\assets\images\gallery-grid\masonry-6.jpg" />
+    <Content Include="SMCProcurement\base\static\assets\images\gallery-grid\masonry-7.jpg" />
+    <Content Include="SMCProcurement\base\static\assets\images\gallery-grid\masonry-8.jpg" />
+    <Content Include="SMCProcurement\base\static\assets\images\git\git-preview.png" />
+    <Content Include="SMCProcurement\base\static\assets\images\hover-effect\triangle.svg" />
+    <Content Include="SMCProcurement\base\static\assets\images\hover-effect\triangle2.svg" />
+    <Content Include="SMCProcurement\base\static\assets\images\light-box\l1.jpg" />
+    <Content Include="SMCProcurement\base\static\assets\images\light-box\l2.jpg" />
+    <Content Include="SMCProcurement\base\static\assets\images\light-box\l3.jpg" />
+    <Content Include="SMCProcurement\base\static\assets\images\light-box\l4.jpg" />
+    <Content Include="SMCProcurement\base\static\assets\images\light-box\l5.jpg" />
+    <Content Include="SMCProcurement\base\static\assets\images\light-box\l6.jpg" />
+    <Content Include="SMCProcurement\base\static\assets\images\light-box\mixin.jpg" />
+    <Content Include="SMCProcurement\base\static\assets\images\light-box\sl1.jpg" />
+    <Content Include="SMCProcurement\base\static\assets\images\light-box\sl2.jpg" />
+    <Content Include="SMCProcurement\base\static\assets\images\light-box\sl3.jpg" />
+    <Content Include="SMCProcurement\base\static\assets\images\light-box\sl4.jpg" />
+    <Content Include="SMCProcurement\base\static\assets\images\light-box\sl5.jpg" />
+    <Content Include="SMCProcurement\base\static\assets\images\light-box\sl6.jpg" />
+    <Content Include="SMCProcurement\base\static\assets\images\light-box\smixin.jpg" />
+    <Content Include="SMCProcurement\base\static\assets\images\light-box\v1.jpg" />
+    <Content Include="SMCProcurement\base\static\assets\images\light-box\v2.jpg" />
+    <Content Include="SMCProcurement\base\static\assets\images\light-box\v3.jpg" />
+    <Content Include="SMCProcurement\base\static\assets\images\light-box\v4.jpg" />
+    <Content Include="SMCProcurement\base\static\assets\images\loading.gif" />
+    <Content Include="SMCProcurement\base\static\assets\images\logo-dark.png" />
+    <Content Include="SMCProcurement\base\static\assets\images\logo-docs.png" />
+    <Content Include="SMCProcurement\base\static\assets\images\logo-icon.png" />
+    <Content Include="SMCProcurement\base\static\assets\images\logo-thumb.png" />
+    <Content Include="SMCProcurement\base\static\assets\images\logo.png" />
+    <Content Include="SMCProcurement\base\static\assets\images\maintance\404.png" />
+    <Content Include="SMCProcurement\base\static\assets\images\maintance\7_Error%402x.png" />
+    <Content Include="SMCProcurement\base\static\assets\images\maintance\maintance.png" />
+    <Content Include="SMCProcurement\base\static\assets\images\maintance\sark.svg" />
+    <Content Include="SMCProcurement\base\static\assets\images\maintance\ship.svg" />
+    <Content Include="SMCProcurement\base\static\assets\images\maintance\sparcle-1.png" />
+    <Content Include="SMCProcurement\base\static\assets\images\maintance\sparcle-2.png" />
+    <Content Include="SMCProcurement\base\static\assets\images\next.png" />
+    <Content Include="SMCProcurement\base\static\assets\images\prev.png" />
+    <Content Include="SMCProcurement\base\static\assets\images\product\prod-1.jpg" />
+    <Content Include="SMCProcurement\base\static\assets\images\profile\bg-1.jpg" />
+    <Content Include="SMCProcurement\base\static\assets\images\profile\bg-2.jpg" />
+    <Content Include="SMCProcurement\base\static\assets\images\profile\bg-3.jpg" />
+    <Content Include="SMCProcurement\base\static\assets\images\profile\bg-4.jpg" />
+    <Content Include="SMCProcurement\base\static\assets\images\profile\cover.jpg" />
+    <Content Include="SMCProcurement\base\static\assets\images\slider\img-slide-1.jpg" />
+    <Content Include="SMCProcurement\base\static\assets\images\slider\img-slide-2.jpg" />
+    <Content Include="SMCProcurement\base\static\assets\images\slider\img-slide-3.jpg" />
+    <Content Include="SMCProcurement\base\static\assets\images\slider\img-slide-4.jpg" />
+    <Content Include="SMCProcurement\base\static\assets\images\slider\img-slide-5.jpg" />
+    <Content Include="SMCProcurement\base\static\assets\images\slider\img-slide-6.jpg" />
+    <Content Include="SMCProcurement\base\static\assets\images\slider\img-slide-7.jpg" />
+    <Content Include="SMCProcurement\base\static\assets\images\ticket\p1.jpg" />
+    <Content Include="SMCProcurement\base\static\assets\images\ticket\p2.jpg" />
+    <Content Include="SMCProcurement\base\static\assets\images\ticket\p3.jpg" />
+    <Content Include="SMCProcurement\base\static\assets\images\ticket\p4.jpg" />
+    <Content Include="SMCProcurement\base\static\assets\images\ticket\p5.jpg" />
+    <Content Include="SMCProcurement\base\static\assets\images\user\avatar-1.jpg" />
+    <Content Include="SMCProcurement\base\static\assets\images\user\avatar-2.jpg" />
+    <Content Include="SMCProcurement\base\static\assets\images\user\avatar-3.jpg" />
+    <Content Include="SMCProcurement\base\static\assets\images\user\avatar-4.jpg" />
+    <Content Include="SMCProcurement\base\static\assets\images\user\avatar-5.jpg" />
+    <Content Include="SMCProcurement\base\static\assets\images\user\cover.jpg" />
+    <Content Include="SMCProcurement\base\static\assets\images\user\img-avatar-1.jpg" />
+    <Content Include="SMCProcurement\base\static\assets\images\user\img-avatar-2.jpg" />
+    <Content Include="SMCProcurement\base\static\assets\images\user\img-avatar-3.jpg" />
+    <Content Include="SMCProcurement\base\static\assets\images\widget\blur-bg.png" />
+    <Content Include="SMCProcurement\base\static\assets\images\widget\dashborad-1.jpg" />
+    <Content Include="SMCProcurement\base\static\assets\images\widget\dashborad-2.jpg" />
+    <Content Include="SMCProcurement\base\static\assets\images\widget\dashborad-3.jpg" />
+    <Content Include="SMCProcurement\base\static\assets\images\widget\dashborad-4.jpg" />
+    <Content Include="SMCProcurement\base\static\assets\images\widget\dashborad-5.jpg" />
+    <Content Include="SMCProcurement\base\static\assets\images\widget\emoticon.jpg" />
+    <Content Include="SMCProcurement\base\static\assets\images\widget\img-round1.jpg" />
+    <Content Include="SMCProcurement\base\static\assets\images\widget\mountain.png" />
+    <Content Include="SMCProcurement\base\static\assets\images\widget\p1.jpg" />
+    <Content Include="SMCProcurement\base\static\assets\images\widget\p2.jpg" />
+    <Content Include="SMCProcurement\base\static\assets\images\widget\p3.jpg" />
+    <Content Include="SMCProcurement\base\static\assets\images\widget\p4.jpg" />
+    <Content Include="SMCProcurement\base\static\assets\images\widget\prod.jpg" />
+    <Content Include="SMCProcurement\base\static\assets\images\widget\profile-person1.jpg" />
+    <Content Include="SMCProcurement\base\static\assets\images\widget\seoimg1.jpg" />
+    <Content Include="SMCProcurement\base\static\assets\images\widget\seoimg2.jpg" />
+    <Content Include="SMCProcurement\base\static\assets\images\widget\seoimg3.jpg" />
+    <Content Include="SMCProcurement\base\static\assets\images\widget\slider5.jpg" />
+    <Content Include="SMCProcurement\base\static\assets\images\widget\slider6.jpg" />
+    <Content Include="SMCProcurement\base\static\assets\images\widget\slider7.jpg" />
+    <Content Include="SMCProcurement\base\static\assets\images\widget\sparcle-1.png" />
+    <Content Include="SMCProcurement\base\static\assets\images\widget\sparcle-2.png" />
+    <Content Include="SMCProcurement\base\static\assets\images\widget\user-blur-bg.png" />
+    <Content Include="SMCProcurement\base\static\assets\json\2500.txt" />
+    <Content Include="SMCProcurement\base\static\assets\json\cities.json" />
+    <Content Include="SMCProcurement\base\static\assets\json\citynames.json" />
+    <Content Include="SMCProcurement\base\static\assets\json\file-upload.php" />
+    <Content Include="SMCProcurement\base\static\assets\js\analytics.js" />
+    <Content Include="SMCProcurement\base\static\assets\js\analytics.min.js" />
+    <Content Include="SMCProcurement\base\static\assets\js\horizontal-menu.js" />
+    <Content Include="SMCProcurement\base\static\assets\js\menu-setting.js" />
+    <Content Include="SMCProcurement\base\static\assets\js\menu-setting.min.js" />
+    <Content Include="SMCProcurement\base\static\assets\js\pages\chart-apex.js" />
+    <Content Include="SMCProcurement\base\static\assets\js\pages\dashboard-main.js" />
+    <Content Include="SMCProcurement\base\static\assets\js\pages\google-maps.js" />
+    <Content Include="SMCProcurement\base\static\assets\js\pcoded.js" />
+    <Content Include="SMCProcurement\base\static\assets\js\pcoded.min.js" />
+    <Content Include="SMCProcurement\base\static\assets\js\plugins\apexcharts.min.js" />
+    <Content Include="SMCProcurement\base\static\assets\js\plugins\bootstrap.min.js" />
+    <Content Include="SMCProcurement\base\static\assets\js\plugins\gmaps.min.js" />
+    <Content Include="SMCProcurement\base\static\assets\js\plugins\jquery-ui.min.js" />
+    <Content Include="SMCProcurement\base\static\assets\js\plugins\perfect-scrollbar.min.js" />
+    <Content Include="SMCProcurement\base\static\assets\js\plugins\prism.js" />
+    <Content Include="SMCProcurement\base\static\assets\js\uikit.js" />
+    <Content Include="SMCProcurement\base\static\assets\js\uikit.min.js" />
+    <Content Include="SMCProcurement\base\static\assets\js\vendor-all.js" />
+    <Content Include="SMCProcurement\base\static\assets\js\vendor-all.min.js" />
+    <Content Include="SMCProcurement\base\static\assets\js\waves.min.js" />
+    <Content Include="SMCProcurement\base\templates\accounts\login.html" />
+    <Content Include="SMCProcurement\base\templates\accounts\register.html" />
+    <Content Include="SMCProcurement\base\templates\includes\navigation.html" />
+    <Content Include="SMCProcurement\base\templates\includes\scripts.html" />
+    <Content Include="SMCProcurement\base\templates\includes\sidebar.html" />
+    <Content Include="SMCProcurement\base\templates\layouts\base-fullscreen.html" />
+    <Content Include="SMCProcurement\base\templates\layouts\base.html" />
+    <Content Include="SMCProcurement\home\templates\auth-signin.html" />
+    <Content Include="SMCProcurement\home\templates\auth-signup.html" />
+    <Content Include="SMCProcurement\home\templates\bc_alert.html" />
+    <Content Include="SMCProcurement\home\templates\bc_badges.html" />
+    <Content Include="SMCProcurement\home\templates\bc_breadcrumb-pagination.html" />
+    <Content Include="SMCProcurement\home\templates\bc_button.html" />
+    <Content Include="SMCProcurement\home\templates\bc_card.html" />
+    <Content Include="SMCProcurement\home\templates\bc_carousel.html" />
+    <Content Include="SMCProcurement\home\templates\bc_collapse.html" />
+    <Content Include="SMCProcurement\home\templates\bc_extra.html" />
+    <Content Include="SMCProcurement\home\templates\bc_grid.html" />
+    <Content Include="SMCProcurement\home\templates\bc_modal.html" />
+    <Content Include="SMCProcurement\home\templates\bc_progress.html" />
+    <Content Include="SMCProcurement\home\templates\bc_spinner.html" />
+    <Content Include="SMCProcurement\home\templates\bc_tabs.html" />
+    <Content Include="SMCProcurement\home\templates\bc_toasts.html" />
+    <Content Include="SMCProcurement\home\templates\bc_tooltip-popover.html" />
+    <Content Include="SMCProcurement\home\templates\bc_typography.html" />
+    <Content Include="SMCProcurement\home\templates\chart-apex.html" />
+    <Content Include="SMCProcurement\home\templates\form_elements.html" />
+    <Content Include="SMCProcurement\home\templates\index.html" />
+    <Content Include="SMCProcurement\home\templates\layout-horizontal.html" />
+    <Content Include="SMCProcurement\home\templates\layout-vertical.html" />
+    <Content Include="SMCProcurement\home\templates\map-google.html" />
+    <Content Include="SMCProcurement\home\templates\page-403.html" />
+    <Content Include="SMCProcurement\home\templates\page-404.html" />
+    <Content Include="SMCProcurement\home\templates\page-500.html" />
+    <Content Include="SMCProcurement\home\templates\page-blank.html" />
+    <Content Include="SMCProcurement\home\templates\sample-page.html" />
+    <Content Include="SMCProcurement\home\templates\tbl_bootstrap.html" />
+    <Content Include="CHANGELOG.md" />
+    <Content Include="Dockerfile" />
+    <Content Include="LICENSE.md" />
+    <Content Include="media\flask-dashboard-gradientable-card-low.jpg" />
+    <Content Include="media\flask-dashboard-gradientable-card.jpg" />
+    <Content Include="media\flask-dashboard-gradientable-content-image-low.png" />
+    <Content Include="media\flask-dashboard-gradientable-content-image.png" />
+    <Content Include="media\flask-dashboard-gradientable-intro.gif" />
+    <Content Include="media\flask-dashboard-gradientable-screen-1-low.png" />
+    <Content Include="media\flask-dashboard-gradientable-screen-1.png" />
+    <Content Include="media\flask-dashboard-gradientable-screen-2-low.png" />
+    <Content Include="media\flask-dashboard-gradientable-screen-2.png" />
+    <Content Include="media\flask-dashboard-gradientable-screen-3-low.png" />
+    <Content Include="media\flask-dashboard-gradientable-screen-3.png" />
+    <Content Include="media\flask-dashboard-gradientable-screen-4-low.png" />
+    <Content Include="media\flask-dashboard-gradientable-screen-4.png" />
+    <Content Include="media\flask-dashboard-gradientable-screen-5-low.png" />
+    <Content Include="media\flask-dashboard-gradientable-screen-5.png" />
+    <Content Include="media\flask-dashboard-gradientable-screen-login-low.png" />
+    <Content Include="media\flask-dashboard-gradientable-screen-login.png" />
+    <Content Include="media\flask-dashboard-gradientable-screen-low.png" />
+    <Content Include="media\flask-dashboard-gradientable-screen-register-low.png" />
+    <Content Include="media\flask-dashboard-gradientable-screen-register.png" />
+    <Content Include="media\flask-dashboard-gradientable-screen.png" />
+    <Content Include="nginx\appseed-app.conf" />
+    <Content Include="Procfile" />
+    <Content Include="README.md" />
+    <Content Include="requirements-mysql.txt" />
+    <Content Include="requirements-pgsql.txt" />
+    <Content Include="requirements.txt" />
+    <Content Include="runtime.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <Interpreter Include="env\">
+      <Id>env</Id>
+      <Version>3.7</Version>
+      <Description>env (Python 3.7 (64-bit))</Description>
+      <InterpreterPath>Scripts\python.exe</InterpreterPath>
+      <WindowsInterpreterPath>Scripts\pythonw.exe</WindowsInterpreterPath>
+      <PathEnvironmentVariable>PYTHONPATH</PathEnvironmentVariable>
+      <Architecture>X64</Architecture>
+    </Interpreter>
+  </ItemGroup>
+  <Import Project="$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)\Python Tools\Microsoft.PythonTools.Web.targets" />
+  <!-- Specify pre- and post-build commands in the BeforeBuild and 
+       AfterBuild targets below. -->
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  <ProjectExtensions>
+    <VisualStudio>
+      <FlavorProperties GUID="{349c5851-65df-11da-9384-00065b846f21}">
+        <WebProjectProperties>
+          <AutoAssignPort>True</AutoAssignPort>
+          <UseCustomServer>True</UseCustomServer>
+          <CustomServerUrl>http://localhost</CustomServerUrl>
+          <SaveServerSettingsInUserFile>False</SaveServerSettingsInUserFile>
+        </WebProjectProperties>
+      </FlavorProperties>
+      <FlavorProperties GUID="{349c5851-65df-11da-9384-00065b846f21}" User="">
+        <WebProjectProperties>
+          <StartPageUrl>
+          </StartPageUrl>
+          <StartAction>CurrentPage</StartAction>
+          <AspNetDebugging>True</AspNetDebugging>
+          <SilverlightDebugging>False</SilverlightDebugging>
+          <NativeDebugging>False</NativeDebugging>
+          <SQLDebugging>False</SQLDebugging>
+          <ExternalProgram>
+          </ExternalProgram>
+          <StartExternalURL>
+          </StartExternalURL>
+          <StartCmdLineArguments>
+          </StartCmdLineArguments>
+          <StartWorkingDirectory>
+          </StartWorkingDirectory>
+          <EnableENC>False</EnableENC>
+          <AlwaysStartWebServerOnDebug>False</AlwaysStartWebServerOnDebug>
+        </WebProjectProperties>
+      </FlavorProperties>
+    </VisualStudio>
+  </ProjectExtensions>
+</Project>
