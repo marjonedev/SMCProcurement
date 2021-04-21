@@ -10,4 +10,4 @@ class UserTypeEnum(enum.Enum, metaclass=EnumMeta):
     requisitor = 100, "Requisitor"
 
     def __str__(self):
-        return str(self.value)
+        return str(self.name)

@@ -24,7 +24,7 @@ from SMCProcurement.user.util import roles_accepted
 
 @blueprint.route('/users')
 @login_required
-@roles_accepted([UserTypeEnum.administrator])
+@roles_accepted([UserTypeEnum.administrator, UserTypeEnum.president])
 def users():
     users = User.query.all()
     return render_template('users/index.html', users=users)
@@ -97,7 +97,7 @@ def delete_user(id):
         try:
             uid = session.get('_user_id')
             user = db.session.query(User).get(id)
-            if uid == id and user.user_type == UserTypeEnum.administrator:
+            if uid == id and user.user_type == UserTypeEnum.administrator.value:
                 flash("Cannot delete administrator.", "error")
                 return redirect(url_for('user_blueprint.users'))
 

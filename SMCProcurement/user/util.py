@@ -15,7 +15,7 @@ def is_admin():
     if "_user_id" in session:
         id = session.get("_user_id")
         user = db.session.query(User).get(id)
-        return user.user_type == UserTypeEnum.administrator
+        return user.user_type == UserTypeEnum.administrator.value
     else:
         return False
 
@@ -35,11 +35,10 @@ def get_current_user():
 #             abort(401)
 #     return wrap
 
-def roles_accepted(roles):
+def roles_accepted(roles: list):
     def decorator(fn):
         def wrap(*args, **kwargs):
-            print(roles)
-            if current_user.user_type in roles:
+            if current_user.user_type in [r.value for r in roles]:
                 return fn(*args, **kwargs)
             else:
                 abort(401)
