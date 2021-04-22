@@ -30,7 +30,8 @@ class Request(db.Model, UserMixin):
     sy_end = Column(Integer)
     date_request = Column(Date, default=date.today())
     date_needed = Column(Date)
-    approved_by = Column(Integer, ForeignKey("User.id"))
+    approved_by_id = Column(Integer, ForeignKey("User.id"))
+    approved_by = relationship("User", backref="requests_approved", foreign_keys=[approved_by_id])
     received_by = Column(String)
     endorsed_by = Column(String)
     request_type_id = Column(Integer, ForeignKey("RequestType.id"))
@@ -42,17 +43,21 @@ class Request(db.Model, UserMixin):
 
     def __init__(self, **kwargs):
         for property, value in kwargs.items():
-            # depending on whether value is an iterable or not, we must
-            # unpack it's value (when **kwargs is request.form, some values
-            # will be a 1-element list)
+
             if hasattr(value, '__iter__') and not isinstance(value, str):
-                # the ,= unpack of a singleton fails PEP8 (travis flake8 test)
+
                 value = value[0]
 
             setattr(self, property, value)
 
         timenow = datetime.now()
         self.number = "RQTEMP%s" % timenow.timestamp()
+
+    def update(self, **kwargs):
+        for key, value in kwargs.items():
+            if hasattr(self, key):
+                if getattr(self, key) != value:
+                    setattr(self, key, value)
 
 
     def __repr__(self):
