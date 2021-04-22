@@ -36,6 +36,7 @@ from   decouple import config
 
 class Config(object):
     DEBUG = True
+    START_MONTH = config('START_MONTH', default=8, cast=int)
     basedir    = os.path.abspath(os.path.dirname(__file__))
 
     # Set up the App SECRET_KEY
