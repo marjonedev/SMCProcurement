@@ -6,9 +6,9 @@ class RequestStatusEnum(enum.Enum, metaclass=EnumMeta):
     request = 2, "Request"
     vp = 3, "VP Approved"
     president = 4, "President Approved"
-    waiting = 5, "Waiting Availability"
-    available = 5, "Available"
-    done = 6, "Done"
+    vpfinance = 5, "VP Finance Approved"
+    partial = 6, "Partially Done"
+    done = 7, "Done"
 
     def __str__(self):
-        return str(self.value)
+        return str(self.name)

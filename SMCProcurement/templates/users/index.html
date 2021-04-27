@@ -4,7 +4,6 @@
 
 <!-- Specific CSS goes HERE -->
 {% block stylesheets %}
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jquery-confirm/3.3.2/jquery-confirm.min.css">
 {#  <link rel="stylesheet" href="//cdn.datatables.net/1.10.24/css/jquery.dataTables.min.css">#}
   <link rel="stylesheet" type="text/css" href="/static/assets/lib/DataTables/datatables.min.css"/>
 {% endblock stylesheets %}
@@ -37,18 +36,16 @@
 				<div class="col-sm-12">
 					<div class="card">
 
-						<div class="card-header  mb-2">
+						<div class="card-header">
               <div class="card-header-right">
 								<a href="/users/create" type="button" class="btn btn-primary"><i class="feather icon-plus"></i> Create</a>
 							</div>
 						</div>
 						<div class="card-body">
-
+							<div class="table-border-style pt-3">
               {% include 'includes/flashes.html' %}
-
-							<div class="table-border-style">
                 <div class="table-responsive">
-                    <table class="table">
+                    <table class="table table-sm">
                         <thead>
                             <tr>
                                 <th>Name</th>
@@ -101,7 +98,6 @@
 <!-- Specific Page JS goes HERE  -->
 {% block javascripts %}
 
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-confirm/3.3.2/jquery-confirm.min.js"></script>
 <script type="text/javascript" src="/static/assets/lib/DataTables/datatables.min.js"></script>
 <script type="text/javascript">
   $('.table').dataTable();

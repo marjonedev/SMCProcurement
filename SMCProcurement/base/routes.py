@@ -14,6 +14,8 @@ from flask_login import (
 from SMCProcurement import db, login_manager
 from SMCProcurement.base import blueprint
 from SMCProcurement.base.forms import LoginForm, CreateAccountForm
+from SMCProcurement.enum.request_status import RequestStatusEnum
+from SMCProcurement.enum.user_type import UserTypeEnum
 from SMCProcurement.models.user import User
 
 from SMCProcurement.base.util import verify_pass
@@ -114,3 +116,15 @@ def not_found_error(error):
 @blueprint.errorhandler(500)
 def internal_error(error):
     return render_template('page-500.html'), 500
+
+@blueprint.app_context_processor
+def inject_UserTypeEnum():
+    return dict(UserTypeEnum=UserTypeEnum)
+
+@blueprint.app_context_processor
+def inject_UserTypeEnumList():
+    return dict(UserTypeList={i.value: i.description for i in UserTypeEnum})
+
+@blueprint.app_context_processor
+def inject_RequestStatusList():
+    return dict(RequestStatusList={i.value: i.description for i in RequestStatusEnum})

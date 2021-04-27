@@ -1,6 +1,6 @@
 {% extends "layouts/base.html" %}
 
-{% block title %} Create New User {% endblock %}
+{% block title %} Edit Request {% endblock %}
 
 <!-- Specific CSS goes HERE -->
 {% block stylesheets %}
@@ -19,12 +19,13 @@
 					<div class="row align-items-center">
 						<div class="col-md-12">
 							<div class="page-header-title">
-								<h5 class="m-b-10">New Request</h5>
+								<h5 class="m-b-10">Edit Request: {{ obj.number }}</h5>
 							</div>
 							<ul class="breadcrumb">
 								<li class="breadcrumb-item"><a href="/"><i class="feather icon-home"></i></a></li>
 								<li class="breadcrumb-item"><a href="/requests">Requests</a></li>
-								<li class="breadcrumb-item"><a href="#!">New</a></li>
+								<li class="breadcrumb-item"><a href="/requests/{{ obj.id }}">{{ obj.number }}</a></li>
+								<li class="breadcrumb-item"><a href="#!">Edit</a></li>
 							</ul>
 						</div>
 					</div>
@@ -103,7 +104,17 @@
                                 <td>
                                   {{ line.form.unit_price(class="form-control price") }}
                                 </td>
-                                <td><input type="text" class="form-control form-control-plaintext total" readonly="readonly" value="0.00"></td>
+                                {% if line.form.qty.data == None %}
+                                  {% set qty = 0  %}
+                                {% else %}
+                                  {% set qty = line.form.qty.data  %}
+                                {% endif %}
+                                {% if line.form.unit_price.data == None %}
+                                  {% set unit_price = 0  %}
+                                {% else %}
+                                  {% set unit_price = line.form.unit_price.data  %}
+                                {% endif %}
+                                <td><input type="text" class="form-control form-control-plaintext total" readonly="readonly" value="{{ "%.2f"|format(qty * unit_price) }}"></td>
                                 <td>
                                   {{ line.form.hidden_tag() }}
                                   <button type="button" role="button" class="btn delete btn-danger feather icon-delete"></button>
@@ -112,14 +123,14 @@
                             {% set i.value = i.value + 1 %}
                           {% endfor %}
                           </tbody>
-                        </table><button type="button" id="addItem" class="btn btn-dark btn-sm btn-add-entry">Add Item</button>
+                        </table>
+                      <button type="button" id="addItem" class="btn btn-dark btn-sm btn-add-entry">Add Item</button>
                     </div>
                   </div>
 
                     <div class="form-group row mt-4 border-top border-gray pt-2">
                         <div class="col-sm-10">
-                           {{form.submit_request(class="btn btn-primary btn-submit", value="Save Request")}}
-{#                            <button type="submit" name="create_request" class="btn  btn-primary">Create</button>#}
+                            <button type="submit" name="submit_request" class="btn btn-primary btn-submit">Save</button>
                         </div>
                     </div>
                 </form>
@@ -140,7 +151,6 @@
 {% block javascripts %}
   <script src="{{ url_for("static", filename="assets/js/plugins/flatpickr.min.js") }}"></script>
   <script type="text/javascript">
-
   $(function(){
 
     $(".flatpickr").flatpickr({
@@ -150,27 +160,29 @@
         altFormat: "F j, Y",
         dateFormat: "Y-m-d"
     });
+
     var tbody = $('table#requestItems tbody');
     var tr = tbody.find("tr:last");
-    var lastID = tr.find("input[type=text]").first().attr('id');
-    var num = tr ? parseInt(lastID.split('-')[1]) : 0;
+    var num = tr ? parseInt($(tr).attr('id').split('_')[1]) : 0;
 
     $('button#addItem').on('click', function (e){
         e.preventDefault();
         let csrf = $('#csrf_token').val();
         num++;
-        let str = '<tr id="lines_'+num+'">' +
-            '<td><input class="form-control" id="request_lines-'+num+'-description" name="request_lines-'+num+'-description" type="text" required="required" value=""></td>' +
-            '<td><input class="form-control" id="request_lines-'+num+'-qty" name="request_lines-'+num+'-qty" type="number" value=""></td>' +
-            '<td><input class="form-control" id="request_lines-'+num+'-unit_price" name="request_lines-'+num+'-unit_price" step="any" type="number" value=""></td>' +
-            '<td><input type="text" class="form-control form-control-plaintext" readonly="readonly" value="0.00"></td>' +
-            '<td>' +
-            '<input id="request_lines-0-id" name="request_lines-'+num+'-id" type="hidden" value="">' +
-            '<input id="request_lines-0-csrf_token" name="request_lines-'+num+'-csrf_token" type="hidden" value="'+csrf+'">' +
-            '<button type="button" role="button" class="btn delete btn-danger feather icon-delete"></button>' +
-            '</td>' +
-            '</tr>';
-        tbody.append(str);
+        if(tr){
+            let str = '<tr id="lines_'+num+'">' +
+                '<td><input class="form-control" id="request_lines-'+num+'-description" name="request_lines-'+num+'-description" type="text" value="" required="required"></td>' +
+                '<td><input class="form-control" id="request_lines-'+num+'-qty" name="request_lines-'+num+'-qty" type="number" value=""></td>' +
+                '<td><input class="form-control" id="request_lines-'+num+'-unit_price" name="request_lines-'+num+'-unit_price" step="any" type="number" value=""></td>' +
+                '<td><input type="text" class="form-control form-control-plaintext" readonly="readonly" value="0.00"></td>' +
+                '<td>' +
+                '<input id="request_lines-0-id" name="request_lines-'+num+'-id" type="hidden" value="">' +
+                '<input id="request_lines-0-csrf_token" name="request_lines-'+num+'-csrf_token" type="hidden" value="'+csrf+'">' +
+                '<button type="button" role="button" class="btn delete btn-danger feather icon-delete"></button>' +
+                '</td>' +
+                '</tr>';
+            tbody.append(str);
+        }
     });
 
     $(document).on('click', 'button.delete', function (e){
@@ -182,7 +194,7 @@
         }else{
             $.alert({
                 title: 'Please don\'t do it.',
-                content: 'Atleast 1 item needs to be added.',
+                content: 'Atleast 1 item needs to be retained.',
                 type: 'red',
                 typeAnimated: true,
                 buttons: {
@@ -216,7 +228,6 @@
     });
 
   });
-
   </script>
 {% endblock javascripts %}
 {% include 'requests/script.html' %}

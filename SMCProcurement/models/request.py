@@ -3,7 +3,7 @@
 Copyright (c) 2019 - present AppSeed.us
 """
 
-from flask_login import UserMixin
+from flask_login import UserMixin, current_user
 from sqlalchemy import Binary, Column, Integer, String, ForeignKey, Date, DateTime, Numeric
 from sqlalchemy.orm import relationship
 from sqlalchemy.types import Enum
@@ -11,13 +11,13 @@ from datetime import date, datetime
 from SMCProcurement import db, login_manager
 from sqlalchemy import event
 
-from SMCProcurement.base.util import hash_pass
+from SMCProcurement.base.util import hash_pass, get_sy
 from SMCProcurement.enum.request_status import RequestStatusEnum
 
 from pprint import pprint
 
-class Request(db.Model, UserMixin):
 
+class Request(db.Model, UserMixin):
     __tablename__ = 'Request'
 
     id = Column(Integer, primary_key=True)
@@ -42,16 +42,21 @@ class Request(db.Model, UserMixin):
     request_lines = relationship("RequestLine", cascade="all, delete-orphan", backref="request")
 
     def __init__(self, **kwargs):
+        # super(Request, self).__init__(**kwargs)
+
         for property, value in kwargs.items():
-
             if hasattr(value, '__iter__') and not isinstance(value, str):
-
                 value = value[0]
-
             setattr(self, property, value)
 
         timenow = datetime.now()
+        sy = get_sy()
         self.number = "RQTEMP%s" % timenow.timestamp()
+        self.sy_start = sy["start"]
+        self.sy_end = sy["start"]
+        self.date_requested = date.today()
+        self.user_id = current_user.id
+        self.request_type_id = current_user.request_type_id
 
     def update(self, **kwargs):
         for key, value in kwargs.items():
@@ -59,13 +64,11 @@ class Request(db.Model, UserMixin):
                 if getattr(self, key) != value:
                     setattr(self, key, value)
 
-
     def __repr__(self):
         return str(self.number)
 
 
 class RequestLine(db.Model, UserMixin):
-
     __tablename__ = 'RequestLine'
 
     id = Column(Integer, primary_key=True)
@@ -81,9 +84,22 @@ class RequestLine(db.Model, UserMixin):
             if hasattr(value, '__iter__') and not isinstance(value, str):
                 value = value[0]
 
+            if property == 'qty':
+                if value is None:
+                    value = 0
+            if property == 'unit_price':
+                if value is None:
+                    value = 0
+
             setattr(self, property, value)
 
-        self.total = self.qty * self.unit_price
+        self.total = round(float(self.qty) * float(self.unit_price), 2)
+
+    def update(self, **kwargs):
+        for key, value in kwargs.items():
+            if hasattr(self, key):
+                if getattr(self, key) != value:
+                    setattr(self, key, value)
 
 
 def generate_number_listener(mapper, connection, target):
@@ -92,7 +108,8 @@ def generate_number_listener(mapper, connection, target):
     connection.execute(
         table.update().
             where(Request.id == target.id).
-            values(number="RQ%s%05d" % (str(current_date.year), target.id))
+            values(number="RQ%05d" % (target.id))
     )
+
 
 event.listen(Request, 'after_insert', generate_number_listener)

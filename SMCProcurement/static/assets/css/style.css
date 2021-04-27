@@ -10990,7 +10990,7 @@ a.text-dark:hover, a.text-dark:focus {
   h3 {
         page-break-after: avoid;
     }
-  @    page {
+  @page {
         size: a3;
     }
 
@@ -17794,8 +17794,20 @@ a.text-dark:hover, a.text-dark:focus {
     position: absolute;
 }
 
+.card .card-header .card-header-left {
+    left: 10px;
+    top: 10px;
+    display: inline-block;
+    float: left;
+    padding: 0;
+    position: absolute;
+}
+
 @media only screen and (max-width: 575px) {
     .card .card-header .card-header-right {
+        display: none;
+    }
+    .card .card-header .card-header-left {
         display: none;
     }
 }
@@ -26490,4 +26502,26 @@ div.dtk-focus-alt table.dataTable tbody th.focus {
 
 header .logo{
     width: 167px;
+}
+
+.btn-submit{
+    min-width: 120px;
+    text-align: center;
+}
+
+.btn-add-entry{
+    margin-left: 15px;
+}
+
+.hoverable{
+    cursor: pointer !important;
+}
+
+.card-header form{
+    display: inline-block;
+}
+
+.card-header-left a.btn,
+.card-header-left form{
+    margin-right: 5px;
 }

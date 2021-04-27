@@ -4,8 +4,11 @@ Copyright (c) 2019 - present AppSeed.us
 """
  
 import hashlib, binascii, os
+from decouple import config
+from datetime import date
 
 # Inspiration -> https://www.vitoshacademy.com/hashing-passwords-in-python/
+
 
 def hash_pass( password ):
     """Hash a password for storing."""
@@ -26,3 +29,17 @@ def verify_pass(provided_password, stored_password):
                                   100000)
     pwdhash = binascii.hexlify(pwdhash).decode('ascii')
     return pwdhash == stored_password
+
+def get_sy():
+    START_MONTH = config('START_MONTH', default=8, cast=int)
+
+    today = date.today()
+    current_year = today.year
+    current_month = today.month
+
+    if int(current_month) > int(START_MONTH):
+        return dict(start=(today.year - 1), end=today.year)
+    else:
+        return dict(start=today.year, end=(today.year + 1))
+
+

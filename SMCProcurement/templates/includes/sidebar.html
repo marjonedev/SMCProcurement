@@ -1,6 +1,6 @@
 
 	<!-- [ navigation menu ] start -->
-	<nav class="pcoded-navbar menupos-fixed menu-light ">
+	<nav class="pcoded-navbar menupos-fixed menu-light navbar-collapse navbar-collapsed">
 		<div class="navbar-wrapper  ">
 			<div class="navbar-content scroll-div " >
 				<ul class="nav pcoded-inner-navbar ">
@@ -18,8 +18,11 @@
 					<li class="nav-item pcoded-hasmenu">
 						<a href="#!" class="nav-link "><span class="pcoded-micon"><i class="feather icon-list"></i></span><span class="pcoded-mtext">Requisition</span></a>
 					    <ul class="pcoded-submenu">
+                {% if current_user.user_type == UserTypeEnum.requisitor.value %}
+                <li><a href="{{ url_for("request_blueprint.all_requests") }}">My Requests</a></li>
+                {% else %}
                 <li><a href="{{ url_for("request_blueprint.all_requests") }}">All Requests</a></li>
-                <li><a href="{{ url_for("request_blueprint.my_requests") }}">My Requests</a></li>
+                {% endif %}
               </ul>
           </li>
 					<li class="nav-item pcoded-menu-caption">

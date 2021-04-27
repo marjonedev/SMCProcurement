@@ -3,13 +3,14 @@
 
 <head>
     <title>
-        SMC Procurement - {% block title %}{% endblock %} | AppSeed
+        SMC Procurement - {% block title %}{% endblock %}
     </title> 
     <!-- HTML5 Shim and Respond.js IE11 support of HTML5 elements and media queries -->
     <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
     <!--[if lt IE 11]>
     	<script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
     	<script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+      <script src="https://cdn.polyfill.io/v3/polyfill.js?features=default,String.prototype.repeat,Array.prototype.find,Array.prototype.findIndex,Math.trunc,Math.sign,Object.is"></script>
     	<![endif]-->
     <!-- Meta -->
     <meta charset="utf-8">
@@ -25,6 +26,8 @@
 
     <!-- vendor css -->
     <link rel="stylesheet" href="/static/assets/css/style.css">
+
+    {% include 'includes/styles.html' %}
     
     <!-- Specific CSS goes HERE -->
     {% block stylesheets %}{% endblock stylesheets %}    
