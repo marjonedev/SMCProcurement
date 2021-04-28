@@ -53,7 +53,7 @@ class Request(db.Model, UserMixin):
         sy = get_sy()
         self.number = "RQTEMP%s" % timenow.timestamp()
         self.sy_start = sy["start"]
-        self.sy_end = sy["start"]
+        self.sy_end = sy["end"]
         self.date_requested = date.today()
         self.user_id = current_user.id
         self.request_type_id = current_user.request_type_id
@@ -66,6 +66,14 @@ class Request(db.Model, UserMixin):
 
     def __repr__(self):
         return str(self.number)
+
+    @property
+    def total(self):
+        total: float = 0
+        for item in self.request_lines:
+            total += item.total
+
+        return "%.2f" % round(float(total), 2)
 
 
 class RequestLine(db.Model, UserMixin):

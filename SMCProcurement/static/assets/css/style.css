@@ -26525,3 +26525,42 @@ header .logo{
 .card-header-left form{
     margin-right: 5px;
 }
+
+.badge-status{
+    font-size: 14px;
+}
+
+.badge-draft {
+    color: #212529;
+    background-color: #f8f9fa;
+}
+
+.badge-request {
+    color: #fff;
+    background-color: #FFB64D;
+}
+
+.badge-vp {
+    color: #fff;
+    background-color: #a18fff;
+}
+
+.badge-president {
+    color: #fff;
+    background-color: #35caed;
+}
+
+.badge-vpfinance {
+    color: #fff;
+    background-color: #35caed;
+}
+
+.badge-partial {
+    color: #fff;
+    background-color: #00bcd4;
+}
+
+.badge-done {
+    color: #fff;
+    background-color: #2ed8b6;
+}

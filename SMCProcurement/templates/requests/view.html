@@ -36,7 +36,7 @@
 				<!-- [ sample-page ] start -->
 				<div class="col-sm-12">
 					<div class="card">
-						<div class="card-header">
+						<div class="card-header border-bottom border-gray">
               <div class="card-header-left">
                 <a class="btn btn-light btn-sm" href="{{ url_for('request_blueprint.edit_request', id=obj.id) }}">Edit <i class="feather icon-edit-1"></i></a>
                 <form role="form" method="POST" id="confirmForm" action="{{ url_for("request_blueprint.confirm_request", id=obj.id) }}">
@@ -54,6 +54,100 @@
 						<div class="card-body">
 							<div class="table-border-style pt-3">
               {% include 'includes/flashes.html' %}
+
+                <div class="row pt-3">
+                  <div class="col-md-6">
+                    <div class="form-group row">
+                      <div class="col-sm-3"><span class="hljs-strong">Reference No.:</span></div>
+                      <div class="col-sm-9">
+                        {{ obj.number }}
+                      </div>
+                    </div>
+                    <div class="form-group row">
+                      <div class="col-sm-3"><span class="hljs-strong">Requisitor:</span></div>
+                      <div class="col-sm-9">
+                        {{ obj.user.full_name }}
+                      </div>
+                    </div>
+                    <div class="form-group row">
+                      <div class="col-sm-3"><span class="hljs-strong">Department:</span></div>
+                      <div class="col-sm-9">
+                        {{ obj.department.name }}
+                      </div>
+                    </div>
+                    <div class="form-group row">
+                      <div class="col-sm-3"><span class="hljs-strong">Date Requested:</span></div>
+                      <div class="col-sm-9">
+                        {{ obj.date_request.strftime('%B %d, %Y') }}
+                      </div>
+                    </div>
+                  </div>
+
+                  <div class="col-md-6">
+                    <div class="form-group row">
+                      <div class="col-sm-3"><span class="hljs-strong">SY:</span></div>
+                      <div class="col-sm-9">
+                        {{ obj.sy_start }} - {{ obj.sy_end }}
+                      </div>
+                    </div>
+                    <div class="form-group row">
+                      <div class="col-sm-3"><span class="hljs-strong">Endorsed by:</span></div>
+                      <div class="col-sm-9">
+                        {{ obj.endorsed_by }}
+                      </div>
+                    </div>
+                    <div class="form-group row">
+                      <div class="col-sm-3"><span class="hljs-strong">Date Needed:</span></div>
+                      <div class="col-sm-9">
+                        {{ obj.date_needed.strftime('%B %d, %Y') }}
+                      </div>
+                    </div>
+                    <div class="form-group row">
+                      <div class="col-sm-3"><span class="hljs-strong">Status:</span></div>
+                      <div class="col-sm-9">
+                        <span class="badge badge-status badge-{{ RequestStatusList[obj.status]['name'] }}">{{ RequestStatusList[obj.status]['description'] }}</span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="row pt-3">
+                  <div class="col-md-12">
+                    <div class="table-responsive">
+                      <table class="table hover table-hover table-sm">
+                        <thead>
+                            <tr>
+                                <th>Description</th>
+                                <th width="100" class="text-right">Quantity</th>
+                                <th width="150" class="text-right">Unit Price</th>
+                                <th width="150" class="text-right">Subtotal</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                          {% for item in obj.request_lines %}
+                            <tr data-line-id="{{ item.id }}">
+                              <td>{{ item.description }}</td>
+                              <td class="text-right">{{ item.qty }}</td>
+                              <td class="text-right">&#8369; {{ item.unit_price }}</td>
+                              <td class="text-right">&#8369; {{ item.total }}</td>
+                            </tr>
+                          {% endfor %}
+                        </tbody>
+                      </table>
+                    </div>
+                  </div>
+                </div>
+                <div class="row">
+                  <div class="col-md-9"></div>
+                    <div class="col-md-3">
+                    <div class="form-group row">
+                      <div class="col-sm-5 text-right border-top border-gray pt-1"><h5>Total</h5></div>
+                      <div class="col-sm-6 text-right border-top border-gray pt-1">
+                        <span style="font-size: 16px;">&#8369; {{ obj.total }}</span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
 
                {# <form role="form" method="post" action="">
                   {{ form.hidden_tag() }}

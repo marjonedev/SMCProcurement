@@ -1,6 +1,7 @@
 import enum
 from . import EnumMeta
 
+
 class RequestStatusEnum(enum.Enum, metaclass=EnumMeta):
     draft = 1, "Draft"
     request = 2, "Request"

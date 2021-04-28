@@ -84,9 +84,9 @@
                         <table class="table" id="requestItems">
                           <thead>
                             <th width="">Description</th>
-                            <th width="110">Quantity</th>
-                            <th width="125">Unit Price</th>
-                            <th width="130">Total</th>
+                            <th class="text-right" width="110">Quantity</th>
+                            <th class="text-right" width="125">Unit Price</th>
+                            <th class="text-right" width="100">Subtotal</th>
                             <th width="80"></th>
                           </thead>
                           <tbody>
@@ -95,15 +95,15 @@
                           {% for line in form.request_lines %}
                               <tr id="lines_{{ i.value }}">
                                 <td>
-                                  {{ line.form.description(class="form-control", required=True) }}
+                                  {{ line.form.description(class="form-control form-control-sm", required=True) }}
                                 </td>
-                                <td>
-                                  {{ line.form.qty(class="form-control qty") }}
+                                <td class="text-right">
+                                  {{ line.form.qty(class="form-control form-control-sm qty text-right") }}
                                 </td>
-                                <td>
-                                  {{ line.form.unit_price(class="form-control price") }}
+                                <td class="text-right">
+                                  {{ line.form.unit_price(class="form-control form-control-sm price text-right") }}
                                 </td>
-                                <td><input type="text" class="form-control form-control-plaintext total" readonly="readonly" value="0.00"></td>
+                                <td class="text-right"><input type="text" class="form-control-sm form-control-plaintext text-right total" readonly value="0.00"></td>
                                 <td>
                                   {{ line.form.hidden_tag() }}
                                   <button type="button" role="button" class="btn delete btn-danger feather icon-delete"></button>
@@ -160,10 +160,10 @@
         let csrf = $('#csrf_token').val();
         num++;
         let str = '<tr id="lines_'+num+'">' +
-            '<td><input class="form-control" id="request_lines-'+num+'-description" name="request_lines-'+num+'-description" type="text" required="required" value=""></td>' +
-            '<td><input class="form-control" id="request_lines-'+num+'-qty" name="request_lines-'+num+'-qty" type="number" value=""></td>' +
-            '<td><input class="form-control" id="request_lines-'+num+'-unit_price" name="request_lines-'+num+'-unit_price" step="any" type="number" value=""></td>' +
-            '<td><input type="text" class="form-control form-control-plaintext" readonly="readonly" value="0.00"></td>' +
+            '<td><input class="form-control form-control-sm" id="request_lines-'+num+'-description" name="request_lines-'+num+'-description" type="text" required="required" value=""></td>' +
+            '<td class="text-right"><input class="form-control form-control-sm text-right qty" id="request_lines-'+num+'-qty" name="request_lines-'+num+'-qty" type="number" value=""></td>' +
+            '<td class="text-right"><input class="form-control form-control-sm text-right price" id="request_lines-'+num+'-unit_price" name="request_lines-'+num+'-unit_price" step="any" type="number" value=""></td>' +
+            '<td><input type="text" class=" form-control-sm form-control-plaintext text-right total" readonly="readonly" value="0.00"></td>' +
             '<td>' +
             '<input id="request_lines-0-id" name="request_lines-'+num+'-id" type="hidden" value="">' +
             '<input id="request_lines-0-csrf_token" name="request_lines-'+num+'-csrf_token" type="hidden" value="'+csrf+'">' +
@@ -208,6 +208,7 @@
         }else{
           b = $this.closest('tr').find('input.qty').val()
         }
+        console.log(a, b)
 
         a = isNaN(parseFloat(a)) ? 0 : a;
         b = isNaN(parseFloat(b)) ? 0 : b;

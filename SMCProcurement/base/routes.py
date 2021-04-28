@@ -127,4 +127,5 @@ def inject_UserTypeEnumList():
 
 @blueprint.app_context_processor
 def inject_RequestStatusList():
-    return dict(RequestStatusList={i.value: i.description for i in RequestStatusEnum})
+
+    return dict(RequestStatusList={i.value: {'name': i.name, 'description': i.description} for i in RequestStatusEnum})

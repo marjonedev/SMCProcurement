@@ -37,9 +37,9 @@ def get_sy():
     current_year = today.year
     current_month = today.month
 
-    if int(current_month) > int(START_MONTH):
-        return dict(start=(today.year - 1), end=today.year)
+    if int(current_month) < int(START_MONTH):
+        return dict(start=(today.year - 1), end=today.year, current=current_year)
     else:
-        return dict(start=today.year, end=(today.year + 1))
+        return dict(start=today.year, end=(today.year + 1), current=current_year)
 
 
