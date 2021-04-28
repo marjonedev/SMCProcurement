@@ -1,5 +1,6 @@
+from SMCProcurement.enum.request_status import RequestStatusEnum
 from SMCProcurement.request import blueprint
-from flask import render_template, redirect, url_for, request, flash, session
+from flask import render_template, redirect, url_for, request, flash, session, abort
 from flask_login import login_required, current_user
 from SMCProcurement import login_manager
 from jinja2 import TemplateNotFound
@@ -88,6 +89,7 @@ def create_request():
 
         for line in formData["request_lines"]:
             lineData = {
+                "name": line["name"],
                 "description": line["description"],
                 "qty": line["qty"],
                 "unit_price": line["unit_price"]
@@ -111,7 +113,13 @@ def create_request():
 @blueprint.route('/requests/<id>/edit', methods=["GET", "POST"])
 @login_required
 def edit_request(id):
+
     req = db.session.query(Request).get(id)
+
+    if req.status > RequestStatusEnum.draft.value:
+        flash("Request has been confirmed. It cannot be edited!", "error")
+        return redirect(url_for('request_blueprint.view_request', id=id))
+
     form = RequestForm(request.form, obj=req)
     form.department_id.choices = [(d.id, d.name) for d in Department.query.all()]
 
@@ -175,15 +183,22 @@ def delete_request(id):
 def confirm_request(id):
     if 'confirm_request' in request.form.to_dict():
         try:
-            flash("Success! Request confirm and pending for approval.", "message")
+            obj = db.session.query(Request).get(id)
+            obj.status = RequestStatusEnum.request.value
+            db.session.commit()
+            flash("Success! Request confirmed and pending for approval.", "message")
             return redirect(url_for('request_blueprint.view_request', id=id))
         except Exception as msg:
-            flash('Error: Unable to delete request, {}. '.format(msg), "error")
-            return redirect(url_for('request_blueprint.all_requests'))
+            flash('Error: Unable to confirm the request, {}. '.format(msg), "error")
+            return redirect(url_for('request_blueprint.view_request', id=id))
 
 
 @blueprint.route('/requests/<id>', methods=["GET"])
 @login_required
 def view_request(id):
-    req = db.session.query(Request).get(id)
-    return render_template('requests/view.html', obj=req)
+
+    try:
+        req = db.session.query(Request).get(id)
+        return render_template('requests/view.html', obj=req)
+    except:
+        return render_template('page-404.html'), 404

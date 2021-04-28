@@ -84,6 +84,7 @@
                     <div class="table-responsive pb-1">
                         <table class="table" id="requestItems">
                           <thead>
+                            <th width="">Name</th>
                             <th width="">Description</th>
                             <th class="text-right" width="110">Quantity</th>
                             <th class="text-right" width="125">Unit Price</th>
@@ -96,7 +97,10 @@
                           {% for line in form.request_lines %}
                               <tr id="lines_{{ i.value }}">
                                 <td>
-                                  {{ line.form.description(class="form-control form-control-sm", required=True) }}
+                                  {{ line.form.name(class="form-control form-control-sm", required=True) }}
+                                </td>
+                                <td>
+                                  {{ line.form.description(class="form-control form-control-sm") }}
                                 </td>
                                 <td class="text-right">
                                   {{ line.form.qty(class="form-control form-control-sm text-right qty") }}
@@ -171,7 +175,8 @@
         num++;
         if(tr){
             let str = '<tr id="lines_'+num+'">' +
-                '<td><input class="form-control form-control-sm" id="request_lines-'+num+'-description" name="request_lines-'+num+'-description" type="text" value="" required="required"></td>' +
+                '<td><input class="form-control form-control-sm" id="request_lines-'+num+'-name" name="request_lines-'+num+'-name" type="text" value="" required="required"></td>' +
+                '<td><input class="form-control form-control-sm" id="request_lines-'+num+'-description" name="request_lines-'+num+'-description" type="text" value=""></td>' +
                 '<td class="text-right"><input class="form-control form-control-sm text-right qty" id="request_lines-'+num+'-qty" name="request_lines-'+num+'-qty" type="number" value=""></td>' +
                 '<td class="text-right"><input class="form-control form-control-sm text-right price" id="request_lines-'+num+'-unit_price" name="request_lines-'+num+'-unit_price" step="any" type="number" value=""></td>' +
                 '<td class="text-right"><input type="text" class="form-control-sm form-control-plaintext text-right total" readonly="readonly" value="0.00"></td>' +

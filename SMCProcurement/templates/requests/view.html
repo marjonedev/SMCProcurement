@@ -37,19 +37,28 @@
 				<div class="col-sm-12">
 					<div class="card">
 						<div class="card-header border-bottom border-gray">
-              <div class="card-header-left">
-                <a class="btn btn-light btn-sm" href="{{ url_for('request_blueprint.edit_request', id=obj.id) }}">Edit <i class="feather icon-edit-1"></i></a>
-                <form role="form" method="POST" id="confirmForm" action="{{ url_for("request_blueprint.confirm_request", id=obj.id) }}">
-                  <input type="hidden" name="confirm_request" value="1">
-                  <button id="confirm_request" type="submit" class="btn btn-sm delete btn-primary">Confirm <i class="feather icon-check-circle"></i></button>
-                </form>
+              {% if not obj.is_confirmed %}
+                <div class="card-header-left">
+                  <a class="btn btn-light btn-sm" href="{{ url_for('request_blueprint.edit_request', id=obj.id) }}">Edit <i class="feather icon-edit-1"></i></a>
+                  <form role="form" method="POST" id="confirmForm">
+                    <input type="hidden" name="confirm_request" value="1">
+                    <button id="confirm_request" type="submit" class="btn btn-sm confirm btn-primary">Confirm <i class="feather icon-check-circle"></i></button>
+                  </form>
                  </div>
-              <div class="card-header-right">
-                <form role="form" method="POST" id="deleteForm" action="{{ url_for("request_blueprint.delete_request", id=obj.id) }}">
-                  <input type="hidden" name="delete_request" value="1">
-                  <button id="delete_request" type="submit" class="btn btn-sm delete btn-danger">Delete <i class="feather icon-trash-2"></i></button>
-                </form>
-							</div>
+                <div class="card-header-right">
+                  <form role="form" method="POST" id="deleteForm">
+                    <input type="hidden" name="delete_request" value="1">
+                    <button id="delete_request" type="submit" class="btn btn-sm delete btn-danger">Delete <i class="feather icon-trash-2"></i></button>
+                  </form>
+                </div>
+              {% else %}
+                <div class="progress">
+                {% set percentage = (obj.status / RequestStatusEnum.done.value) * 100 %}
+                <div class="progress-bar progress-bar-striped bg-{{ RequestStatusList[obj.status]['name'] }}" role="progressbar" aria-valuenow="{{ obj.status }}" aria-valuemin="{{ RequestStatusEnum.draft.value }}" aria-valuemax="{{ RequestStatusEnum.done.value }}" style="width: {{ get_percentage(obj.status, RequestStatusEnum.done.value) }}">
+                  {{ status_progress_label(obj.status) }}
+                </div>
+                </div>
+              {% endif %}
 						</div>
 						<div class="card-body">
 							<div class="table-border-style pt-3">
@@ -117,6 +126,7 @@
                       <table class="table hover table-hover table-sm">
                         <thead>
                             <tr>
+                                <th>Name</th>
                                 <th>Description</th>
                                 <th width="100" class="text-right">Quantity</th>
                                 <th width="150" class="text-right">Unit Price</th>
@@ -126,6 +136,7 @@
                         <tbody>
                           {% for item in obj.request_lines %}
                             <tr data-line-id="{{ item.id }}">
+                              <td>{{ item.name }}</td>
                               <td>{{ item.description }}</td>
                               <td class="text-right">{{ item.qty }}</td>
                               <td class="text-right">&#8369; {{ item.unit_price }}</td>
@@ -149,92 +160,6 @@
                   </div>
                 </div>
 
-               {# <form role="form" method="post" action="">
-                  {{ form.hidden_tag() }}
-                  <div class="row">
-                    <div class="col-md-6">
-                      <div class="form-group row">
-                          <label for="department" class="col-sm-3 col-form-label">Department</label>
-                          <div class="col-sm-9">
-                            {{ form.department_id(class="form-control") }}
-                          </div>
-                      </div>
-                      <div class="form-group row">
-                          <label for="department" class="col-sm-3 col-form-label">Endorsed by</label>
-                          <div class="col-sm-9">
-                            {{ form.endorsed_by(class="form-control") }}
-                          </div>
-                      </div>
-                    </div>
-
-                    <div class="col-md-6">
-                      <div class="form-group row">
-                          <label for="inputEmail3" class="col-sm-3 col-form-label">Date Needed</label>
-                          <div class="col-sm-9">
-                            {{ form.date_needed(class="form-control flatpickr") }}
-                          </div>
-                      </div>
-                    </div>
-                  </div>
-
-                  <h5 class="mt-4">Request Items</h5>
-                  <hr />
-
-                  <div class="table-border-style">
-                    <div class="table-responsive pb-1">
-                        <table class="table" id="requestItems">
-                          <thead>
-                            <th width="">Description</th>
-                            <th width="110">Quantity</th>
-                            <th width="125">Unit Price</th>
-                            <th width="130">Total</th>
-                            <th width="80"></th>
-                          </thead>
-                          <tbody>
-
-                          {% set i = namespace(value=0)  %}
-                          {% for line in form.request_lines %}
-                              <tr id="lines_{{ i.value }}">
-                                <td>
-                                  {{ line.form.description(class="form-control") }}
-                                </td>
-                                <td>
-                                  {{ line.form.qty(class="form-control qty") }}
-                                </td>
-                                <td>
-                                  {{ line.form.unit_price(class="form-control price") }}
-                                </td>
-                                {% if line.form.qty.data == None %}
-                                  {% set qty = 0  %}
-                                {% else %}
-                                  {% set qty = line.form.qty.data  %}
-                                {% endif %}
-                                {% if line.form.unit_price.data == None %}
-                                  {% set unit_price = 0  %}
-                                {% else %}
-                                  {% set unit_price = line.form.unit_price.data  %}
-                                {% endif %}
-                                <td><input type="text" class="form-control form-control-plaintext total" readonly="readonly" value="{{ "%.2f"|format(qty * unit_price) }}"></td>
-                                <td>
-                                  {{ line.form.hidden_tag() }}
-                                  <button type="button" role="button" class="btn delete btn-danger feather icon-delete"></button>
-                                </td>
-                              </tr>
-                            {% set i.value = i.value + 1 %}
-                          {% endfor %}
-                          </tbody>
-                        </table>
-                      <button type="button" id="addItem" class="btn btn-dark btn-sm btn-add-entry">Add Item</button>
-                    </div>
-                  </div>
-
-                    <div class="form-group row mt-4 border-top border-gray pt-2">
-                        <div class="col-sm-10">
-                            <button type="submit" name="submit_request" class="btn btn-primary btn-submit">Save</button>
-                        </div>
-                    </div>
-                </form>#}
-
               </div>
 						</div>
 					</div>
@@ -254,18 +179,19 @@
   <script type="text/javascript">
   $(function(){
 
+  {% if not obj.is_confirmed %}
     $('#delete_request').on('click', function (e){
-        e.preventDefault();
+      e.preventDefault();
       $.confirm({
         title: '<span class="text-danger">Delete Request</span>',
         content: 'Are you sure you want to delete this request?',
         type: 'red',
-        theme: "bootstrap",
+        typeAnimated: true,
         buttons: {
             yes: {
                 btnClass: 'btn-danger',
                 action: function () {
-                    $('form#deleteForm').submit()
+                    $('form#deleteForm').attr("action", "{{ url_for("request_blueprint.delete_request", id=obj.id) }}").submit()
                 }
             } ,
             no: function () {
@@ -276,6 +202,29 @@
       return confirm;
     });
 
+    $('#confirm_request').on('click', function (e){
+      e.preventDefault();
+
+      $.confirm({
+        title: '<span class="text-primary">Confirm Request</span>',
+        content: '<p>Confirm when you are ready!</p>' +
+            '<small class="mt-2 text-muted text-sm"><span class="text-warning">Note:</span> Please make sure all the data are correct before submitting. Once the request confirmed, it cannot be edited or deleted.</small>',
+        type: 'blue',
+        typeAnimated: true,
+        buttons: {
+            confirm: {
+                btnClass: 'btn-primary',
+                action: function () {
+                    $('form#confirmForm').attr("action", "{{ url_for("request_blueprint.confirm_request", id=obj.id) }}").submit()
+                }
+            } ,
+            cancel: function () {
+            }
+        }
+      });
+    });
+  {% else %}
+  {% endif %}
 
   });
   </script>

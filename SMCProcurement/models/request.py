@@ -75,12 +75,17 @@ class Request(db.Model, UserMixin):
 
         return "%.2f" % round(float(total), 2)
 
+    @property
+    def is_confirmed(self):
+        return self.status > RequestStatusEnum.draft.value
+
 
 class RequestLine(db.Model, UserMixin):
     __tablename__ = 'RequestLine'
 
     id = Column(Integer, primary_key=True)
     request_id = Column(Integer, ForeignKey("Request.id"), nullable=False)
+    name = Column(String)
     description = Column(String)
     qty = Column(Integer, default=1)
     unit_price = Column(Numeric(precision=10, scale=2), default=0.0)

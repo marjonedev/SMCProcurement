@@ -126,6 +126,28 @@ def inject_UserTypeEnumList():
     return dict(UserTypeList={i.value: i.description for i in UserTypeEnum})
 
 @blueprint.app_context_processor
-def inject_RequestStatusList():
+def inject_RequestStatusEnum():
+    return dict(RequestStatusEnum=RequestStatusEnum)
 
-    return dict(RequestStatusList={i.value: {'name': i.name, 'description': i.description} for i in RequestStatusEnum})
+@blueprint.app_context_processor
+def inject_RequestStatusList():
+    return dict(RequestStatusList={i.value: {"name": i.name, "description": i.description} for i in RequestStatusEnum})
+
+@blueprint.app_context_processor
+def inject_custom_functions():
+
+    def status_progress_label(status: int):
+        if status == 1:
+            return "Draft"
+        elif status > 1 and status < 6:
+            return "Pending Approval"
+        elif status == 6:
+            return "Partially Done"
+        else:
+            return "Done"
+
+    def get_percentage(min:int, max:int):
+        return u"{}%".format((min / max) * 100)
+
+    return dict(status_progress_label=status_progress_label,get_percentage=get_percentage)
+

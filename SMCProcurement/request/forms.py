@@ -16,6 +16,7 @@ from SMCProcurement import db
 
 ## login and registration
 class RequestLineForm(FlaskForm):
+    name = StringField("Name")
     description = StringField("Description")
     qty = IntegerField("Quantity", widget=NumberInput())
     unit_price = DecimalField("Unit Price", widget=NumberInput(step="any"))

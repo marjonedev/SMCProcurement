@@ -26547,12 +26547,12 @@ header .logo{
 
 .badge-president {
     color: #fff;
-    background-color: #35caed;
+    background-color: #4099ff;
 }
 
 .badge-vpfinance {
     color: #fff;
-    background-color: #35caed;
+    background-color: #2c67b1;
 }
 
 .badge-partial {
@@ -26564,3 +26564,11 @@ header .logo{
     color: #fff;
     background-color: #2ed8b6;
 }
+
+.progress-bar.bg-draft{ background-color: #f8f9fa; }
+.progress-bar.bg-request{ background-color: #FFB64D; }
+.progress-bar.bg-vp{ background-color: #a18fff; }
+.progress-bar.bg-president{ background-color: #4099ff; }
+.progress-bar.bg-vpfinance{ background-color: #2c67b1; }
+.progress-bar.bg-partial{ background-color: #00bcd4; }
+.progress-bar.bg-done{ background-color: #2ed8b6; }
