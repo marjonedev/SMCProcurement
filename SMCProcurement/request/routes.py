@@ -25,17 +25,40 @@ from flask_login import (
 @login_required
 def all_requests():
     if current_user.user_type == UserTypeEnum.requisitor.value:
-        requests = db.session.query(Request).filter(Request.user_id == current_user.id).order_by(Request.date_request)
+        requests = db.session.query(Request)\
+            .filter(Request.user_id == current_user.id)\
+            .order_by(Request.date_request).all()
+    elif current_user.user_type in [UserTypeEnum.vpacad.value, UserTypeEnum.vpadmin.value]:
+        requests = db.session.query(Request)\
+            .join(RequestType)\
+            .filter(RequestType.user_type == current_user.user_type)\
+            .order_by(Request.date_request).all()
     else:
         requests = db.session.query(Request).order_by(Request.date_request)
 
     return render_template('requests/index.html', requests=requests)
 
-
-@blueprint.route('/requests/mine')
+@blueprint.route('/requests/pending')
 @login_required
-def my_requests():
-    requests = db.session.query(Request).filter(Request.user_id == current_user.id).all()
+def pending_requests():
+    if current_user.user_type == UserTypeEnum.requisitor.value:
+        requests = db.session.query(Request)\
+            .filter(Request.user_id == current_user.id)\
+            .filter(Request.status > RequestStatusEnum.draft.value)\
+            .filter(Request.status < RequestStatusEnum.done.value)\
+            .order_by(Request.date_request).all()
+    elif current_user.user_type in [UserTypeEnum.vpacad.value, UserTypeEnum.vpadmin.value]:
+        requests = db.session.query(Request) \
+            .join(RequestType) \
+            .filter(RequestType.user_type == current_user.user_type) \
+            .filter(Request.status > RequestStatusEnum.draft.value)\
+            .filter(Request.status < RequestStatusEnum.done.value)\
+            .order_by(Request.date_request).all()
+    else:
+        requests = db.session.query(Request)\
+            .filter(Request.status > RequestStatusEnum.draft.value)\
+            .filter(Request.status < RequestStatusEnum.done.value)\
+            .order_by(Request.date_request).all()
 
     return render_template('requests/index.html', requests=requests)
 
@@ -100,7 +123,7 @@ def create_request():
         db.session.commit()
 
         flash("Success! Request created.", "message")
-        return redirect(url_for('request_blueprint.all_requests'))
+        return redirect(url_for('request_blueprint.view_request', id=req.id))
 
     else:
         form = RequestForm()

@@ -26565,6 +26565,11 @@ header .logo{
     background-color: #2ed8b6;
 }
 
+.badge-denied {
+    color: #fff;
+    background-color: #6c757d;
+}
+
 .progress-bar.bg-draft{ background-color: #f8f9fa; }
 .progress-bar.bg-request{ background-color: #FFB64D; }
 .progress-bar.bg-vp{ background-color: #a18fff; }

@@ -79,6 +79,38 @@ class Request(db.Model, UserMixin):
     def is_confirmed(self):
         return self.status > RequestStatusEnum.draft.value
 
+    def get_progress(self):
+        min = RequestStatusEnum.draft.value
+        max = RequestStatusEnum.done.value
+        current = self.status
+
+        if self.request_type.name == 'academics':
+            max = RequestStatusEnum.vpfinance.value + 1
+            if current > RequestStatusEnum.vpfinance.value:
+                current = max
+
+        percentage = (current / max) * 100
+
+        if self.status == 1:
+            label = "Draft"
+        elif 1 < self.status < 6:
+            label = "Pending for Approval"
+        elif self.status == 6:
+            label = "Partially Done"
+        else:
+            label = "Done"
+
+        status_list = {i.value: {"name": i.name, "description": i.description} for i in RequestStatusEnum}
+
+        return {
+            'min': min,
+            'max': max,
+            'current': current,
+            'percentage': "{}%".format(percentage),
+            'label': label,
+            'badge': status_list[self.status]["name"]
+        }
+
 
 class RequestLine(db.Model, UserMixin):
     __tablename__ = 'RequestLine'

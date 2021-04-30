@@ -71,6 +71,10 @@ class User(db.Model, UserMixin):
     def __repr__(self):
         return str(self.username)
 
+    @property
+    def is_admin(self):
+        return self.user_type == UserTypeEnum.administrator.value
+
 
 @login_manager.user_loader
 def user_loader(id):

@@ -7,6 +7,7 @@ class UserTypeEnum(enum.Enum, metaclass=EnumMeta):
     vpadmin = 11, "VP Administrator"
     vpacad = 12, "VP Academics"
     vpfinance = 13, "VP Finance"
+    propertycustodian = 14, "Property Custodian"
     requisitor = 100, "Requisitor"
 
     def __str__(self):
