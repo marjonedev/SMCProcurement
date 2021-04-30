@@ -37,7 +37,8 @@
 				<div class="col-sm-12">
 					<div class="card">
 						<div class="card-header border-bottom border-gray">
-              {% if not obj.is_confirmed %}
+              {% set show_header = obj.get_view_header() %}
+              {% if show_header == "confirm" %}
                 <div class="card-header-left">
                   <a class="btn btn-light btn-sm" href="{{ url_for('request_blueprint.edit_request', id=obj.id) }}">Edit <i class="feather icon-edit-1"></i></a>
                   <form role="form" method="POST" id="confirmForm">
@@ -51,15 +52,22 @@
                     <button id="delete_request" type="submit" class="btn btn-sm delete btn-danger">Delete <i class="feather icon-trash-2"></i></button>
                   </form>
                 </div>
+              {% elif show_header == "approve" %}
+                <div class="card-header-right">
+                  <form role="form" method="POST" id="approveForm">
+                    <input type="hidden" name="approve_request" value="1">
+                    <button id="approve_request" type="submit" class="btn btn-sm delete btn-success">Approve <i class="feather icon-check-square"></i></button>
+                  </form>
+                </div>
               {% else %}
-                {% if obj.status < 8 %}
-                <div class="progress">
-                {% set progress = obj.get_progress() %}
-                <div class="progress-bar progress-bar-striped bg-{{ progress["badge"] }}" role="progressbar" aria-valuenow="{{ progress["current"] }}" aria-valuemin="{{ progress["min"] }}" aria-valuemax="{{ progress["max"] }}" style="width: {{ progress["percentage"] }}">
-                  {{ progress["label"] }}
-                </div>
-                </div>
-                {% endif %}
+                  {% if obj.status < 8 %}
+                  <div class="progress">
+                  {% set progress = obj.get_progress() %}
+                  <div class="progress-bar progress-bar-striped bg-{{ progress["badge"] }}" role="progressbar" aria-valuenow="{{ progress["current"] }}" aria-valuemin="{{ progress["min"] }}" aria-valuemax="{{ progress["max"] }}" style="width: {{ progress["percentage"] }}">
+                    {{ progress["label"] }}
+                  </div>
+                  </div>
+                  {% endif %}
               {% endif %}
 						</div>
 						<div class="card-body">
@@ -181,7 +189,7 @@
   <script type="text/javascript">
   $(function(){
 
-  {% if not obj.is_confirmed %}
+{% if not obj.is_confirmed %}
     $('#delete_request').on('click', function (e){
       e.preventDefault();
       $.confirm({
@@ -225,8 +233,30 @@
         }
       });
     });
-  {% else %}
-  {% endif %}
+{% endif %}
+{% set show_header = obj.get_view_header() %}
+{% if show_header == "approve" %}
+  $('#approve_request').on('click', function (e){
+    e.preventDefault();
+
+    $.confirm({
+      title: '<span class="text-success">Approve Request</span>',
+      content: '<p>Please confirm to approve this request.</p>',
+      type: 'green',
+      typeAnimated: true,
+      buttons: {
+          confirm: {
+              btnClass: 'btn-success',
+              action: function () {
+                  $('form#approveForm').attr("action", "{{ url_for("request_blueprint.approve_request", id=obj.id) }}").submit()
+              }
+          } ,
+          cancel: function () {
+          }
+      }
+    });
+  });
+{% endif %}
 
   });
   </script>

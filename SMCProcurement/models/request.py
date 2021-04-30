@@ -16,6 +16,8 @@ from SMCProcurement.enum.request_status import RequestStatusEnum
 
 from pprint import pprint
 
+from SMCProcurement.enum.user_type import UserTypeEnum
+
 
 class Request(db.Model, UserMixin):
     __tablename__ = 'Request'
@@ -110,6 +112,34 @@ class Request(db.Model, UserMixin):
             'label': label,
             'badge': status_list[self.status]["name"]
         }
+
+    def get_view_header(self):
+
+        show = "none"
+
+        if self.is_confirmed:
+            if self.status == RequestStatusEnum.request.value:
+                if current_user.user_type in [UserTypeEnum.vpadmin.value, UserTypeEnum.vpacad.value, UserTypeEnum.administrator.value]:
+                    show = "approve"
+                else:
+                    show = "progress"
+            elif self.status == RequestStatusEnum.vp.value:
+                if current_user.user_type in [UserTypeEnum.president.value, UserTypeEnum.administrator.value]:
+                    show = "approve"
+                else:
+                    show = "progress"
+            elif self.status == RequestStatusEnum.president.value:
+                if current_user.user_type in [UserTypeEnum.vpfinance.value, UserTypeEnum.administrator.value]:
+                    show = "approve"
+                else:
+                    show = "progress"
+            else:
+                show = "progress"
+        else:
+            show = "confirm"
+
+        return show
+
 
 
 class RequestLine(db.Model, UserMixin):

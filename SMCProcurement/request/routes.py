@@ -63,32 +63,6 @@ def pending_requests():
     return render_template('requests/index.html', requests=requests)
 
 
-@blueprint.route('/requests/academic')
-@login_required
-@roles_accepted([UserTypeEnum.administrator,
-                 UserTypeEnum.president,
-                 UserTypeEnum.vpfinance,
-                 UserTypeEnum.vpacad])
-def academic_requests():
-    types = db.session.query(RequestType).filter(RequestType.user_type == UserTypeEnum.vpacad.value).all()
-    requests = db.session.query(Request).filter(Request.request_type_id in [t.id for t in types]).all()
-
-    return render_template('requests/index.html', requests=requests)
-
-
-@blueprint.route('/requests/admin')
-@login_required
-@roles_accepted([UserTypeEnum.administrator,
-                 UserTypeEnum.president,
-                 UserTypeEnum.vpfinance,
-                 UserTypeEnum.vpadmin])
-def admin_requests():
-    types = db.session.query(RequestType).filter(RequestType.user_type == UserTypeEnum.vpadmin.value).all()
-    requests = db.session.query(Request).filter(Request.request_type_id in [t.id for t in types]).all()
-
-    return render_template('requests/index.html', requests=requests)
-
-
 @blueprint.route('/requests/create', methods=["GET", "POST"])
 @login_required
 def create_request():
@@ -224,4 +198,43 @@ def view_request(id):
         req = db.session.query(Request).get(id)
         return render_template('requests/view.html', obj=req)
     except:
+        return render_template('page-404.html'), 404
+
+
+@blueprint.route('/requests/<id>/approve', methods=["POST"])
+@login_required
+def approve_request(id):
+    if 'approve_request' in request.form.to_dict():
+
+        try:
+            obj = db.session.query(Request).get(id)
+            approved = False
+            if obj.status in [RequestStatusEnum.request.value, RequestStatusEnum.vp.value]:
+                obj.status += 1
+                db.session.commit()
+                approved = True
+            else:
+                if obj.status == RequestStatusEnum.president.value:
+                    if obj.request_type.name == "academics":
+                        obj.status = RequestStatusEnum.done.value
+                    else:
+                        obj.status = RequestStatusEnum.vpfinance.value
+
+                    db.session.commit()
+                    approved = True
+                elif obj.status == RequestStatusEnum.vpfinance.value:
+                    obj.status = RequestStatusEnum.partial.value
+                    db.session.commit()
+                    approved = True
+
+            if approved:
+                flash("Success! Thank you for approving this request.", "message")
+                return redirect(url_for('request_blueprint.view_request', id=id))
+            else:
+                flash("Sadly, Nothing to approve.", "warning")
+                return redirect(url_for('request_blueprint.view_request', id=id))
+
+        except Exception as e:
+            return render_template('page-404.html'), 404
+    else:
         return render_template('page-404.html'), 404
