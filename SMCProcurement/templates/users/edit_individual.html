@@ -16,11 +16,11 @@
 					<div class="row align-items-center">
 						<div class="col-md-12">
 							<div class="page-header-title">
-								<h5 class="m-b-10">Edit User: {{ obj.username }}</h5>
+								<h5 class="m-b-10">Edit: {{ obj.username }}</h5>
 							</div>
 							<ul class="breadcrumb">
 								<li class="breadcrumb-item"><a href="/"><i class="feather icon-home"></i></a></li>
-								<li class="breadcrumb-item"><a href="/users">Users</a></li>
+								<li class="breadcrumb-item"><a href="{{url_for("user_blueprint.view_user", id=obj.id)}}">Profile</a></li>
 								<li class="breadcrumb-item"><a href="#!">{{ obj.username }}</a></li>
 							</ul>
 						</div>
@@ -65,7 +65,7 @@
                   <div class="form-group row">
                       <label for="inputEmail3" class="col-sm-3 col-form-label">Email</label>
                       <div class="col-sm-9">
-                        {{ form.email(class="form-control", readonly=True) }}
+                        {{ form.email(class="form-control", disabled=True) }}
                       </div>
                   </div>
 
@@ -80,20 +80,6 @@
                       <label for="inputEmail3" class="col-sm-3 col-form-label">Position</label>
                       <div class="col-sm-9">
                         {{ form.position(class="form-control") }}
-                      </div>
-                  </div>
-
-                  <div class="form-group row">
-                      <label for="inputEmail3" class="col-sm-3 col-form-label">User Type</label>
-                      <div class="col-sm-9">
-                        {{ form.user_type(class="form-control") }}
-                      </div>
-                  </div>
-
-                  <div class="form-group row">
-                      <label for="inputEmail3" class="col-sm-3 col-form-label">Request Type</label>
-                      <div class="col-sm-9">
-                        {{ form.request_type_id(class="form-control") }}
                       </div>
                   </div>
 

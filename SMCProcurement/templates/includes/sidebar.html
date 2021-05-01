@@ -13,11 +13,6 @@
                             <span class="pcoded-micon">
                                 <i class="feather icon-home"></i></span><span class="pcoded-mtext">Dashboard</span></a>
 					</li>
-          {% if current_user.is_admin %}
-					<li class="nav-item">
-					    <a href="/users" class="nav-link "><span class="pcoded-micon"><i class="feather icon-users"></i></span><span class="pcoded-mtext">Users</span></a>
-					</li>
-          {% endif %}
 					<li class="nav-item pcoded-hasmenu">
 						<a href="#!" class="nav-link "><span class="pcoded-micon"><i class="feather icon-list"></i></span><span class="pcoded-mtext">Requisition</span></a>
 					    <ul class="pcoded-submenu">
@@ -25,7 +20,11 @@
                 <li><a href="{{ url_for("request_blueprint.pending_requests") }}">Pending Requests</a></li>
               </ul>
           </li>
-
+        {% if current_user.is_admin %}
+          <li class="nav-item">
+              <a href="/users" class="nav-link "><span class="pcoded-micon"><i class="feather icon-users"></i></span><span class="pcoded-mtext">Users</span></a>
+          </li>
+        {% endif %}
         {% if current_user.is_admin %}
 {#          This is just sample pages#}
 					<li class="nav-item pcoded-menu-caption">

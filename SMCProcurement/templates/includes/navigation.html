@@ -107,7 +107,7 @@
                                 </a>
                             </div>
                             <ul class="pro-body">
-                                <li><a href="#" class="dropdown-item"><i class="feather icon-user"></i> Profile </a></li>
+                                <li><a href="{{ url_for("user_blueprint.view_user", id=current_user.id) }}" class="dropdown-item"><i class="feather icon-user"></i> Profile </a></li>
                             </ul>
                         </div>
                     </div>

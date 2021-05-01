@@ -6,7 +6,7 @@ from jinja2 import TemplateNotFound
 from SMCProcurement.models.user import User
 from SMCProcurement.models.department import Department
 from SMCProcurement.models.request_type import RequestType
-from SMCProcurement.user.forms import UserForm
+from SMCProcurement.user.forms import UserForm, UserFormIndividual
 from SMCProcurement import db
 from SMCProcurement.enum.user_type import UserTypeEnum
 
@@ -70,23 +70,34 @@ def create_user():
     else:
         return render_template('users/create.html', form=userForm)
 
-@roles_accepted([UserTypeEnum.administrator])
+
 @blueprint.route('/users/<id>/edit', methods=["GET", "POST"])
 @login_required
 def edit_user(id):
+
     user = db.session.query(User).get(id)
-    userForm = UserForm(obj=user)
+
+    if current_user.is_admin:
+        userForm = UserForm(obj=user)
+        userForm.request_type_id.choices = [(r.id, r.name) for r in RequestType.query.all()]
+        template = 'users/edit.html'
+    else:
+        if current_user.id == user.id:
+            userForm = UserFormIndividual(obj=user)
+            template = 'users/edit_individual.html'
+        else:
+            return render_template('page-404.html'), 404
+
     userForm.department_id.choices = [(d.id, d.name) for d in Department.query.all()]
-    userForm.request_type_id.choices = [(r.id, r.name) for r in RequestType.query.all()]
 
     if 'edit_user' in request.form:
         user.update(**request.form)
         db.session.commit()
 
-        return render_template('users/edit.html', form=userForm, msg='User successfully updated.', success=False,)
-
+        flash("User successfully updated.", "message")
+        return redirect(url_for("user_blueprint.view_user", id=user.id))
     else:
-        return render_template('users/edit.html', form=userForm)
+        return render_template(template, form=userForm, obj=user)
 
 @roles_accepted([UserTypeEnum.administrator])
 @blueprint.route('/users/<id>/delete', methods=["POST"])
@@ -95,9 +106,8 @@ def delete_user(id):
 
     if 'delete_user' in request.form.to_dict():
         try:
-            uid = session.get('_user_id')
             user = db.session.query(User).get(id)
-            if uid == id and user.user_type == UserTypeEnum.administrator.value:
+            if user.user_type == UserTypeEnum.administrator.value:
                 flash("Cannot delete administrator.", "error")
                 return redirect(url_for('user_blueprint.users'))
 
@@ -111,3 +121,22 @@ def delete_user(id):
             return redirect(url_for('user_blueprint.users'))
 
 
+@blueprint.route('/users/<id>', methods=["GET"])
+@login_required
+def view_user(id):
+    try:
+
+        if current_user.user_type == UserTypeEnum.requisitor.value and current_user.id == int(id):
+            allow = True
+        elif current_user.user_type is not UserTypeEnum.requisitor.value:
+            allow = True
+        else:
+            allow = False
+
+        if allow:
+            user = db.session.query(User).get(id)
+            return render_template('users/view.html', obj=user)
+        else:
+            return render_template('page-404.html'), 404
+    except:
+        return render_template('page-404.html'), 404
