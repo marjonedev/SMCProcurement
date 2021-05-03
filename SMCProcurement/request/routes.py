@@ -70,12 +70,12 @@ def create_request():
     if "submit_request" in request.form:
 
         form = RequestForm(request.form)
-        form.department_id.choices = [(d.id, d.name) for d in Department.query.all()]
+        # form.department_id.choices = [(d.id, d.name) for d in Department.query.all()]
 
         formData = form.data
 
         data = {
-            "department_id": formData["department_id"],
+            # "department_id": formData["department_id"],
             "date_needed": formData["date_needed"],
             "endorsed_by": formData["endorsed_by"]
         }
@@ -101,8 +101,8 @@ def create_request():
 
     else:
         form = RequestForm()
-        form.department_id.choices = [(d.id, d.name) for d in Department.query.all()]
-        form.department_id.default = current_user.department_id
+        # form.department_id.choices = [(d.id, d.name) for d in Department.query.all()]
+        # form.department_id.default = current_user.department_id
         form.process()
         return render_template('requests/create.html', form=form)
 
@@ -118,12 +118,12 @@ def edit_request(id):
         return redirect(url_for('request_blueprint.view_request', id=id))
 
     form = RequestForm(request.form, obj=req)
-    form.department_id.choices = [(d.id, d.name) for d in Department.query.all()]
+    # form.department_id.choices = [(d.id, d.name) for d in Department.query.all()]
 
     if "submit_request" in request.form:
         formData = form.data
         data = {
-            "department_id": formData["department_id"],
+            # "department_id": formData["department_id"],
             "date_needed": formData["date_needed"],
             "endorsed_by": formData["endorsed_by"]
         }
@@ -209,23 +209,10 @@ def approve_request(id):
         try:
             obj = db.session.query(Request).get(id)
             approved = False
-            if obj.status in [RequestStatusEnum.request.value, RequestStatusEnum.vp.value]:
+            if obj.status in [RequestStatusEnum.request.value, RequestStatusEnum.vp.value, RequestStatusEnum.president.value]:
                 obj.status += 1
                 db.session.commit()
                 approved = True
-            else:
-                if obj.status == RequestStatusEnum.president.value:
-                    if obj.request_type.name == "academics":
-                        obj.status = RequestStatusEnum.done.value
-                    else:
-                        obj.status = RequestStatusEnum.vpfinance.value
-
-                    db.session.commit()
-                    approved = True
-                elif obj.status == RequestStatusEnum.vpfinance.value:
-                    obj.status = RequestStatusEnum.partial.value
-                    db.session.commit()
-                    approved = True
 
             if approved:
                 flash("Success! Thank you for approving this request.", "message")
@@ -233,6 +220,43 @@ def approve_request(id):
             else:
                 flash("Sadly, Nothing to approve.", "warning")
                 return redirect(url_for('request_blueprint.view_request', id=id))
+
+        except Exception as e:
+            return render_template('page-404.html'), 404
+    else:
+        return render_template('page-404.html'), 404
+
+
+@blueprint.route('/requests/<id>/decline', methods=["POST"])
+@login_required
+def decline_request(id):
+    if 'decline_request' in request.form.to_dict():
+
+        try:
+            form = request.form.to_dict()
+            if form["denied_remarks"]:
+                obj = db.session.query(Request).get(id)
+                obj.status = RequestStatusEnum.denied.value
+                obj.denied_remarks = form["denied_remarks"]
+                db.session.commit()
+                flash("Request "+obj.number+" denied.", "warning")
+                return redirect(url_for('request_blueprint.view_request', id=id))
+            else:
+                flash("Remarks field is required on decline.", "error")
+                return redirect(url_for('request_blueprint.view_request', id=id))
+            # obj = db.session.query(Request).get(id)
+            # approved = False
+            # if obj.status in [RequestStatusEnum.request.value, RequestStatusEnum.vp.value, RequestStatusEnum.president.value]:
+            #     obj.status += 1
+            #     db.session.commit()
+            #     approved = True
+            #
+            # if approved:
+            #     flash("Success! Thank you for approving this request.", "message")
+            #     return redirect(url_for('request_blueprint.view_request', id=id))
+            # else:
+            #     flash("Sadly, Nothing to approve.", "warning")
+            #     return redirect(url_for('request_blueprint.view_request', id=id))
 
         except Exception as e:
             return render_template('page-404.html'), 404

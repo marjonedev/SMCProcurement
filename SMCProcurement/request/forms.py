@@ -23,7 +23,7 @@ class RequestLineForm(FlaskForm):
     id = HiddenField("ID")
 
 class RequestForm(FlaskForm):
-    department_id = SelectField('Department', id="department_id", validators=[DataRequired()])
+    # department_id = SelectField('Department', id="department_id", validators=[DataRequired()])
     date_needed = DateField('Date Needed', id="date_needed", validators=[DataRequired()])
     endorsed_by = StringField("Endorsed by", id="endorsed_by")
     request_lines = FieldList(FormField(RequestLineForm), min_entries=1)

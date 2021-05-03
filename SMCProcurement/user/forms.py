@@ -15,7 +15,7 @@ from SMCProcurement import db
 class UserForm(FlaskForm):
     first_name = TextField('First Name', id="first_name_create", validators=[DataRequired()])
     last_name = TextField('First Name', id="first_name_create", validators=[DataRequired()])
-    username = TextField('Username', id='username_create' , validators=[DataRequired()])
+    username = TextField('Username', id='username_create', validators=[DataRequired()])
     email = TextField('Email', id='email_create', validators=[DataRequired(), Email()])
     password = PasswordField('Password' , id='pwd_create', validators=[DataRequired()])
     position = TextField('Position', id="position_create")

@@ -56,9 +56,16 @@
                 <div class="card-header-right">
                   <form role="form" method="POST" id="approveForm">
                     <input type="hidden" name="approve_request" value="1">
-                    <button id="approve_request" type="submit" class="btn btn-sm delete btn-success">Approve <i class="feather icon-check-square"></i></button>
+                    <button id="approve_request" type="submit" class="btn btn-sm btn-success">Approve <i class="feather icon-check-square"></i></button>
                   </form>
+                <button id="decline_request" role="button" type="button" class="btn btn-sm btn-danger ml-2">Decline <i class="feather icon-x-square"></i></button>
                 </div>
+                {#<div class="card-header-right">
+                  <form role="form" method="POST" id="declineForm">
+                    <input type="hidden" name="decline_request" value="1">
+                    <input type="hidden" name="denied_remarks" />
+                    </form>
+                </div>#}
               {% else %}
                   {% if obj.status < 8 %}
                   <div class="progress">
@@ -110,15 +117,15 @@
                       </div>
                     </div>
                     <div class="form-group row">
-                      <div class="col-sm-4"><span class="hljs-strong">Endorsed by:</span></div>
-                      <div class="col-sm-8">
-                        {{ obj.endorsed_by }}
-                      </div>
-                    </div>
-                    <div class="form-group row">
                       <div class="col-sm-4"><span class="hljs-strong">Date Needed:</span></div>
                       <div class="col-sm-8">
                         {{ obj.date_needed.strftime('%B %d, %Y') }}
+                      </div>
+                    </div>
+                    <div class="form-group row">
+                      <div class="col-sm-4"><span class="hljs-strong">Endorsed by:</span></div>
+                      <div class="col-sm-8">
+                        {{ obj.endorsed_by }}
                       </div>
                     </div>
                     <div class="form-group row">
@@ -256,6 +263,42 @@
       }
     });
   });
+  $('#decline_request').on('click', function (e){
+      e.preventDefault();
+      $.confirm({
+        title: 'Decline Request',
+        type: 'red',
+        typeAnimated: true,
+        content: '' +
+        '<form action="{{ url_for('request_blueprint.decline_request',id=obj.id) }}" method="POST" id="declineForm">' +
+        '<div class="form-group">' +
+        '<label>Remarks:</label>' +
+        '<textarea class="form-control" name="denied_remarks" required placeholder="State the reason."></textarea>' +
+        '<input type="hidden" name="decline_request" value="1">' +
+        '<span class="text-danger d-none requiredfield">Remarks is required.</span>' +
+        '</div>' +
+        '</form>',
+            buttons: {
+                formSubmit: {
+                    text: 'Submit',
+                    btnClass: 'btn-red',
+                    action: function () {
+                        if(this.$content.find('[name="denied_remarks"]').val().trim().length < 1){
+                            let span = this.$content.find("span.requiredfield")
+                            if(span.hasClass('d-none')){
+                                span.removeClass('d-none')
+                            }
+                            return false;
+                        }else{
+                            this.$content.find('form#declineForm').submit();
+                        }
+                    }
+                },
+                cancel: function () {
+                },
+            }
+        });
+      });
 {% endif %}
 
   });

@@ -42,6 +42,7 @@ class Request(db.Model, UserMixin):
     created_on = Column(DateTime, nullable=False, default=datetime.utcnow)
     updated_on = Column(DateTime, nullable=False, default=datetime.utcnow, onupdate=datetime.utcnow)
     request_lines = relationship("RequestLine", cascade="all, delete-orphan", backref="request")
+    denied_remarks = Column(String)
 
     def __init__(self, **kwargs):
         # super(Request, self).__init__(**kwargs)
@@ -59,6 +60,7 @@ class Request(db.Model, UserMixin):
         self.date_requested = date.today()
         self.user_id = current_user.id
         self.request_type_id = current_user.request_type_id
+        self.department_id = current_user.department_id
 
     def update(self, **kwargs):
         for key, value in kwargs.items():
@@ -85,11 +87,6 @@ class Request(db.Model, UserMixin):
         min = RequestStatusEnum.draft.value
         max = RequestStatusEnum.done.value
         current = self.status
-
-        if self.request_type.name == 'academics':
-            max = RequestStatusEnum.vpfinance.value + 1
-            if current > RequestStatusEnum.vpfinance.value:
-                current = max
 
         percentage = (current / max) * 100
 

@@ -53,25 +53,25 @@
                   {{ form.hidden_tag() }}
                   <div class="row">
                     <div class="col-md-6">
-                      <div class="form-group row">
+                      {#<div class="form-group row">
                           <label for="department" class="col-sm-3 col-form-label">Department</label>
                           <div class="col-sm-9">
                             {{ form.department_id(class="form-control") }}
                           </div>
-                      </div>
+                      </div>#}
                       <div class="form-group row">
-                          <label for="department" class="col-sm-3 col-form-label">Endorsed by</label>
+                          <label for="inputEmail3" class="col-sm-3 col-form-label">Date Needed</label>
                           <div class="col-sm-9">
-                            {{ form.endorsed_by(class="form-control") }}
+                            {{ form.date_needed(class="form-control flatpickr") }}
                           </div>
                       </div>
                     </div>
 
                     <div class="col-md-6">
                       <div class="form-group row">
-                          <label for="inputEmail3" class="col-sm-3 col-form-label">Date Needed</label>
+                          <label for="department" class="col-sm-3 col-form-label">Endorsed by</label>
                           <div class="col-sm-9">
-                            {{ form.date_needed(class="form-control flatpickr") }}
+                            {{ form.endorsed_by(class="form-control") }}
                           </div>
                       </div>
                     </div>
