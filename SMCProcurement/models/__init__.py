@@ -2,3 +2,8 @@ from .department import *
 from .user import *
 from .request_type import *
 from .request import *
+from .inventory import *
+from .item import *
+from .item_category import *
+from .release import *
+from .supplier import *
