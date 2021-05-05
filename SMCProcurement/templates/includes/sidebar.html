@@ -10,8 +10,11 @@
 					</li>
 					<li class="nav-item">
 					    <a href="/" class="nav-link ">
-                            <span class="pcoded-micon">
-                                <i class="feather icon-home"></i></span><span class="pcoded-mtext">Dashboard</span></a>
+                <span class="pcoded-micon">
+                  <i class="feather icon-home"></i>
+                </span>
+                <span class="pcoded-mtext">Dashboard</span>
+              </a>
 					</li>
 					<li class="nav-item pcoded-hasmenu">
 						<a href="#!" class="nav-link "><span class="pcoded-micon"><i class="feather icon-list"></i></span><span class="pcoded-mtext">Requisition</span></a>
@@ -20,6 +23,53 @@
                 <li><a href="{{ url_for("request_blueprint.pending_requests") }}">Pending Requests</a></li>
               </ul>
           </li>
+
+          <li class="nav-item pcoded-hasmenu">
+						<a href="#!" class="nav-link "><span class="pcoded-micon"><i class="feather icon-activity"></i></span><span class="pcoded-mtext">Inventory</span></a>
+					    <ul class="pcoded-submenu">
+                <li><a href="{{ url_for("inventory_blueprint.all_inventories") }}">All Inventories</a></li>
+                <li><a href="{{ url_for("inventory_blueprint.all_inventories") }}">Reports</a></li>
+                <li><a href="{{ url_for("inventory_blueprint.all_inventories") }}">Release</a></li>
+              </ul>
+          </li>
+
+					<li class="nav-item">
+					    <a href="/" class="nav-link ">
+                <span class="pcoded-micon">
+                  <i class="feather icon-grid"></i>
+                </span>
+                <span class="pcoded-mtext">Items</span>
+              </a>
+					</li>
+
+					<li class="nav-item">
+					    <a href="/" class="nav-link ">
+                <span class="pcoded-micon">
+                  <i class="feather icon-book"></i>
+                </span>
+                <span class="pcoded-mtext">Categories</span>
+              </a>
+					</li>
+
+					<li class="nav-item">
+					    <a href="/" class="nav-link ">
+                <span class="pcoded-micon">
+                  <i class="feather icon-download"></i>
+                </span>
+                <span class="pcoded-mtext">Suppliers</span>
+              </a>
+					</li>
+
+					<li class="nav-item">
+					    <a href="/" class="nav-link ">
+                <span class="pcoded-micon">
+                  <i class="feather icon-star"></i>
+                </span>
+                <span class="pcoded-mtext">Departments</span>
+              </a>
+					</li>
+
+
         {% if current_user.is_admin %}
           <li class="nav-item">
               <a href="/users" class="nav-link "><span class="pcoded-micon"><i class="feather icon-users"></i></span><span class="pcoded-mtext">Users</span></a>

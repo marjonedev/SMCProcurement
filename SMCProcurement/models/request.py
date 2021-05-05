@@ -174,7 +174,7 @@ class RequestLine(db.Model, UserMixin):
                     setattr(self, key, value)
 
 
-def generate_number_listener(mapper, connection, target):
+def generate_number_listener_request(mapper, connection, target):
     current_date = date.today()
     table = Request.__table__
     connection.execute(
@@ -184,4 +184,4 @@ def generate_number_listener(mapper, connection, target):
     )
 
 
-event.listen(Request, 'after_insert', generate_number_listener)
+event.listen(Request, 'after_insert', generate_number_listener_request)

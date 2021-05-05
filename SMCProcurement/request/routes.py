@@ -1,9 +1,7 @@
 from SMCProcurement.enum.request_status import RequestStatusEnum
 from SMCProcurement.request import blueprint
 from flask import render_template, redirect, url_for, request, flash, session, abort
-from flask_login import login_required, current_user
 from SMCProcurement import login_manager
-from jinja2 import TemplateNotFound
 from SMCProcurement.models import Department, RequestLine
 from SMCProcurement.models import Request
 from SMCProcurement.models.request_type import RequestType
@@ -103,7 +101,7 @@ def create_request():
         form = RequestForm()
         # form.department_id.choices = [(d.id, d.name) for d in Department.query.all()]
         # form.department_id.default = current_user.department_id
-        form.process()
+        # form.process()
         return render_template('requests/create.html', form=form)
 
 

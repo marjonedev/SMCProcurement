@@ -19,11 +19,11 @@
 					<div class="row align-items-center">
 						<div class="col-md-12">
 							<div class="page-header-title">
-								<h5 class="m-b-10">Requests</h5>
+								<h5 class="m-b-10">Inventories</h5>
 							</div>
 							<ul class="breadcrumb">
 								<li class="breadcrumb-item"><a href="/"><i class="feather icon-home"></i></a></li>
-								<li class="breadcrumb-item"><a href="#!">Requests</a></li>
+								<li class="breadcrumb-item"><a href="#!">Inventories</a></li>
 							</ul>
 						</div>
 					</div>
@@ -38,7 +38,7 @@
 
 						<div class="card-header">
               <div class="card-header-right">
-								<a href="/requests/create" type="button" class="btn btn-primary"><i class="feather icon-plus"></i> Create</a>
+								<a href="/inventories/create" type="button" class="btn btn-primary"><i class="feather icon-plus"></i> Create</a>
 							</div>
 						</div>
 						<div class="card-body">
@@ -51,22 +51,18 @@
                         <thead>
                             <tr>
                                 <th>Reference No.</th>
-                                <th>Requisitor</th>
-                                <th>Date Requested</th>
-                                <th>Date Needed</th>
-                                <th>Department</th>
-                                <th>Status</th>
+                                <th>Request No.</th>
+                                <th>Date</th>
+                                <th>Total Cost</th>
                             </tr>
                         </thead>
                         <tbody>
-                          {% for request in requests %}
-                            <tr data-line-id="{{ request.id }}" class="hoverable">
-                              <td>{{ request.number }}</td>
-                              <td>{{ request.user.full_name }}</td>
-                              <td>{{ request.date_request }}</td>
-                              <td>{{ request.date_needed }}</td>
-                              <td>{{ request.department.name }}</td>
-                              <td><span class="badge badge-status badge-{{ RequestStatusList[request.status]['name'] }}">{{ RequestStatusList[request.status]['description'] }}</span></td>
+                          {% for inventory in inventories %}
+                            <tr data-line-id="{{ inventory.id }}" class="hoverable">
+                              <td>{{ inventory.number }}</td>
+                              <td>{{ inventory.request.number }}</td>
+                              <td>{{ inventory.date }}</td>
+                              <td>{{ inventory.total_cost }}</td>
                             </tr>
                           {% endfor %}
                         </tbody>
@@ -92,22 +88,21 @@
 <script type="text/javascript">
 $(function (){
     var table =  $('.table').DataTable({
-      "order": [[ 2, "desc" ], [0, "desc"]],
-      "columnDefs": [{
+        "columnDefs": [{
                 "render": function ( data, type, row ) {
                     return DateTime.fromISO(data).setLocale("en").toLocaleString(DateTime.DATE_FULL);
                 },
-                "targets": [2, 3]
+                "targets": [2]
             },]
-  });
-   $('.table tbody').on('click', 'tr', function (e) {
-      e.preventDefault();
-      let id = $(this).data('lineId');
-      if(id){
-        window.location.href = "/requests/"+id
-      }
-      return false;
-   });
+    });
+     $('.table tbody').on('click', 'tr', function (e) {
+        e.preventDefault();
+        let id = $(this).data('lineId');
+        if(id){
+          window.location.href = "/inventories/"+id;
+        }
+        return false;
+     });
 })
 
 </script>

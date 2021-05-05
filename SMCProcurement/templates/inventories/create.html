@@ -1,11 +1,12 @@
 {% extends "layouts/base.html" %}
 
-{% block title %} Create New Request {% endblock %}
+{% block title %} Create New Inventory {% endblock %}
 
 <!-- Specific CSS goes HERE -->
 {% block stylesheets %}
 {#  <link rel="stylesheet" href="{{ url_for("static", filename="assets/css/plugins/flatpickr.min.css") }}" />#}
   <link rel="stylesheet" href="{{ url_for("static", filename="assets/css/plugins/flatpickr.theme.material_blue.css") }}" />
+  <link rel="stylesheet" href="{{ url_for("static", filename="assets/lib/Selectize/css/selectize.bootstrap4.css") }}" />
 {% endblock stylesheets %}
 
 {% block content %}
@@ -19,11 +20,11 @@
 					<div class="row align-items-center">
 						<div class="col-md-12">
 							<div class="page-header-title">
-								<h5 class="m-b-10">New Request</h5>
+								<h5 class="m-b-10">New Inventory</h5>
 							</div>
 							<ul class="breadcrumb">
 								<li class="breadcrumb-item"><a href="/"><i class="feather icon-home"></i></a></li>
-								<li class="breadcrumb-item"><a href="/requests">Requests</a></li>
+								<li class="breadcrumb-item"><a href="/inventories">Inventories</a></li>
 								<li class="breadcrumb-item"><a href="#!">New</a></li>
 							</ul>
 						</div>
@@ -52,47 +53,38 @@
                   {{ form.hidden_tag() }}
                   <div class="row">
                     <div class="col-md-6">
-                      {#<div class="form-group row">
-                          <label for="department" class="col-sm-3 col-form-label">Department</label>
-                          <div class="col-sm-9">
-                            {{ form.department_id(class="form-control") }}
-                          </div>
-                      </div>#}
                       <div class="form-group row">
-                          <label for="inputEmail3" class="col-sm-3 col-form-label">Date Needed</label>
+                          <label for="inputEmail3" class="col-sm-3 col-form-label">Request</label>
                           <div class="col-sm-9">
-                            {{ form.date_needed(class="form-control flatpickr") }}
+                            {{ form.request_id(class="form-control") }}
                           </div>
                       </div>
                     </div>
 
                     <div class="col-md-6">
-                      <div class="form-group row">
-                          <label for="department" class="col-sm-3 col-form-label">Endorsed by</label>
-                          <div class="col-sm-9">
-                            {{ form.endorsed_by(class="form-control") }}
-                          </div>
-                      </div>
+
                     </div>
                   </div>
 
-                  <h5 class="mt-4">Request Items</h5>
+                  <h5 class="mt-4">Inventory Items</h5>
                   <hr />
 
                   <div class="table-border-style">
                     <div class="table-responsive pb-1">
-                        <table class="table" id="requestItems">
+                        <table class="table table-small" id="inventoryItems">
                           <thead>
-                            <th width="">Name</th>
-                            <th width="">Description</th>
-                            <th class="text-right" width="110">Quantity</th>
-                            <th class="text-right" width="125">Unit Price</th>
-                            <th class="text-right" width="100">Subtotal</th>
-                            <th width="80"></th>
+                            <th width="">Item</th>
+                            <th>Code</th>
+                            <th>Description</th>
+                            <th width="">Category</th>
+                            <th>Supplier</th>
+                            <th class="text-right">Qty</th>
+                            <th class="text-right">Price</th>
+                          <th></th>
                           </thead>
                           <tbody>
 
-                          {% set i = namespace(value=0)  %}
+                          {#{% set i = namespace(value=0)  %}
                           {% for line in form.request_lines %}
                               <tr id="lines_{{ i.value }}">
                                 <td>
@@ -114,7 +106,7 @@
                                 </td>
                               </tr>
                             {% set i.value = i.value + 1 %}
-                          {% endfor %}
+                          {% endfor %}#}
                           </tbody>
                         </table><button type="button" id="addItem" class="btn btn-dark btn-sm btn-add-entry">Add Item</button>
                     </div>
@@ -122,7 +114,7 @@
 
                     <div class="form-group row mt-4 border-top border-gray pt-2">
                         <div class="col-sm-10">
-                           {{form.submit_request(class="btn btn-primary btn-submit", value="Save Request")}}
+                           {{form.submit(class="btn btn-primary btn-submit", value="Save")}}
 {#                            <button type="submit" name="create_request" class="btn  btn-primary">Create</button>#}
                         </div>
                     </div>
@@ -138,14 +130,60 @@
 	</div>
 	<!-- [ Main Content ] end -->
 
+  <div class="modal fade" id="addItemModal" tabindex="-1" aria-labelledby="addItemModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+      <div class="modal-content">
+        <div class="modal-header p-2 pl-3 pr-3">
+          <h5 class="modal-title" id="addItemModalLabel">Add Inventory Item</h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+          <ul class="nav nav-pills nav-justified mb-3" id="pills-tab" role="tablist">
+            <li class="nav-item" role="presentation">
+              <a class="nav-link new-item-tab active" id="existingItemTab" data-toggle="pill" href="#existingItemContent" role="tab" aria-selected="true" data-existing="1">Existing Item</a>
+            </li>
+            <li class="nav-item" role="presentation">
+              <a class="nav-link new-item-tab" id="newItemTab" data-toggle="pill" href="#newItemContent" role="tab" aria-selected="false" data-existing="0">New Item</a>
+            </li>
+          </ul>
+          <div class="tab-content" id="pills-tabContent">
+            <div class="tab-pane fade show active" id="existingItemContent" role="tabpanel" aria-labelledby="pills-existing-item-tab">
+              <form action="">
+                <select name="item_id" id="searchExistingItem" class="form-control" placeholder="Select Existing Item"></select>
+
+                <input type="hidden" name="existing" value="1" />
+
+                <div class="row border-top border-gray pt-3 mt-3">
+                  <button type="submit" class="btn btn-primary mr-2">Add Item</button>
+                  <button type="button" class="btn btn-light" data-dismiss="modal">Cancel</button>
+                </div>
+              </form>
+            </div>
+            <div class="tab-pane fade" id="newItemContent" role="tabpanel" aria-labelledby="pills-new-item-tab">
+
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
 {% endblock content %}
 
 <!-- Specific Page JS goes HERE  -->
 {% block javascripts %}
   <script src="{{ url_for("static", filename="assets/js/plugins/flatpickr.min.js") }}"></script>
+  <script src="{{ url_for("static", filename="assets/lib/Selectize/js/standalone/selectize.min.js") }}"></script>
   <script type="text/javascript">
 
   $(function(){
+
+    function refreshAddItemModal(modal){
+      alert('refreshed');
+      //is_existing=0
+    }
 
     $(".flatpickr").flatpickr({
         minDate: "today",
@@ -154,72 +192,21 @@
         altFormat: "F j, Y",
         dateFormat: "Y-m-d"
     });
-    var tbody = $('table#requestItems tbody');
-    var tr = tbody.find("tr:last");
-    var lastID = tr.find("input[type=text]").first().attr('id');
-    var num = tr ? parseInt(lastID.split('-')[1]) : 0;
 
     $('button#addItem').on('click', function (e){
         e.preventDefault();
-        let csrf = $('#csrf_token').val();
-        num++;
-        let str = '<tr id="lines_'+num+'">' +
-            '<td><input class="form-control form-control-sm" id="request_lines-'+num+'-name" name="request_lines-'+num+'-name" type="text" required="required" value=""></td>' +
-            '<td><input class="form-control form-control-sm" id="request_lines-'+num+'-description" name="request_lines-'+num+'-description" type="text" value=""></td>' +
-            '<td class="text-right"><input class="form-control form-control-sm text-right qty" id="request_lines-'+num+'-qty" name="request_lines-'+num+'-qty" type="number" value=""></td>' +
-            '<td class="text-right"><input class="form-control form-control-sm text-right price" id="request_lines-'+num+'-unit_price" name="request_lines-'+num+'-unit_price" step="any" type="number" value=""></td>' +
-            '<td><input type="text" class=" form-control-sm form-control-plaintext text-right total" readonly="readonly" value="0.00"></td>' +
-            '<td>' +
-            '<input id="request_lines-0-id" name="request_lines-'+num+'-id" type="hidden" value="">' +
-            '<input id="request_lines-0-csrf_token" name="request_lines-'+num+'-csrf_token" type="hidden" value="'+csrf+'">' +
-            '<button type="button" role="button" class="btn delete btn-danger feather icon-delete"></button>' +
-            '</td>' +
-            '</tr>';
-        tbody.append(str);
+        $('#addItemModal').modal("show")
     });
 
-    $(document).on('click', 'button.delete', function (e){
-        e.preventDefault();
-        let $this = $(this)
-
-        if($("#requestItems tbody").find('tr').length > 1){
-            $this.closest("tr").remove();
-        }else{
-            $.alert({
-                title: 'Please don\'t do it.',
-                content: 'Atleast 1 item needs to be added.',
-                type: 'red',
-                typeAnimated: true,
-                buttons: {
-                    ok: {
-                        text: 'Ok',
-                        btnClass: 'btn-red',
-                        action: function(){
-                        }
-                    }
-                }
-            });
-        }
-
+    $('#addItemModal').on('show.bs.modal', function (e) {
+        refreshAddItemModal(this);
     });
 
-    $(document).on('change', 'input.qty, input.price', function (){
-        let $this = $(this);
-        let a = $this.val();
-        let b;
+    $('a.new-item-tab[data-toggle="pill"]').on('shown.bs.tab', function (e) {
+        $('input[name=is_existing]').val($(e.target).data('existing'))
+    })
 
-        if($this.hasClass('qty')){
-          b = $this.closest('tr').find('input.price').val()
-        }else{
-          b = $this.closest('tr').find('input.qty').val()
-        }
-        console.log(a, b)
-
-        a = isNaN(parseFloat(a)) ? 0 : a;
-        b = isNaN(parseFloat(b)) ? 0 : b;
-
-        $this.closest('tr').find('input.total').val(get_total(a, b).toFixed(2));
-    });
+      $('#searchExistingItem').selectize()
 
   });
 
