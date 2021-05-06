@@ -1,6 +1,6 @@
 {% extends "layouts/base.html" %}
 
-{% block title %} Departments {% endblock %}
+{% block title %} Items {% endblock %}
 
 <!-- Specific CSS goes HERE -->
 {% block stylesheets %}
@@ -18,11 +18,11 @@
 					<div class="row align-items-center">
 						<div class="col-md-12">
 							<div class="page-header-title">
-								<h5 class="m-b-10">Departments</h5>
+								<h5 class="m-b-10">Items</h5>
 							</div>
 							<ul class="breadcrumb">
 								<li class="breadcrumb-item"><a href="../index.html"><i class="feather icon-home"></i></a></li>
-								<li class="breadcrumb-item"><a href="#!">Departments</a></li>
+								<li class="breadcrumb-item"><a href="#!">Items</a></li>
 							</ul>
 						</div>
 					</div>
@@ -37,7 +37,7 @@
 
 						<div class="card-header">
               <div class="card-header-right">
-								<a href="{{ url_for("department_blueprint.create_department") }}" type="button" class="btn btn-primary text-white"><i class="feather icon-plus"></i> Create</a>
+								<a href="{{ url_for("item_blueprint.create_item") }}" type="button" class="btn btn-primary text-white"><i class="feather icon-plus"></i> Create</a>
 							</div>
 						</div>
 						<div class="card-body">
@@ -48,28 +48,32 @@
                         <thead>
                             <tr>
                                 <th>Name</th>
-                                <th>Description</th>
-                                <th width="100">Actions</th>
+                                <th>Category</th>
+                                <th>Supplier</th>
+                                <th>Item Code</th>
+                                <th>Brand</th>
+                                <th>Model</th>
+                                <th class="text-right">Qty<br/>On Stock</th>
+                                <th class="text-right">Unit<br/>Price</th>
                             </tr>
                         </thead>
                         <tbody>
-                          {% for department in departments %}
-                            <tr data-department-id="{{ department.id }}">
-                              <td>{{ department.name }}</td>
-                              <td>{{ department.description }}</td>
-                              <td>
-                                <a class="btn btn-light btn-sm" title="Edit" href="{{ url_for('department_blueprint.edit_department', id=department.id) }}"><i class="feather icon-edit-1"></i></a>
-                                <form role="form" method="POST" class="d-inline">
-                                  <input type="hidden" name="delete_department" value="1">
-                                  <button class="btn btn-sm delete btn-danger" title="Delete" data-obj-id="{{ department.id }}"><i class="feather icon-trash-2"></i></button>
-                                </form>
-                              </td>
+                          {% for item in items %}
+                            <tr data-item-id="{{ item.id }}" class="hoverable">
+                              <td>{{ item.name }}</td>
+                              <td>{{ item.category.name }}</td>
+                              <td>{{ item.supplier.name }}</td>
+                              <td>{{ item.item_code }}</td>
+                              <td>{{ item.brand }}</td>
+                              <td>{{ item.model }}</td>
+                              <td class="text-right">{{ item.qty if item.qty else 0 }}</td>
+                              <td class="text-right">{{ item.unit_price }}</td>
                             </tr>
                           {% endfor %}
-                          {% if not departments %}
+                          {% if not items %}
                             <tr>
-                              <td colspan="3" class="text-center">
-                                No Departments
+                              <td colspan="7" class="text-center">
+                                No Items
                               </td>
                             </tr>
                           {% endif %}
@@ -95,26 +99,13 @@
 <script type="text/javascript">
   $('.table').dataTable();
 
-  $('.delete').on('click', function (e){
+  $('.table tbody').on('click', 'tr', function (e) {
       e.preventDefault();
-      let $this = $(this)
-      let id = $this.data("objId");
-      $.confirm({
-        title: '<span class="text-danger">Delete Department</span>',
-        content: 'Are you sure you want to delete this department?',
-        type: 'red',
-        typeAnimated: true,
-        buttons: {
-            yes: {
-                btnClass: 'btn-danger',
-                action: function () {
-                    $this.closest('form').attr("action", "/departments/"+id+"/delete").submit();
-                }
-            } ,
-            no: function () {
-            }
-        }
-      });
-  });
+      let id = $(this).data('itemId');
+      if(id){
+        window.location.href = "/items/"+id
+        return false;
+      }
+   });
 </script>
 {% endblock javascripts %}

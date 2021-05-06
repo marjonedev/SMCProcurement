@@ -25,10 +25,10 @@ class Item(db.Model, UserMixin):
     brand = Column(String)
     model = Column(String)
     description = Column(String)
-    qty = Column(Integer)
+    qty = Column(Integer, default=0)
     unit_price = Column(Numeric(precision=10, scale=2), default=0.0)
-    stock_in = Column(Integer)
-    stock_out = Column(Integer)
+    stock_in = Column(Integer, default=0)
+    stock_out = Column(Integer, default=0)
 
     def __init__(self, **kwargs):
         for property, value in kwargs.items():

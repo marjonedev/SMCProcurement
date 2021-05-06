@@ -27,6 +27,7 @@ def register_blueprints(app):
                         'request',
                         'inventory',
                         'supplier',
+                        'item',
                         'category'):
         module = import_module('SMCProcurement.{}.routes'.format(module_name))
         app.register_blueprint(module.blueprint)

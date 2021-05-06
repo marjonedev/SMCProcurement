@@ -34,7 +34,7 @@
           </li>
 
 					<li class="nav-item">
-					    <a href="/" class="nav-link ">
+					    <a href="{{ url_for("item_blueprint.items") }}" class="nav-link ">
                 <span class="pcoded-micon">
                   <i class="feather icon-grid"></i>
                 </span>
@@ -60,6 +60,7 @@
               </a>
 					</li>
 
+        {% if current_user.is_admin %}
 					<li class="nav-item">
 					    <a href="{{ url_for("department_blueprint.departments") }}" class="nav-link ">
                 <span class="pcoded-micon">
@@ -68,9 +69,6 @@
                 <span class="pcoded-mtext">Departments</span>
               </a>
 					</li>
-
-
-        {% if current_user.is_admin %}
           <li class="nav-item">
               <a href="/users" class="nav-link "><span class="pcoded-micon"><i class="feather icon-users"></i></span><span class="pcoded-mtext">Users</span></a>
           </li>

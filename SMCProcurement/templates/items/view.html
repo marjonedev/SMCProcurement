@@ -1,0 +1,166 @@
+{% extends "layouts/base.html" %}
+
+{% block title %} {{ obj.name }} {% endblock %}
+
+<!-- Specific CSS goes HERE -->
+{% block stylesheets %}
+{#  <link rel="stylesheet" href="{{ url_for("static", filename="assets/css/plugins/flatpickr.min.css") }}" />#}
+  <link rel="stylesheet" href="{{ url_for("static", filename="assets/css/plugins/flatpickr.theme.material_blue.css") }}" />
+{% endblock stylesheets %}
+
+{% block content %}
+
+	<!-- [ Main Content ] start -->
+	<div class="pcoded-main-container">
+		<div class="pcoded-content">
+			<!-- [ breadcrumb ] start -->
+			<div class="page-header">
+				<div class="page-block">
+					<div class="row align-items-center">
+						<div class="col-md-12">
+							<div class="page-header-title">
+								<h5 class="m-b-10">{{ obj.name }}</h5>
+							</div>
+							<ul class="breadcrumb">
+								<li class="breadcrumb-item"><a href="/"><i class="feather icon-home"></i></a></li>
+								<li class="breadcrumb-item"><a href="/items">Items</a></li>
+                <li class="breadcrumb-item"><a href="#!">Item: <strong>{{ obj.name }}</strong></a></li>
+							</ul>
+						</div>
+					</div>
+				</div>
+			</div>
+			<!-- [ breadcrumb ] end -->
+			<!-- [ Main Content ] start -->
+			<div class="row">
+				<!-- [ sample-page ] start -->
+				<div class="col-sm-12">
+					<div class="card">
+            <div class="card-header border-bottom border-gray">
+                <div class="card-header-left">
+                  <a class="btn btn-light btn-sm" href="{{ url_for('item_blueprint.edit_item', id=obj.id) }}">Edit <i class="feather icon-edit-1"></i></a>
+              </div>
+              <div class="card-header-right">
+                <form role="form" method="POST" id="deleteForm">
+                  <input type="hidden" name="delete_item" value="1">
+                  <button id="delete_item" type="submit" class="btn btn-sm delete btn-danger">Delete <i class="feather icon-trash-2"></i></button>
+                </form>
+              </div>
+						</div>
+						<div class="card-body">
+							<div class="table-border-style pt-3">
+              {% include 'includes/flashes.html' %}
+
+                <div class="row pt-3">
+                  <div class="col-md-6">
+                    <div class="form-group row">
+                      <div class="col-sm-4"><span class="hljs-strong">Name</span></div>
+                      <div class="col-sm-8">
+                        {{ obj.name }}
+                      </div>
+                    </div>
+                    <div class="form-group row">
+                      <div class="col-sm-4"><span class="hljs-strong">Item Code</span></div>
+                      <div class="col-sm-8">
+                        {{ obj.item_code }}
+                      </div>
+                    </div>
+                    <div class="form-group row">
+                      <div class="col-sm-4"><span class="hljs-strong">Category</span></div>
+                      <div class="col-sm-8">
+                        {{ obj.category.name }}
+                      </div>
+                    </div>
+                    <div class="form-group row">
+                      <div class="col-sm-4"><span class="hljs-strong">Brand</span></div>
+                      <div class="col-sm-8">
+                        {{ obj.brand }}
+                      </div>
+                    </div>
+                    <div class="form-group row">
+                      <div class="col-sm-4"><span class="hljs-strong">Model</span></div>
+                      <div class="col-sm-8">
+                        {{ obj.model }}
+                      </div>
+                    </div>
+                    <div class="form-group row">
+                      <div class="col-sm-4"><span class="hljs-strong">Serial</span></div>
+                      <div class="col-sm-8">
+                        {{ obj.serial }}
+                      </div>
+                    </div>
+                  </div>
+
+                  <div class="col-md-6">
+                    <div class="form-group row">
+                      <div class="col-sm-4"><span class="hljs-strong">Supplier</span></div>
+                      <div class="col-sm-8">
+                        {{ obj.supplier.name }}
+                      </div>
+                    </div><div class="form-group row">
+                      <div class="col-sm-4"><span class="hljs-strong">Unit Price</span></div>
+                      <div class="col-sm-8">
+                        &#8369; {{ obj.unit_price }}
+                      </div>
+                    </div>
+                    <div class="form-group row">
+                      <div class="col-sm-4"><span class="hljs-strong">Qty on Stock</span></div>
+                      <div class="col-sm-8">
+                        {{ obj.qty if obj.qty else 0 }}
+                      </div>
+                    </div>
+
+                  </div>
+
+                  <div class="col-md-6">
+                    <div class="form-group row">
+                      <div class="col-sm-4"><span class="hljs-strong">Description</span></div>
+                      <div class="col-sm-8">
+                        {{ obj.description }}
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+						</div>
+					</div>
+				</div>
+				<!-- [ sample-page ] end -->
+			</div>
+			<!-- [ Main Content ] end -->
+		</div>
+	</div>
+	<!-- [ Main Content ] end -->
+
+{% endblock content %}
+
+<!-- Specific Page JS goes HERE  -->
+{% block javascripts %}
+  <script src="{{ url_for("static", filename="assets/js/plugins/flatpickr.min.js") }}"></script>
+  <script type="text/javascript">
+  $(function(){
+
+    $('#delete_item').on('click', function (e){
+      e.preventDefault();
+      $.confirm({
+        title: '<span class="text-danger">Delete Item</span>',
+        content: 'Are you sure you want to delete this item?',
+        type: 'red',
+        typeAnimated: true,
+        buttons: {
+            yes: {
+                btnClass: 'btn-danger',
+                action: function () {
+                    $('form#deleteForm').attr("action", "{{ url_for("item_blueprint.delete_item", id=obj.id) }}").submit()
+                }
+            } ,
+            no: function () {
+            }
+        }
+      });
+    });
+
+  });
+  </script>
+{% endblock javascripts %}
+{% include 'requests/script.html' %}
