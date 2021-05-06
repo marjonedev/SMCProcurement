@@ -1,6 +1,6 @@
 {% extends "layouts/base.html" %}
 
-{% block title %} Edit Department: {{ obj.name }}  {% endblock %}
+{% block title %} Edit Supplier: {{ obj.name }}  {% endblock %}
 
 <!-- Specific CSS goes HERE -->
 {% block stylesheets %}{% endblock stylesheets %}
@@ -16,12 +16,12 @@
 					<div class="row align-items-center">
 						<div class="col-md-12">
 							<div class="page-header-title">
-								<h5 class="m-b-10">Edit Department: {{ obj.name }}</h5>
+								<h5 class="m-b-10">Edit Supplier: {{ obj.name }}</h5>
 							</div>
 							<ul class="breadcrumb">
 								<li class="breadcrumb-item"><a href="/"><i class="feather icon-home"></i></a></li>
-								<li class="breadcrumb-item"><a href="/departments">Departments</a></li>
-								<li class="breadcrumb-item"><a href="#!">Department: <strong>{{ obj.name }}</strong></a></li>
+								<li class="breadcrumb-item"><a href="/suppliers">Suppliers</a></li>
+								<li class="breadcrumb-item"><a href="#!">{{ obj.name }}</a></li>
 							</ul>
 						</div>
 					</div>
@@ -46,23 +46,40 @@
               {% endif %}
 
                 <form role="form" method="POST" action="">
-
-                 <div class="form-group row">
+                  <div class="form-group row">
                       <label for="input" class="col-sm-3 col-form-label">Name</label>
                       <div class="col-sm-9">
                         {{ form.name(class="form-control") }}
                       </div>
                   </div>
                   <div class="form-group row">
-                      <label for="inputEmail3" class="col-sm-3 col-form-label">Description</label>
+                      <label for="inputEmail3" class="col-sm-3 col-form-label">Email</label>
                       <div class="col-sm-9">
-                        {{ form.description(class="form-control") }}
+                        {{ form.email(class="form-control") }}
+                      </div>
+                  </div>
+                  <div class="form-group row">
+                      <label for="inputEmail3" class="col-sm-3 col-form-label">Contact Person</label>
+                      <div class="col-sm-9">
+                        {{ form.contact_person(class="form-control") }}
+                      </div>
+                  </div>
+                  <div class="form-group row">
+                      <label for="inputEmail3" class="col-sm-3 col-form-label">Address</label>
+                      <div class="col-sm-9">
+                        {{ form.address(class="form-control") }}
+                      </div>
+                  </div>
+                  <div class="form-group row">
+                      <label for="inputEmail3" class="col-sm-3 col-form-label">Phone Number</label>
+                      <div class="col-sm-9">
+                        {{ form.phone(class="form-control") }}
                       </div>
                   </div>
 
                     <div class="form-group row">
                         <div class="col-sm-10">
-                            <button type="submit" name="edit_department" class="btn  btn-primary">Save</button>
+                            <button type="submit" name="edit_supplier" class="btn  btn-primary">Save</button>
                         </div>
                     </div>
                 </form>

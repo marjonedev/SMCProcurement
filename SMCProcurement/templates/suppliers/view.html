@@ -1,6 +1,6 @@
 {% extends "layouts/base.html" %}
 
-{% block title %} {{ obj.full_name }} {% endblock %}
+{% block title %} {{ obj.name }} {% endblock %}
 
 <!-- Specific CSS goes HERE -->
 {% block stylesheets %}
@@ -19,16 +19,12 @@
 					<div class="row align-items-center">
 						<div class="col-md-12">
 							<div class="page-header-title">
-								<h5 class="m-b-10">{{ obj.full_name }} <br/>
-                <span class="text-muted small">{{ obj.user_type_str }}</span>
-                </h5>
+								<h5 class="m-b-10">Supplier</h5>
 							</div>
 							<ul class="breadcrumb">
 								<li class="breadcrumb-item"><a href="/"><i class="feather icon-home"></i></a></li>
-                {% if current_user.is_admin %}
-								<li class="breadcrumb-item"><a href="/users">Users</a></li>
-                {% endif %}
-								<li class="breadcrumb-item"><a href="#!">Profile: <strong>{{ obj.username }}</strong></a></li>
+								<li class="breadcrumb-item"><a href="/suppliers">Suppliers</a></li>
+                <li class="breadcrumb-item"><a href="#!">Supplier: <strong>{{ obj.name }}</strong></a></li>
 							</ul>
 						</div>
 					</div>
@@ -40,21 +36,17 @@
 				<!-- [ sample-page ] start -->
 				<div class="col-sm-12">
 					<div class="card">
-            {% if current_user.is_admin or current_user.id == obj.id %}
             <div class="card-header border-bottom border-gray">
                 <div class="card-header-left">
-                  <a class="btn btn-light btn-sm" href="{{ url_for('user_blueprint.edit_user', id=obj.id) }}">Edit <i class="feather icon-edit-1"></i></a>
+                  <a class="btn btn-light btn-sm" href="{{ url_for('supplier_blueprint.edit_supplier', id=obj.id) }}">Edit <i class="feather icon-edit-1"></i></a>
               </div>
-              {% if current_user.is_admin %}
               <div class="card-header-right">
                 <form role="form" method="POST" id="deleteForm">
-                  <input type="hidden" name="delete_user" value="1">
-                  <button id="delete_user" type="submit" class="btn btn-sm delete btn-danger">Delete <i class="feather icon-trash-2"></i></button>
+                  <input type="hidden" name="delete_supplier" value="1">
+                  <button id="delete_supplier" type="submit" class="btn btn-sm delete btn-danger">Delete <i class="feather icon-trash-2"></i></button>
                 </form>
               </div>
-              {% endif %}
 						</div>
-            {% endif %}
 						<div class="card-body">
 							<div class="table-border-style pt-3">
               {% include 'includes/flashes.html' %}
@@ -62,19 +54,13 @@
                 <div class="row pt-3">
                   <div class="col-md-6">
                     <div class="form-group row">
-                      <div class="col-sm-4"><span class="hljs-strong">First Name</span></div>
+                      <div class="col-sm-4"><span class="hljs-strong">Name</span></div>
                       <div class="col-sm-8">
-                        {{ obj.first_name }}
+                        {{ obj.name }}
                       </div>
                     </div>
                     <div class="form-group row">
-                      <div class="col-sm-4"><span class="hljs-strong">Last Name</span></div>
-                      <div class="col-sm-8">
-                        {{ obj.last_name }}
-                      </div>
-                    </div>
-                    <div class="form-group row">
-                      <div class="col-sm-4"><span class="hljs-strong">Email Address:</span></div>
+                      <div class="col-sm-4"><span class="hljs-strong">Email</span></div>
                       <div class="col-sm-8">
                         {{ obj.email }}
                       </div>
@@ -83,21 +69,24 @@
 
                   <div class="col-md-6">
                     <div class="form-group row">
-                      <div class="col-sm-4"><span class="hljs-strong">Department</span></div>
+                      <div class="col-sm-4"><span class="hljs-strong">Contact Person</span></div>
                       <div class="col-sm-8">
-                        {{ obj.department.name }}
+                        {{ obj.contact_person }}
                       </div>
                     </div>
                     <div class="form-group row">
-                      <div class="col-sm-4"><span class="hljs-strong">Position</span></div>
+                      <div class="col-sm-4"><span class="hljs-strong">Phone</span></div>
                       <div class="col-sm-8">
-                        {{ obj.position }}
+                        {{ obj.phone }}
                       </div>
                     </div>
+                  </div>
+
+                  <div class="col-md-6">
                     <div class="form-group row">
-                      <div class="col-sm-4"><span class="hljs-strong">Request Type</span></div>
+                      <div class="col-sm-4"><span class="hljs-strong">Address</span></div>
                       <div class="col-sm-8">
-                        {{ obj.request_type.name|capitalize }} Request
+                        {{ obj.address }}
                       </div>
                     </div>
                   </div>
@@ -121,19 +110,18 @@
   <script type="text/javascript">
   $(function(){
 
-    {% if current_user.is_admin %}
-    $('#delete_user').on('click', function (e){
+    $('#delete_supplier').on('click', function (e){
       e.preventDefault();
       $.confirm({
-        title: '<span class="text-danger">Delete User</span>',
-        content: 'Are you sure you want to delete this user?',
+        title: '<span class="text-danger">Delete Supplier</span>',
+        content: 'Are you sure you want to delete this supplier?',
         type: 'red',
         typeAnimated: true,
         buttons: {
             yes: {
                 btnClass: 'btn-danger',
                 action: function () {
-                    $('form#deleteForm').attr("action", "{{ url_for("user_blueprint.delete_user", id=obj.id) }}").submit()
+                    $('form#deleteForm').attr("action", "{{ url_for("supplier_blueprint.delete_supplier", id=obj.id) }}").submit()
                 }
             } ,
             no: function () {
@@ -141,7 +129,6 @@
         }
       });
     });
-    {% endif %}
 
   });
   </script>

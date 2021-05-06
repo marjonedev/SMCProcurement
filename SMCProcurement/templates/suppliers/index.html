@@ -1,0 +1,103 @@
+{% extends "layouts/base.html" %}
+
+{% block title %} Suppliers {% endblock %}
+
+<!-- Specific CSS goes HERE -->
+{% block stylesheets %}
+  <link rel="stylesheet" type="text/css" href="/static/assets/lib/DataTables/datatables.min.css"/>
+{% endblock stylesheets %}
+
+{% block content %}
+
+	<!-- [ Main Content ] start -->
+	<div class="pcoded-main-container">
+		<div class="pcoded-content">
+			<!-- [ breadcrumb ] start -->
+			<div class="page-header">
+				<div class="page-block">
+					<div class="row align-items-center">
+						<div class="col-md-12">
+							<div class="page-header-title">
+								<h5 class="m-b-10">Suppliers</h5>
+							</div>
+							<ul class="breadcrumb">
+								<li class="breadcrumb-item"><a href="../index.html"><i class="feather icon-home"></i></a></li>
+								<li class="breadcrumb-item"><a href="#!">Suppliers</a></li>
+							</ul>
+						</div>
+					</div>
+				</div>
+			</div>
+			<!-- [ breadcrumb ] end -->
+			<!-- [ Main Content ] start -->
+			<div class="row">
+				<!-- [ sample-page ] start -->
+				<div class="col-sm-12">
+					<div class="card">
+
+						<div class="card-header">
+              <div class="card-header-right">
+								<a href="{{ url_for("supplier_blueprint.create_supplier") }}" type="button" class="btn btn-primary text-white"><i class="feather icon-plus"></i> Create</a>
+							</div>
+						</div>
+						<div class="card-body">
+							<div class="card-body table-border-style">
+              {% include 'includes/flashes.html' %}
+                <div class="table-responsive">
+                    <table class="table hover table-hover table-sm">
+                        <thead>
+                            <tr>
+                                <th>Name</th>
+                                <th>Email</th>
+                                <th>Contact Person</th>
+                                <th>Phone</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                          {% for supplier in suppliers %}
+                            <tr data-supplier-id="{{ supplier.id }}" class="hoverable">
+                              <td>{{ supplier.name }}</td>
+                              <td>{{ supplier.email }}</td>
+                              <td>{{ supplier.contact_person }}</td>
+                              <td>{{ supplier.phone }}</td>
+                            </tr>
+                          {% endfor %}
+                          {% if not suppliers %}
+                            <tr>
+                              <td colspan="2">
+                                No Suppliers
+                              </td>
+                            </tr>
+                          {% endif %}
+                        </tbody>
+                    </table>
+                </div>
+              </div>
+						</div>
+					</div>
+				</div>
+				<!-- [ sample-page ] end -->
+			</div>
+			<!-- [ Main Content ] end -->
+		</div>
+	</div>
+	<!-- [ Main Content ] end -->
+
+{% endblock content %}
+
+<!-- Specific Page JS goes HERE  -->
+{% block javascripts %}
+<script type="text/javascript" src="/static/assets/lib/DataTables/datatables.min.js"></script>
+<script type="text/javascript">
+  $('.table').dataTable();
+
+  $('.table tbody').on('click', 'tr', function (e) {
+      e.preventDefault();
+      let id = $(this).data('supplierId');
+      if(id){
+        window.location.href = "/suppliers/"+id
+        return false;
+      }
+   });
+</script>
+{% endblock javascripts %}
