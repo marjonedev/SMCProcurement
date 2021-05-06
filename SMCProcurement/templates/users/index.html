@@ -90,9 +90,11 @@
 
   $('.table tbody').on('click', 'tr', function (e) {
       e.preventDefault();
-      id = $(this).data('userId');
-      window.location.href = "/users/"+id
-      return false;
+      let id = $(this).data('userId');
+      if(id){
+        window.location.href = "/users/"+id
+        return false;
+      }
    });
 </script>
 {% endblock javascripts %}
