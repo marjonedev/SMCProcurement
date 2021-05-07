@@ -5,6 +5,7 @@
 <!-- Specific CSS goes HERE -->
 {% block stylesheets %}
 {#  <link rel="stylesheet" href="{{ url_for("static", filename="assets/css/plugins/flatpickr.min.css") }}" />#}
+  <link rel="stylesheet" type="text/css" href="/static/assets/lib/DataTables/datatables.min.css"/>
   <link rel="stylesheet" href="{{ url_for("static", filename="assets/css/plugins/flatpickr.theme.material_blue.css") }}" />
   <link rel="stylesheet" href="{{ url_for("static", filename="assets/lib/Selectize/css/selectize.bootstrap4.css") }}" />
 {% endblock stylesheets %}
@@ -80,44 +81,19 @@
                             <th>Supplier</th>
                             <th class="text-right">Qty</th>
                             <th class="text-right">Price</th>
-                          <th></th>
+                            <th></th>
                           </thead>
                           <tbody>
-
-                          {#{% set i = namespace(value=0)  %}
-                          {% for line in form.request_lines %}
-                              <tr id="lines_{{ i.value }}">
-                                <td>
-                                  {{ line.form.name(class="form-control form-control-sm", required=True) }}
-                                </td>
-                                <td>
-                                  {{ line.form.description(class="form-control form-control-sm") }}
-                                </td>
-                                <td class="text-right">
-                                  {{ line.form.qty(class="form-control form-control-sm qty text-right") }}
-                                </td>
-                                <td class="text-right">
-                                  {{ line.form.unit_price(class="form-control form-control-sm price text-right") }}
-                                </td>
-                                <td class="text-right"><input type="text" class="form-control-sm form-control-plaintext text-right total" readonly value="0.00"></td>
-                                <td>
-                                  {{ line.form.hidden_tag() }}
-                                  <button type="button" role="button" class="btn delete btn-danger feather icon-delete"></button>
-                                </td>
-                              </tr>
-                            {% set i.value = i.value + 1 %}
-                          {% endfor %}#}
                           </tbody>
-                        </table><button type="button" id="addItem" class="btn btn-dark btn-sm btn-add-entry">Add Item</button>
+                        </table>
+                        <button type="button" id="addItem" class="btn btn-dark btn-sm btn-add-entry">Add Item</button>
                     </div>
                   </div>
-
-                    <div class="form-group row mt-4 border-top border-gray pt-2">
-                        <div class="col-sm-10">
-                           {{form.submit(class="btn btn-primary btn-submit", value="Save")}}
-{#                            <button type="submit" name="create_request" class="btn  btn-primary">Create</button>#}
-                        </div>
+                  <div class="form-group row mt-4 border-top border-gray pt-2">
+                    <div class="col-sm-10">
+                       {{form.submit(class="btn btn-primary btn-submit", value="Save")}}
                     </div>
+                  </div>
                 </form>
               </div>
 						</div>
@@ -130,7 +106,7 @@
 	</div>
 	<!-- [ Main Content ] end -->
 
-  <div class="modal fade" id="addItemModal" tabindex="-1" aria-labelledby="addItemModalLabel" aria-hidden="true">
+  <div class="modal fade" id="addItemModal" data-backdrop="static" tabindex="-1" aria-labelledby="addItemModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-lg">
       <div class="modal-content">
         <div class="modal-header p-2 pl-3 pr-3">
@@ -142,7 +118,7 @@
         <div class="modal-body">
           <ul class="nav nav-pills nav-justified mb-3" id="pills-tab" role="tablist">
             <li class="nav-item" role="presentation">
-              <a class="nav-link new-item-tab active" id="existingItemTab" data-toggle="pill" href="#existingItemContent" role="tab" aria-selected="true" data-existing="1">Existing Item</a>
+              <a class="nav-link new-item-tab active" id="existingItemTab" data-toggle="pill" href="#existingItemContent" role="tab" aria-selected="true" data-existing="1">Select Existing Item</a>
             </li>
             <li class="nav-item" role="presentation">
               <a class="nav-link new-item-tab" id="newItemTab" data-toggle="pill" href="#newItemContent" role="tab" aria-selected="false" data-existing="0">New Item</a>
@@ -150,21 +126,64 @@
           </ul>
           <div class="tab-content" id="pills-tabContent">
             <div class="tab-pane fade show active" id="existingItemContent" role="tabpanel" aria-labelledby="pills-existing-item-tab">
-              <form action="">
-                <select name="item_id" id="searchExistingItem" class="form-control" placeholder="Select Existing Item"></select>
-
-                <input type="hidden" name="existing" value="1" />
-
-                <div class="row border-top border-gray pt-3 mt-3">
-                  <button type="submit" class="btn btn-primary mr-2">Add Item</button>
-                  <button type="button" class="btn btn-light" data-dismiss="modal">Cancel</button>
+              {#<form id="searchExistingForm" action="">
+                <div class="form-row align-items-center bg-light border rounded shadow-none p-2">
+                  <div class="col-3">
+                    <div class="input-group">
+                      <div class="input-group-prepend">
+                        <div class="input-group-text p-2"><small>Search By</small></div>
+                      </div>
+                      <select id="filter" class="form-control">
+                        <option value="name">Name</option>
+                        <option value="category">Category</option>
+                        <option value="code">Code</option>
+                        <option value="brand">Brand</option>
+                        <option value="model">Model</option>
+                        <option value="serial">Serial</option>
+                        <option value="description">Description</option>
+                        <option value="supplier">Supplier</option>
+                      </select>
+                    </div>
+                  </div>
+                  <div class="col-9">
+                    <div class="input-group">
+                      <input type="text" name="search_query" id="searchQuery" class="form-control w-auto" />
+                      <div class="input-group-append">
+                        <div class="input-group-text"><i class="feather icon-search"></i></div>
+                      </div>
+                    </div>
+                  </div>
                 </div>
-              </form>
+              </form>#}
+              <div class="table-responsive mt-4">
+                <table class="table table-small" id="searchItemTable">
+                  <thead>
+                    <th width="">Name</th>
+                    <th>Code</th>
+                    <th>Brand</th>
+                    <th>Model</th>
+                    <th>Serial</th>
+                    <th>Description</th>
+                    <th>Category</th>
+                    <th>Supplier</th>
+                    <th class="text-right">Qty<br />On Stock</th>
+                    <th class="text-right">Price</th>
+                    <th></th>
+                  </thead>
+                  <tbody>
+                  </tbody>
+                </table>
+              </div>
             </div>
+
             <div class="tab-pane fade" id="newItemContent" role="tabpanel" aria-labelledby="pills-new-item-tab">
 
             </div>
+
           </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
         </div>
       </div>
     </div>
@@ -176,22 +195,10 @@
 {% block javascripts %}
   <script src="{{ url_for("static", filename="assets/js/plugins/flatpickr.min.js") }}"></script>
   <script src="{{ url_for("static", filename="assets/lib/Selectize/js/standalone/selectize.min.js") }}"></script>
+  <script type="text/javascript" src="/static/assets/lib/DataTables/datatables.min.js"></script>
   <script type="text/javascript">
 
   $(function(){
-
-    function refreshAddItemModal(modal){
-      alert('refreshed');
-      //is_existing=0
-    }
-
-    $(".flatpickr").flatpickr({
-        minDate: "today",
-        altInput: true,
-        defaultDate: "today",
-        altFormat: "F j, Y",
-        dateFormat: "Y-m-d"
-    });
 
     $('button#addItem').on('click', function (e){
         e.preventDefault();
@@ -199,14 +206,44 @@
     });
 
     $('#addItemModal').on('show.bs.modal', function (e) {
-        refreshAddItemModal(this);
+        $('#searchItemTable').DataTable({
+            "ajax": {
+                // "url": "static/objects2.txt", // This works for a static file
+                "url": "/items/json", // This now also works
+                "dataType": "json",
+                "method": "POST",
+                "dataSrc": "data",
+                "contentType":"application/json"
+            },
+            "columns": [
+                {"data": "name"},
+                {"data": "item_code"},
+                {"data": "brand", "visible": false, "searchable": true},
+                {"data": "model", "visible": false, "searchable": true},
+                {"data": "serial", "visible": false, "searchable": true},
+                {"data": "description", "visible": false, "searchable": true},
+                {"data": "category"},
+                {"data": "supplier"},
+                {"data": "qty"},
+                {"data": "unit_price"},
+                {"data": "id", "render": function (data, type, row, meta){
+                    console.log(data, type, row, meta)
+                        return  "<button class='btn btn-dark btn-sm'>Select</button>";
+                  } }
+            ]
+        });
+    });
+
+    $('#addItemModal').on('hidden.bs.modal', function (e) {
+      $('#searchItemTable').DataTable().clear().destroy();
     });
 
     $('a.new-item-tab[data-toggle="pill"]').on('shown.bs.tab', function (e) {
         $('input[name=is_existing]').val($(e.target).data('existing'))
-    })
+    });
 
-      $('#searchExistingItem').selectize()
+
+    $("#searchExistingForm").on("submit", function(e){ e.preventDefault(); return false; });
 
   });
 
