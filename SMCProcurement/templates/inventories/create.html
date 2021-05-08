@@ -7,7 +7,6 @@
 {#  <link rel="stylesheet" href="{{ url_for("static", filename="assets/css/plugins/flatpickr.min.css") }}" />#}
   <link rel="stylesheet" type="text/css" href="/static/assets/lib/DataTables/datatables.min.css"/>
   <link rel="stylesheet" href="{{ url_for("static", filename="assets/css/plugins/flatpickr.theme.material_blue.css") }}" />
-  <link rel="stylesheet" href="{{ url_for("static", filename="assets/lib/Selectize/css/selectize.bootstrap4.css") }}" />
 {% endblock stylesheets %}
 
 {% block content %}
@@ -139,13 +138,75 @@
             </div>
 
             <div class="tab-pane fade" id="newItemContent" role="tabpanel" aria-labelledby="pills-new-item-tab">
+              <form action="POST" id="createNewItemForm" class="pt-4">
+                  <div class="alert alert-danger new-error" style="display: none" role="alert"></div>
+                  <div class="form-group row">
+                      <label for="name" class="col-sm-3 col-form-label">Name</label>
+                      <div class="col-sm-9">
+                        <input class="form-control" id="name" name="name" required="" type="text" value="">
+                      </div>
+                  </div>
+                  <div class="form-group row">
+                      <label for="category_id" class="col-sm-3 col-form-label">Category</label>
+                      <div class="col-sm-9">
+                        <select class="form-control" id="category_id" name="category_id" required="">
+                          <option value="2">Reading Materials</option>
+                          <option value="4">Test Category</option>
+                          <option value="1">Uncategorized</option>
+                        </select>
+                      </div>
+                  </div>
+                  <div class="form-group row">
+                      <label for="supplier_id" class="col-sm-3 col-form-label">Supplier</label>
+                      <div class="col-sm-9">
+                        <select class="form-control" id="supplier_id" name="supplier_id" required="">
+                          <option value="1">Liang Hong</option>
+                        </select>
+                      </div>
+                  </div>
+                  <div class="form-group row">
+                      <label for="item_code" class="col-sm-3 col-form-label">Item Code</label>
+                      <div class="col-sm-9">
+                        <input class="form-control" id="item_code" name="item_code" type="text" value="">
+                      </div>
+                  </div>
+                  <div class="form-group row">
+                      <label for="brand" class="col-sm-3 col-form-label">Brand</label>
+                      <div class="col-sm-9">
+                        <input class="form-control" id="brand" name="brand" type="text" value="">
+                      </div>
+                  </div>
+                  <div class="form-group row">
+                      <label for="model" class="col-sm-3 col-form-label">Model</label>
+                      <div class="col-sm-9">
+                        <input class="form-control" id="model" name="model" type="text" value="">
+                      </div>
+                  </div>
+                  <div class="form-group row">
+                      <label for="description" class="col-sm-3 col-form-label">Description</label>
+                      <div class="col-sm-9">
+                        <input class="form-control" id="description" name="description" type="text" value="">
+                      </div>
+                  </div>
+                  <div class="form-group row">
+                      <label for="unit_price" class="col-sm-3 col-form-label">Unit Price</label>
+                      <div class="col-sm-9">
+                        <input class="form-control" id="unit_price" name="unit_price" required="" step="any" type="number" value="0.00">
+                      </div>
+                  </div>
+                  <div class="form-group row">
+                      <div class="col-sm-10">
+                          <button type="submit" name="create_item" class="btn  btn-primary">Create and Add to Inventory</button>
+                      </div>
+                  </div>
+              </form>
 
             </div>
 
           </div>
         </div>
         <div class="modal-footer">
-          <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+          <button type="button" class="btn btn-light" data-dismiss="modal">Cancel</button>
         </div>
       </div>
     </div>
@@ -156,8 +217,8 @@
 <!-- Specific Page JS goes HERE  -->
 {% block javascripts %}
   <script src="{{ url_for("static", filename="assets/js/plugins/flatpickr.min.js") }}"></script>
-  <script src="{{ url_for("static", filename="assets/lib/Selectize/js/standalone/selectize.min.js") }}"></script>
   <script type="text/javascript" src="/static/assets/lib/DataTables/datatables.min.js"></script>
+  <script type="text/javascript" src="/static/assets/js/inventory.js"></script>
   <script type="text/javascript">
 
   $(function(){
@@ -168,96 +229,6 @@
       defaultDate: "today",
       altFormat: "F j, Y",
       dateFormat: "Y-m-d"
-    });
-
-    $('button#addItem').on('click', function (e){
-        e.preventDefault();
-        $('#addItemModal').modal("show")
-    });
-
-    $('#addItemModal').on('show.bs.modal', function (e) {
-        $('#searchItemTable').DataTable({
-            "ajax": {
-                "url": "/api/items",
-                "dataType": "json",
-                "method": "POST",
-                "dataSrc": "data",
-                "contentType":"application/json"
-            },
-            "columns": [
-                {"data": "name"},
-                {"data": "item_code", render: function (data){
-                    return data == "None" ? "" : data;
-                }},
-                {"data": "brand", "visible": false, "searchable": true},
-                {"data": "model", "visible": false, "searchable": true},
-                {"data": "serial", "visible": false, "searchable": true},
-                {"data": "description", "visible": false, "searchable": true},
-                {"data": "category"},
-                {"data": "supplier"},
-                {"data": "qty", className: "text-right", render: function (data){
-                    return data == "None" ? 0 : data;
-                }},
-                {"data": "unit_price", className: "text-right", "render": function (data, type, row, meta){
-                        return  "&#8369; "+ data;
-                }},
-                {"data": "id", "render": function (data, type, row, meta){
-                    str = "<input class='item-data' type='hidden' value='"+JSON.stringify(row)+"'>";
-                    str += "<button class='btn btn-dark btn-sm select-item' data-id='"+data+"'>Select</button>";
-                    return str
-                }}
-            ]
-        });
-    });
-
-    $('#addItemModal').on('hidden.bs.modal', function (e) {
-      $('#searchItemTable').DataTable().clear().destroy();
-    });
-
-    $('a.new-item-tab[data-toggle="pill"]').on('shown.bs.tab', function (e) {
-        $('input[name=is_existing]').val($(e.target).data('existing'))
-    });
-
-    $(document).on("click", ".select-item", function (e){
-        e.preventDefault();
-        let id = $(this).data("id");
-        let data = $(this).closest("tr").find(".item-data").val();
-        data = JSON.parse(data);
-        console.log(data)
-        let item_code = data.item_code == "None" ? "" : data.item_code;
-        let brand = data.brand == "None" ? "" : data.brand;
-        let model = data.model == "None" ? "" : data.model;
-        let str = '<tr id="lines_'+id+'">' +
-            '<td>'+data.name+'</td>' +
-            '<td>'+item_code+'</td>' +
-            '<td>'+brand+'</td>' +
-            '<td>'+model+'</td>' +
-            '<td><input class="form-control form-control-sm flatpickr" id="inventory_items-'+id+'-purchased_date" name="inventory_items-'+id+'-purchased_date" type="text" value=""></td>' +
-            '<td class="text-right">&#8369; '+data.unit_price+'</td>' +
-            '<td><input class="form-control form-control-sm" id="inventory_items-'+id+'-unit_price" name="inventory_items-'+id+'-qty" type="number" value="" required></td>' +
-            '<td>' +
-            '<input id="inventory_items-'+id+'-id" name="inventory_items-'+id+'-item_id" type="hidden" value="'+id+'">' +
-            '<button type="button" role="button" class="btn delete btn-danger feather icon-delete"></button>' +
-            '</td>' +
-            '</tr>';
-
-        $("#inventoryItems").find("tbody").append(str);
-        $('#inventory_items-'+id+'-purchased_date').flatpickr({
-            minDate: "today",
-            altInput: true,
-            defaultDate: "today",
-            altFormat: "F j, Y",
-            dateFormat: "Y-m-d"
-        });
-        $('#addItemModal').modal("hide")
-
-    });
-
-    $("#searchExistingForm").on("submit", function(e){ e.preventDefault(); return false; });
-
-    $(document).on('click', 'button.delete', function (e){
-        e.preventDefault();
-        $(this).closest("tr").remove();
     });
 
   });
