@@ -57,6 +57,13 @@ def create_inventory():
         form = InventoryForm()
         return render_template('inventories/create.html', form=form)
 
+@blueprint.route('/inventories/<id>', methods=["GET"])
+@login_required
+def view_inventory(id):
+    inventory = db.session.query(Inventory).get(id)
+    return render_template('inventories/view.html', obj=inventory)
+
+
 
 @blueprint.route('/inventories/reports', methods=["GET"])
 @login_required

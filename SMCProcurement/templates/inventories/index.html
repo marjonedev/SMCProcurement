@@ -52,7 +52,8 @@
                             <tr>
                                 <th>Reference No.</th>
                                 <th>Request No.</th>
-                                <th>Date</th>
+                                <th>Date & Time</th>
+                                <th>Total Items</th>
                                 <th>Total Cost</th>
                             </tr>
                         </thead>
@@ -61,8 +62,9 @@
                             <tr data-line-id="{{ inventory.id }}" class="hoverable">
                               <td>{{ inventory.number }}</td>
                               <td>{{ inventory.request.number }}</td>
-                              <td>{{ inventory.date }}</td>
+                              <td>{{ inventory.date_time | datetimeiso }}</td>
                               <td>{{ inventory.total_cost }}</td>
+                              <td>{{ inventory.total_items }}</td>
                             </tr>
                           {% endfor %}
                         </tbody>
@@ -90,7 +92,9 @@ $(function (){
     var table =  $('.table').DataTable({
         "columnDefs": [{
                 "render": function ( data, type, row ) {
-                    return DateTime.fromISO(data).setLocale("en").toLocaleString(DateTime.DATE_FULL);
+                    console.log(data)
+
+                    return DateTime.fromISO(data).setLocale("en").toLocaleString(DateTime.DATETIME_MED);
                 },
                 "targets": [2]
             },]

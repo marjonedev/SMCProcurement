@@ -21,7 +21,7 @@ class Inventory(db.Model, UserMixin):
     request = relationship('Request', backref="inventories", foreign_keys=[request_id])
     user_id = Column(Integer, ForeignKey('User.id'))
     user = relationship("User", backref="inventories", foreign_keys=[user_id])
-    date = Column(Date)
+    date_time = Column(DateTime, nullable=False, default=datetime.utcnow)
     inventory_items = relationship("InventoryItem", cascade="all, delete-orphan", backref="inventory")
     sy_start = Column(Integer)
     sy_end = Column(Integer)
@@ -40,7 +40,6 @@ class Inventory(db.Model, UserMixin):
         sy = get_sy()
         self.sy_start = sy["start"]
         self.sy_end = sy["end"]
-        self.date = date.today()
         self.user_id = current_user.id
 
     def __repr__(self):
@@ -52,6 +51,21 @@ class Inventory(db.Model, UserMixin):
                 if getattr(self, key) != value:
                     setattr(self, key, value)
 
+    @property
+    def total_cost(self):
+        sum = 0
+        for item in self.inventory_items:
+            sum += item.qty * item.item.unit_price
+
+        return sum
+
+    @property
+    def total_items(self):
+        sum = 0
+        for item in self.inventory_items:
+            sum += item.qty
+
+        return sum
 
 class InventoryItem(db.Model, UserMixin):
     __tablename__ = 'InventoryItem'
@@ -60,6 +74,7 @@ class InventoryItem(db.Model, UserMixin):
     inventory_id = Column(Integer, ForeignKey('Inventory.id'), nullable=False)
     request_item_id = Column(Integer, ForeignKey('RequestLine.id'), nullable=True)
     item_id = Column(Integer, ForeignKey("Item.id"))
+    item = relationship("Item", backref="inventory_items", foreign_keys=[item_id])
     qty = Column(Integer, default=1)
     purchased_date = Column(Date)
 
@@ -74,7 +89,9 @@ class InventoryItem(db.Model, UserMixin):
         item.qty = item.qty + self.qty if item.qty else self.qty
         item.stock_in = item.qty + self.qty if item.qty else self.qty
 
-
+    @property
+    def subtotal(self):
+        return self.qty * self.item.unit_price
 
 def generate_number_listener_inventory(mapper, connection, target):
     current_date = date.today()

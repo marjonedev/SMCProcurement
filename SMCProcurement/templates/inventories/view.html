@@ -1,0 +1,137 @@
+{% extends "layouts/base.html" %}
+
+{% block title %} Inventory: {{ obj.number }} {% endblock %}
+
+<!-- Specific CSS goes HERE -->
+{% block stylesheets %}{% endblock stylesheets %}
+
+{% block content %}
+
+	<!-- [ Main Content ] start -->
+	<div class="pcoded-main-container">
+		<div class="pcoded-content">
+			<!-- [ breadcrumb ] start -->
+			<div class="page-header">
+				<div class="page-block">
+					<div class="row align-items-center">
+						<div class="col-md-12">
+							<div class="page-header-title">
+								<h5 class="m-b-10">{{ obj.number }}</h5>
+							</div>
+							<ul class="breadcrumb">
+								<li class="breadcrumb-item"><a href="/"><i class="feather icon-home"></i></a></li>
+								<li class="breadcrumb-item"><a href="/inventories">Inventories</a></li>
+								<li class="breadcrumb-item"><a href="#!">Inventory: <strong>{{ obj.number }}</strong></a></li>
+							</ul>
+						</div>
+					</div>
+				</div>
+			</div>
+			<!-- [ breadcrumb ] end -->
+			<!-- [ Main Content ] start -->
+			<div class="row">
+				<!-- [ sample-page ] start -->
+				<div class="col-sm-12">
+					<div class="card">
+            {#<div class="card-header">
+              <div class="card-header-right">
+								<a href="/inventories/create" type="button" class="btn btn-primary"><i class="feather icon-plus"></i> Create</a>
+							</div>
+						</div>#}
+						<div class="card-body">
+							<div class="table-border-style pt-3">
+              {% include 'includes/flashes.html' %}
+
+                <div class="row pt-3">
+                  <div class="col-md-6">
+                    <div class="form-group row">
+                      <div class="col-sm-4"><span class="hljs-strong">Reference No.:</span></div>
+                      <div class="col-sm-8">
+                        {{ obj.number }}
+                      </div>
+                    </div>
+                    <div class="form-group row">
+                      <div class="col-sm-4"><span class="hljs-strong">Issued By:</span></div>
+                      <div class="col-sm-8">
+                        {{ obj.user.full_name }}
+                      </div>
+                    </div>
+                  </div>
+
+                  <div class="col-md-6">
+                    <div class="form-group row">
+                      <div class="col-sm-4"><span class="hljs-strong">SY:</span></div>
+                      <div class="col-sm-8">
+                        {{  obj.sy_start }} - {{ obj.sy_end }}
+                      </div>
+                    </div>
+                    <div class="form-group row">
+                      <div class="col-sm-4"><span class="hljs-strong">Date & Time:</span></div>
+                      <div class="col-sm-8">
+                        {{ obj.date_time | datetimepretty }}
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="row pt-3">
+                  <div class="col-md-12">
+                    <div class="table-responsive">
+                      <table class="table hover table-hover table-sm">
+                        <thead>
+                            <tr>
+                                <th>Name</th>
+                                <th>Code</th>
+                                <th>Brand</th>
+                                <th>Model</th>
+                                <th>Purchased Date</th>
+                                <th width="100" class="text-right">Qty</th>
+                                <th width="150" class="text-right">Price</th>
+                                <th width="150" class="text-right">Subtotal</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                          {% for item in obj.inventory_items %}
+                            <tr data-line-id="{{ item.id }}">
+                              <td>{{ item.item.name }}</td>
+                              <td>{{ item.item.code }}</td>
+                              <td>{{ item.item.brand }}</td>
+                              <td>{{ item.item.model }}</td>
+                              <td>{{ item.purchased_date | datepretty }}</td>
+                              <td class="text-right">{{ item.qty }}</td>
+                              <td class="text-right">&#8369; {{ item.item.unit_price }}</td>
+                              <td class="text-right">&#8369; {{ item.subtotal }}</td>
+                            </tr>
+                          {% endfor %}
+                        </tbody>
+                      </table>
+                    </div>
+                  </div>
+                </div>
+                <div class="row">
+                  <div class="col-md-9"></div>
+                    <div class="col-md-3">
+                    <div class="form-group row">
+                      <div class="col-sm-5 text-right border-top border-gray pt-1"><h5>Total</h5></div>
+                      <div class="col-sm-6 text-right border-top border-gray pt-1">
+                        <span style="font-size: 16px;">&#8369; {{ obj.total_cost }}</span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+              </div>
+						</div>
+					</div>
+				</div>
+				<!-- [ sample-page ] end -->
+			</div>
+			<!-- [ Main Content ] end -->
+		</div>
+	</div>
+	<!-- [ Main Content ] end -->
+
+{% endblock content %}
+
+<!-- Specific Page JS goes HERE  -->
+{% block javascripts %}{% endblock javascripts %}

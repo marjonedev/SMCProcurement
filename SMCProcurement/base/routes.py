@@ -2,6 +2,7 @@
 """
 Copyright (c) 2019 - present AppSeed.us
 """
+from datetime import datetime
 
 from flask import jsonify, render_template, redirect, request, url_for
 from flask_login import (
@@ -19,6 +20,9 @@ from SMCProcurement.enum.user_type import UserTypeEnum
 from SMCProcurement.models.user import User
 
 from SMCProcurement.base.util import verify_pass
+import pytz, tzlocal
+from pytz import timezone
+
 
 @blueprint.route('/')
 def route_default():
@@ -150,4 +154,31 @@ def inject_custom_functions():
         return u"{}%".format((min / max) * 100)
 
     return dict(status_progress_label=status_progress_label,get_percentage=get_percentage)
+
+
+@blueprint.app_template_filter()
+def datetimeiso(value, format="%Y-%m-%d %H:%M:%S"):
+    tz = pytz.timezone('Asia/Hong_Kong')
+    utc = pytz.timezone('UTC')
+    value = utc.localize(value, is_dst=None).astimezone(pytz.utc)
+    local_dt = value.astimezone(tz)
+    return local_dt.isoformat()
+
+@blueprint.app_template_filter()
+def datetimepretty(value, format="%B %d, %Y, %I:%M %p"):
+    tz = pytz.timezone('Asia/Hong_Kong')
+    utc = pytz.timezone('UTC')
+    value = utc.localize(value, is_dst=None).astimezone(pytz.utc)
+    local_dt = value.astimezone(tz)
+    return local_dt.strftime(format)
+
+@blueprint.app_template_filter()
+def datepretty(value, format="%B %d, %Y"):
+    tz = pytz.timezone('Asia/Hong_Kong')
+    utc = pytz.timezone('UTC')
+    value = datetime.combine(value, datetime.min.time())
+    value = utc.localize(value, is_dst=None).astimezone(pytz.utc)
+    local_dt = value.astimezone(tz)
+    return local_dt.strftime(format)
+
 
