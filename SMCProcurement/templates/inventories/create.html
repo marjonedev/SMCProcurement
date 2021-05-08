@@ -42,6 +42,9 @@
 						{#<div class="card-header">
 						</div>#}
 						<div class="card-body">
+
+              {% include 'includes/flashes.html' %}
+
 							<div class="table-border-style pt-3">
 
               {% if msg %}
@@ -52,38 +55,26 @@
 
                 <form role="form" method="post" action="">
                   {{ form.hidden_tag() }}
-                  <div class="row">
-                    <div class="col-md-6">
-                      <div class="form-group row">
-                          <label for="inputEmail3" class="col-sm-3 col-form-label">Request</label>
-                          <div class="col-sm-9">
-                            {{ form.request_id(class="form-control") }}
-                          </div>
-                      </div>
-                    </div>
-
-                    <div class="col-md-6">
-
-                    </div>
-                  </div>
-
-                  <h5 class="mt-4">Inventory Items</h5>
-                  <hr />
 
                   <div class="table-border-style">
                     <div class="table-responsive pb-1">
                         <table class="table table-small" id="inventoryItems">
                           <thead>
-                            <th width="">Item</th>
+                            <th width="">Name</th>
                             <th>Code</th>
-                            <th>Description</th>
-                            <th width="">Category</th>
-                            <th>Supplier</th>
-                            <th class="text-right">Qty</th>
+                            <th>Brand</th>
+                            <th>Model</th>
+                            <th width="100" class="text-right">Purchased Date</th>
                             <th class="text-right">Price</th>
+                            <th width="100" class="text-right">Qty</th>
                             <th></th>
                           </thead>
                           <tbody>
+                          {% for line in form.inventory_items %}
+                            <tr>
+
+                            </tr>
+                          {% endfor %}
                           </tbody>
                         </table>
                         <button type="button" id="addItem" class="btn btn-dark btn-sm btn-add-entry">Add Item</button>
@@ -126,37 +117,8 @@
           </ul>
           <div class="tab-content" id="pills-tabContent">
             <div class="tab-pane fade show active" id="existingItemContent" role="tabpanel" aria-labelledby="pills-existing-item-tab">
-              {#<form id="searchExistingForm" action="">
-                <div class="form-row align-items-center bg-light border rounded shadow-none p-2">
-                  <div class="col-3">
-                    <div class="input-group">
-                      <div class="input-group-prepend">
-                        <div class="input-group-text p-2"><small>Search By</small></div>
-                      </div>
-                      <select id="filter" class="form-control">
-                        <option value="name">Name</option>
-                        <option value="category">Category</option>
-                        <option value="code">Code</option>
-                        <option value="brand">Brand</option>
-                        <option value="model">Model</option>
-                        <option value="serial">Serial</option>
-                        <option value="description">Description</option>
-                        <option value="supplier">Supplier</option>
-                      </select>
-                    </div>
-                  </div>
-                  <div class="col-9">
-                    <div class="input-group">
-                      <input type="text" name="search_query" id="searchQuery" class="form-control w-auto" />
-                      <div class="input-group-append">
-                        <div class="input-group-text"><i class="feather icon-search"></i></div>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </form>#}
               <div class="table-responsive mt-4">
-                <table class="table table-small" id="searchItemTable">
+                <table class="table table-small" id="searchItemTable" width="100%">
                   <thead>
                     <th width="">Name</th>
                     <th>Code</th>
@@ -200,6 +162,14 @@
 
   $(function(){
 
+    $(".flatpickr").flatpickr({
+      minDate: "today",
+      altInput: true,
+      defaultDate: "today",
+      altFormat: "F j, Y",
+      dateFormat: "Y-m-d"
+    });
+
     $('button#addItem').on('click', function (e){
         e.preventDefault();
         $('#addItemModal').modal("show")
@@ -208,8 +178,7 @@
     $('#addItemModal').on('show.bs.modal', function (e) {
         $('#searchItemTable').DataTable({
             "ajax": {
-                // "url": "static/objects2.txt", // This works for a static file
-                "url": "/items/json", // This now also works
+                "url": "/api/items",
                 "dataType": "json",
                 "method": "POST",
                 "dataSrc": "data",
@@ -217,19 +186,26 @@
             },
             "columns": [
                 {"data": "name"},
-                {"data": "item_code"},
+                {"data": "item_code", render: function (data){
+                    return data == "None" ? "" : data;
+                }},
                 {"data": "brand", "visible": false, "searchable": true},
                 {"data": "model", "visible": false, "searchable": true},
                 {"data": "serial", "visible": false, "searchable": true},
                 {"data": "description", "visible": false, "searchable": true},
                 {"data": "category"},
                 {"data": "supplier"},
-                {"data": "qty"},
-                {"data": "unit_price"},
+                {"data": "qty", className: "text-right", render: function (data){
+                    return data == "None" ? 0 : data;
+                }},
+                {"data": "unit_price", className: "text-right", "render": function (data, type, row, meta){
+                        return  "&#8369; "+ data;
+                }},
                 {"data": "id", "render": function (data, type, row, meta){
-                    console.log(data, type, row, meta)
-                        return  "<button class='btn btn-dark btn-sm'>Select</button>";
-                  } }
+                    str = "<input class='item-data' type='hidden' value='"+JSON.stringify(row)+"'>";
+                    str += "<button class='btn btn-dark btn-sm select-item' data-id='"+data+"'>Select</button>";
+                    return str
+                }}
             ]
         });
     });
@@ -242,8 +218,47 @@
         $('input[name=is_existing]').val($(e.target).data('existing'))
     });
 
+    $(document).on("click", ".select-item", function (e){
+        e.preventDefault();
+        let id = $(this).data("id");
+        let data = $(this).closest("tr").find(".item-data").val();
+        data = JSON.parse(data);
+        console.log(data)
+        let item_code = data.item_code == "None" ? "" : data.item_code;
+        let brand = data.brand == "None" ? "" : data.brand;
+        let model = data.model == "None" ? "" : data.model;
+        let str = '<tr id="lines_'+id+'">' +
+            '<td>'+data.name+'</td>' +
+            '<td>'+item_code+'</td>' +
+            '<td>'+brand+'</td>' +
+            '<td>'+model+'</td>' +
+            '<td><input class="form-control form-control-sm flatpickr" id="inventory_items-'+id+'-purchased_date" name="inventory_items-'+id+'-purchased_date" type="text" value=""></td>' +
+            '<td class="text-right">&#8369; '+data.unit_price+'</td>' +
+            '<td><input class="form-control form-control-sm" id="inventory_items-'+id+'-unit_price" name="inventory_items-'+id+'-qty" type="number" value="" required></td>' +
+            '<td>' +
+            '<input id="inventory_items-'+id+'-id" name="inventory_items-'+id+'-item_id" type="hidden" value="'+id+'">' +
+            '<button type="button" role="button" class="btn delete btn-danger feather icon-delete"></button>' +
+            '</td>' +
+            '</tr>';
+
+        $("#inventoryItems").find("tbody").append(str);
+        $('#inventory_items-'+id+'-purchased_date').flatpickr({
+            minDate: "today",
+            altInput: true,
+            defaultDate: "today",
+            altFormat: "F j, Y",
+            dateFormat: "Y-m-d"
+        });
+        $('#addItemModal').modal("hide")
+
+    });
 
     $("#searchExistingForm").on("submit", function(e){ e.preventDefault(); return false; });
+
+    $(document).on('click', 'button.delete', function (e){
+        e.preventDefault();
+        $(this).closest("tr").remove();
+    });
 
   });
 

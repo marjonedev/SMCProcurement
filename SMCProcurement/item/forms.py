@@ -13,7 +13,6 @@ from wtforms.widgets.html5 import NumberInput
 from SMCProcurement import db
 
 ## login and registration
-
 class ItemForm(FlaskForm):
     name = TextField('Name', id="name", validators=[DataRequired()])
     category_id = SelectField('Category', id="category_id", validators=[DataRequired()])

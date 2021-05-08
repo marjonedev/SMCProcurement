@@ -1,5 +1,7 @@
+from pprint import pprint
+
 from SMCProcurement.item import blueprint
-from flask import render_template, redirect, url_for, request, flash
+from flask import render_template, redirect, url_for, request, flash, jsonify
 from flask_login import login_required, current_user
 from SMCProcurement import login_manager, db
 from jinja2 import TemplateNotFound
@@ -72,3 +74,48 @@ def view_item(id):
         return render_template('items/view.html', obj=item)
     except:
         return render_template('page-404.html'), 404
+
+@blueprint.route('/api/items', methods=["POST"])
+@login_required
+def get_items_json():
+
+    # query = request.form["q"]
+    # filter = request.form["filter"]
+    # page = request.form["p"] if request.form["p"] else 0
+    # pprint(request.get_data(parse_form_data=True))
+    # filters = []
+
+    # if filter == "code":
+    #     filters.append(Item.code.ilike('%' + query + '%'))
+    # elif filter == "brand":
+    #     filters.append(Item.brand.ilike('%' + query + '%'))
+    # elif filter == "model":
+    #     filters.append(Item.model.ilike('%' + query + '%'))
+    # elif filter == "serial":
+    #     filters.append(Item.serial.ilike('%' + query + '%'))
+    # elif filter == "description":
+    #     filters.append(Item.description.ilike('%' + query + '%'))
+    # elif filter == "category":
+    #     items.join(ItemCategory)
+    #     filters.append(ItemCategory.name.ilike('%' + query + '%'))
+    # elif filter == "supplier":
+    #     items.join(Supplier)
+    #     filters.append(Supplier.name.ilike('%' + query + '%'))
+    # else:
+    #     filters.append(Item.name.ilike('%' + query + '%'))
+
+    # if len(filters) > 0:
+    #     items = items.filter(*filters)
+
+    # length = items.count()
+
+    # if page:
+    #     items.offset(page * 10)
+
+    # items.limit(2).all()
+
+    items = db.session.query(Item).all()
+
+    response = dict(data=[i.toDataTable() for i in items])
+
+    return jsonify(response)

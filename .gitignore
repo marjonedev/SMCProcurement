@@ -693,3 +693,4 @@ FodyWeavers.xsd
 *.tlog
 
 # End of https://www.toptal.com/developers/gitignore/api/jetbrains,visualstudio,python,flask
+migrations/

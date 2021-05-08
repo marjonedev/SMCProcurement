@@ -3,12 +3,13 @@
 Copyright (c) 2019 - present AppSeed.us
 """
 from datetime import datetime, date
-from flask_login import UserMixin
+from flask_login import UserMixin, current_user
 from sqlalchemy import Binary, Column, Integer, String, ForeignKey, Date, Numeric, event, DateTime
 from sqlalchemy.orm import relationship
 
 from SMCProcurement import db, login_manager
 from SMCProcurement.base.util import get_sy
+from SMCProcurement.models.item import Item
 
 
 class Inventory(db.Model, UserMixin):
@@ -16,7 +17,7 @@ class Inventory(db.Model, UserMixin):
 
     id = Column(Integer, primary_key=True)
     number = Column(String, nullable=False)
-    request_id = Column(Integer, ForeignKey('Request.id'))
+    request_id = Column(Integer, ForeignKey('Request.id'), nullable=True)
     request = relationship('Request', backref="inventories", foreign_keys=[request_id])
     user_id = Column(Integer, ForeignKey('User.id'))
     user = relationship("User", backref="inventories", foreign_keys=[user_id])
@@ -40,6 +41,7 @@ class Inventory(db.Model, UserMixin):
         self.sy_start = sy["start"]
         self.sy_end = sy["end"]
         self.date = date.today()
+        self.user_id = current_user.id
 
     def __repr__(self):
         return str(self.name)
@@ -56,10 +58,22 @@ class InventoryItem(db.Model, UserMixin):
 
     id = Column(Integer, primary_key=True)
     inventory_id = Column(Integer, ForeignKey('Inventory.id'), nullable=False)
-    request_item_id = Column(Integer, ForeignKey('RequestLine.id'))
-    item_id = Column(Integer)
+    request_item_id = Column(Integer, ForeignKey('RequestLine.id'), nullable=True)
+    item_id = Column(Integer, ForeignKey("Item.id"))
     qty = Column(Integer, default=1)
     purchased_date = Column(Date)
+
+    def __init__(self, **kwargs):
+        for property, value in kwargs.items():
+            if hasattr(value, '__iter__') and not isinstance(value, str):
+                value = value[0]
+
+            setattr(self, property, value)
+
+        item = db.session.query(Item).get(self.item_id)
+        item.qty = item.qty + self.qty if item.qty else self.qty
+        item.stock_in = item.qty + self.qty if item.qty else self.qty
+
 
 
 def generate_number_listener_inventory(mapper, connection, target):
