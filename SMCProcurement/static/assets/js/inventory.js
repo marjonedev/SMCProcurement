@@ -1,5 +1,37 @@
-$(function(){
-    function appendItemToInventory(id, data){
+function loadSelectCategory(){
+    $.ajax({
+        url: '/api/categories',
+        type: 'GET',
+        success: function(options) {
+            $('select[name="category_id"]').selectize({
+                valueField: 'id',
+                labelField: 'name',
+                searchField: 'name',
+                preload: true,
+                options: options,
+                create: false,
+            });
+        }
+    });
+}
+function loadSelectSupplier(){
+    $.ajax({
+        url: '/api/suppliers',
+        type: 'GET',
+        success: function(options) {
+            $('select[name="supplier_id"]').selectize({
+                valueField: 'id',
+                labelField: 'name',
+                searchField: 'name',
+                preload: true,
+                options: options,
+                create: false,
+            });
+        }
+    });
+}
+
+function appendItemToInventory(id, data){
         let item_code = data.item_code == "None" ? "" : data.item_code;
         let brand = data.brand == "None" ? "" : data.brand;
         let model = data.model == "None" ? "" : data.model;
@@ -27,6 +59,8 @@ $(function(){
         });
         $('#addItemModal').modal("hide");
     }
+
+$(function(){
 
     $('button#addItem').on('click', function (e){
       e.preventDefault();

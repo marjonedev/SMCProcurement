@@ -1,5 +1,5 @@
 from SMCProcurement.category import blueprint
-from flask import render_template, redirect, url_for, request, flash
+from flask import render_template, redirect, url_for, request, flash, jsonify
 from flask_login import login_required, current_user
 from SMCProcurement import login_manager, db
 from jinja2 import TemplateNotFound
@@ -56,3 +56,9 @@ def delete_category(id):
         except Exception as msg:
             flash('Error: Unable to delete category, {}. '.format(msg), "error")
             return redirect(url_for('category_blueprint.categories'))
+
+@blueprint.route('/api/categories', methods=["GET"])
+@login_required
+def api_get_categories():
+    categories = db.session.query(ItemCategory).all()
+    return jsonify([i.toDict() for i in categories])

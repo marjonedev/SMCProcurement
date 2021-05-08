@@ -149,19 +149,13 @@
                   <div class="form-group row">
                       <label for="category_id" class="col-sm-3 col-form-label">Category</label>
                       <div class="col-sm-9">
-                        <select class="form-control" id="category_id" name="category_id" required="">
-                          <option value="2">Reading Materials</option>
-                          <option value="4">Test Category</option>
-                          <option value="1">Uncategorized</option>
-                        </select>
+                        <select class="form-control" id="category_id" name="category_id" required=""></select>
                       </div>
                   </div>
                   <div class="form-group row">
                       <label for="supplier_id" class="col-sm-3 col-form-label">Supplier</label>
                       <div class="col-sm-9">
-                        <select class="form-control" id="supplier_id" name="supplier_id" required="">
-                          <option value="1">Liang Hong</option>
-                        </select>
+                        <select class="form-control" id="supplier_id" name="supplier_id" required=""></select>
                       </div>
                   </div>
                   <div class="form-group row">
@@ -230,6 +224,9 @@
       altFormat: "F j, Y",
       dateFormat: "Y-m-d"
     });
+
+    loadSelectCategory();
+    loadSelectSupplier();
 
   });
 

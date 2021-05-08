@@ -1,5 +1,5 @@
 from SMCProcurement.supplier import blueprint
-from flask import render_template, redirect, url_for, request, flash
+from flask import render_template, redirect, url_for, request, flash, jsonify
 from flask_login import login_required, current_user
 from SMCProcurement import login_manager, db
 from jinja2 import TemplateNotFound
@@ -65,3 +65,9 @@ def view_supplier(id):
         return render_template('suppliers/view.html', obj=supplier)
     except:
         return render_template('page-404.html'), 404
+
+@blueprint.route('/api/suppliers', methods=["GET"])
+@login_required
+def api_get_suppliers():
+    suppliers = db.session.query(Supplier).all()
+    return jsonify([i.toDict() for i in suppliers])

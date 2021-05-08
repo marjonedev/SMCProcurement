@@ -32,3 +32,11 @@ class ItemCategory(db.Model, UserMixin):
             if hasattr(self, key):
                 if getattr(self, key) != value:
                     setattr(self, key, value)
+
+    def toDict(self):
+        d = {}
+
+        for column in self.__table__.columns:
+            d[column.name] = str(getattr(self, column.name))
+
+        return d
