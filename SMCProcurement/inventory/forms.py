@@ -1,6 +1,6 @@
 from flask_wtf import FlaskForm
 from wtforms import TextField, PasswordField, HiddenField, FieldList, FormField, DecimalField, IntegerField, \
-    SubmitField, StringField
+    SubmitField, StringField, TextAreaField
 from wtforms.fields import SelectField, DateField
 from wtforms.validators import InputRequired, Email, DataRequired
 from wtforms.widgets.html5 import NumberInput
@@ -20,3 +20,15 @@ class InventoryForm(FlaskForm):
 
     submit = SubmitField('Submit')
     inventory_items = FieldList(FormField(InventoryItemForm))
+
+class ReleaseForm(FlaskForm):
+    class Meta:
+        csrf = False
+
+    item_id = SelectField("Item")
+    request_id = SelectField("Request")
+    request_item_id = SelectField("Request Item")
+    department_id = SelectField("Department")
+    quantity = NumberInput("Quantity")
+    remarks = TextAreaField("Remarks")
+

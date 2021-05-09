@@ -4,7 +4,7 @@ Copyright (c) 2019 - present AppSeed.us
 """
 
 from flask_login import UserMixin
-from sqlalchemy import Binary, Column, Integer, String, ForeignKey, Date
+from sqlalchemy import Binary, Column, Integer, String, ForeignKey, DateTime
 from sqlalchemy.orm import relationship
 
 from SMCProcurement import db, login_manager
@@ -15,14 +15,16 @@ class Release(db.Model, UserMixin):
 
     id = Column(Integer, primary_key=True)
     item_id = Column(Integer, ForeignKey('Item.id'))
-    item = relationship('Item')
+    item = relationship('Item', backref="releases", foreign_keys=[item_id])
     request_item_id = Column(Integer, ForeignKey('RequestLine.id'))
-    request_item = relationship('RequestLine')
+    request_item = relationship('RequestLine', backref="releases", foreign_keys=[request_item_id])
+    request_id = Column(Integer, ForeignKey('Request.id'))
+    request = relationship('Request', backref="releases", foreign_keys=[request_id])
     user_id = Column(Integer, ForeignKey('User.id'))
-    user = relationship('User')
+    user = relationship('User', backref="releases", foreign_keys=[user_id])
     department_id = Column(Integer, ForeignKey('Department.id'))
     department = relationship('Department')
-    release_date = Column(Date)
+    date_time = Column(DateTime)
     quantity = Column(Integer)
     remarks = Column(String)
 

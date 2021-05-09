@@ -6,7 +6,7 @@ from flask import render_template, redirect, url_for, request, flash, session, a
 
 from SMCProcurement.enum.request_status import RequestStatusEnum
 from SMCProcurement.inventory import blueprint
-from SMCProcurement.inventory.forms import InventoryForm
+from SMCProcurement.inventory.forms import InventoryForm, ReleaseForm
 from SMCProcurement.models import Inventory, Request, InventoryItem
 from flask_login import (
     current_user,
@@ -74,5 +74,5 @@ def reports():
 @blueprint.route('/inventories/release', methods=["GET"])
 @login_required
 def release():
-    inv = db.session.query(Inventory).all()
-    return render_template('inventories/index.html', inventories=inv)
+    form = ReleaseForm()
+    return render_template('inventories/release.html', form=form)
