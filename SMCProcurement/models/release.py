@@ -2,12 +2,16 @@
 """
 Copyright (c) 2019 - present AppSeed.us
 """
+from datetime import datetime
+from pprint import pprint
 
 from flask_login import UserMixin
 from sqlalchemy import Binary, Column, Integer, String, ForeignKey, DateTime
 from sqlalchemy.orm import relationship
 
 from SMCProcurement import db, login_manager
+from SMCProcurement.models import Request, Item
+
 
 class Release(db.Model, UserMixin):
 
@@ -24,7 +28,9 @@ class Release(db.Model, UserMixin):
     user = relationship('User', backref="releases", foreign_keys=[user_id])
     department_id = Column(Integer, ForeignKey('Department.id'))
     department = relationship('Department')
-    date_time = Column(DateTime)
+    category_id = Column(Integer, ForeignKey('ItemCategory.id'))
+    category = relationship('ItemCategory')
+    date_time = Column(DateTime, nullable=False, default=datetime.utcnow)
     quantity = Column(Integer)
     remarks = Column(String)
 
@@ -34,6 +40,14 @@ class Release(db.Model, UserMixin):
                 value = value[0]
 
             setattr(self, property, value)
+
+        request = db.session.query(Request).get(self.request_id)
+        self.department_id = request.department_id
+        item = db.session.query(Item).get(self.item_id)
+        self.category_id = item.category_id
+
+        item.qty = item.qty - int(self.quantity) if item.qty else (0 - int(self.quantity))
+        item.stock_out = item.stock_out + int(self.quantity) if item.stock_out else int(self.quantity)
 
     def __repr__(self):
         return str(self.name)

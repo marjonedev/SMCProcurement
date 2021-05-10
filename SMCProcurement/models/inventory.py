@@ -87,7 +87,7 @@ class InventoryItem(db.Model, UserMixin):
 
         item = db.session.query(Item).get(self.item_id)
         item.qty = item.qty + self.qty if item.qty else self.qty
-        item.stock_in = item.qty + self.qty if item.qty else self.qty
+        item.stock_in = item.stock_in + self.qty if item.stock_in else self.qty
 
     @property
     def subtotal(self):

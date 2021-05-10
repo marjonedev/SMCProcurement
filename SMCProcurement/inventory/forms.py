@@ -29,6 +29,6 @@ class ReleaseForm(FlaskForm):
     request_id = SelectField("Request")
     request_item_id = SelectField("Request Item")
     department_id = SelectField("Department")
-    quantity = NumberInput("Quantity")
+    quantity = IntegerField("Quantity", widget=NumberInput())
     remarks = TextAreaField("Remarks")
 

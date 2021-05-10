@@ -1,6 +1,6 @@
 from SMCProcurement.enum.request_status import RequestStatusEnum
 from SMCProcurement.request import blueprint
-from flask import render_template, redirect, url_for, request, flash, session, abort
+from flask import render_template, redirect, url_for, request, flash, session, abort, jsonify
 from SMCProcurement import login_manager
 from SMCProcurement.models import Department, RequestLine
 from SMCProcurement.models import Request
@@ -23,39 +23,40 @@ from flask_login import (
 @login_required
 def all_requests():
     if current_user.user_type == UserTypeEnum.requisitor.value:
-        requests = db.session.query(Request)\
-            .filter(Request.user_id == current_user.id)\
+        requests = db.session.query(Request) \
+            .filter(Request.user_id == current_user.id) \
             .order_by(Request.date_request).all()
     elif current_user.user_type in [UserTypeEnum.vpacad.value, UserTypeEnum.vpadmin.value]:
-        requests = db.session.query(Request)\
-            .join(RequestType)\
-            .filter(RequestType.user_type == current_user.user_type)\
+        requests = db.session.query(Request) \
+            .join(RequestType) \
+            .filter(RequestType.user_type == current_user.user_type) \
             .order_by(Request.date_request).all()
     else:
         requests = db.session.query(Request).order_by(Request.date_request)
 
     return render_template('requests/index.html', requests=requests)
 
+
 @blueprint.route('/requests/pending')
 @login_required
 def pending_requests():
     if current_user.user_type == UserTypeEnum.requisitor.value:
-        requests = db.session.query(Request)\
-            .filter(Request.user_id == current_user.id)\
-            .filter(Request.status > RequestStatusEnum.draft.value)\
-            .filter(Request.status < RequestStatusEnum.done.value)\
+        requests = db.session.query(Request) \
+            .filter(Request.user_id == current_user.id) \
+            .filter(Request.status > RequestStatusEnum.draft.value) \
+            .filter(Request.status < RequestStatusEnum.done.value) \
             .order_by(Request.date_request).all()
     elif current_user.user_type in [UserTypeEnum.vpacad.value, UserTypeEnum.vpadmin.value]:
         requests = db.session.query(Request) \
             .join(RequestType) \
             .filter(RequestType.user_type == current_user.user_type) \
-            .filter(Request.status > RequestStatusEnum.draft.value)\
-            .filter(Request.status < RequestStatusEnum.done.value)\
+            .filter(Request.status > RequestStatusEnum.draft.value) \
+            .filter(Request.status < RequestStatusEnum.done.value) \
             .order_by(Request.date_request).all()
     else:
-        requests = db.session.query(Request)\
-            .filter(Request.status > RequestStatusEnum.draft.value)\
-            .filter(Request.status < RequestStatusEnum.done.value)\
+        requests = db.session.query(Request) \
+            .filter(Request.status > RequestStatusEnum.draft.value) \
+            .filter(Request.status < RequestStatusEnum.done.value) \
             .order_by(Request.date_request).all()
 
     return render_template('requests/index.html', requests=requests)
@@ -64,7 +65,6 @@ def pending_requests():
 @blueprint.route('/requests/create', methods=["GET", "POST"])
 @login_required
 def create_request():
-
     if "submit_request" in request.form:
 
         form = RequestForm(request.form)
@@ -108,7 +108,6 @@ def create_request():
 @blueprint.route('/requests/<id>/edit', methods=["GET", "POST"])
 @login_required
 def edit_request(id):
-
     req = db.session.query(Request).get(id)
 
     if req.status > RequestStatusEnum.draft.value:
@@ -151,7 +150,6 @@ def edit_request(id):
                 db.session.query(RequestLine).filter_by(id=sd.id).delete()
                 db.session.commit()
 
-
         flash("Request successfully updated!")
         return redirect(url_for('request_blueprint.view_request', id=id))
 
@@ -173,6 +171,7 @@ def delete_request(id):
             flash('Error: Unable to delete request, {}. '.format(msg), "error")
             return redirect(url_for('request_blueprint.all_requests'))
 
+
 @blueprint.route('/requests/<id>/confirm', methods=["POST"])
 @login_required
 def confirm_request(id):
@@ -191,7 +190,6 @@ def confirm_request(id):
 @blueprint.route('/requests/<id>', methods=["GET"])
 @login_required
 def view_request(id):
-
     try:
         req = db.session.query(Request).get(id)
         return render_template('requests/view.html', obj=req)
@@ -207,7 +205,8 @@ def approve_request(id):
         try:
             obj = db.session.query(Request).get(id)
             approved = False
-            if obj.status in [RequestStatusEnum.request.value, RequestStatusEnum.vp.value, RequestStatusEnum.president.value]:
+            if obj.status in [RequestStatusEnum.request.value, RequestStatusEnum.vp.value,
+                              RequestStatusEnum.president.value]:
                 obj.status += 1
                 db.session.commit()
                 approved = True
@@ -237,7 +236,7 @@ def decline_request(id):
                 obj.status = RequestStatusEnum.denied.value
                 obj.denied_remarks = form["denied_remarks"]
                 db.session.commit()
-                flash("Request "+obj.number+" denied.", "warning")
+                flash("Request " + obj.number + " denied.", "warning")
                 return redirect(url_for('request_blueprint.view_request', id=id))
             else:
                 flash("Remarks field is required on decline.", "error")
@@ -260,3 +259,30 @@ def decline_request(id):
             return render_template('page-404.html'), 404
     else:
         return render_template('page-404.html'), 404
+
+
+@blueprint.route('/api/requests', methods=["GET"])
+@login_required
+def api_get_requests():
+    requests = db.session.query(Request)\
+        .filter(Request.status >= RequestStatusEnum.vpfinance.value)\
+        .filter(Request.status != RequestStatusEnum.denied.value)\
+        .all()
+
+    response = dict(data=[i.toDataTable() for i in requests])
+
+    return jsonify(response)
+
+@blueprint.route('/api/requests/items', methods=["GET"])
+@login_required
+def api_get_request_items():
+    request_id = request.args.get('request_id')
+    request_lines = db.session.query(RequestLine)\
+        .filter(RequestLine.request_id == request_id)\
+        .all()
+
+    response = dict(data=[i.toDataTable() for i in request_lines])
+
+    return jsonify(response)
+
+

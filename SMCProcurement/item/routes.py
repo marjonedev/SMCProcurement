@@ -80,7 +80,7 @@ def view_item(id):
         return render_template('page-404.html'), 404
 
 
-@blueprint.route('/api/items', methods=["POST"])
+@blueprint.route('/api/items', methods=["POST", "GET"])
 @login_required
 def get_items_json():
     # query = request.form["q"]

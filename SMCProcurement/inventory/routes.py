@@ -7,7 +7,7 @@ from flask import render_template, redirect, url_for, request, flash, session, a
 from SMCProcurement.enum.request_status import RequestStatusEnum
 from SMCProcurement.inventory import blueprint
 from SMCProcurement.inventory.forms import InventoryForm, ReleaseForm
-from SMCProcurement.models import Inventory, Request, InventoryItem
+from SMCProcurement.models import Inventory, Request, InventoryItem, Release
 from flask_login import (
     current_user,
     login_required,
@@ -71,8 +71,24 @@ def reports():
     inv = db.session.query(Inventory).all()
     return render_template('inventories/index.html', inventories=inv)
 
-@blueprint.route('/inventories/release', methods=["GET"])
+@blueprint.route('/inventories/release', methods=["GET", "POST"])
 @login_required
 def release():
+
     form = ReleaseForm()
+
+    if "release_item" in request.form:
+
+        try:
+            release = Release(**request.form)
+            db.session.add(release)
+            db.session.commit()
+
+            flash("Success! {} has been released.".format(release.item.name), "message")
+            return redirect(url_for("inventory_blueprint.release"))
+
+        except Exception as msg:
+            flash("Error! There's a problem upon the release. {}".format(msg), "error")
+            return redirect(url_for("inventory_blueprint.release"))
+
     return render_template('inventories/release.html', form=form)

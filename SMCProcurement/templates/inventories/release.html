@@ -1,0 +1,115 @@
+{% extends "layouts/base.html" %}
+
+{% block title %} Release Item {% endblock %}
+
+<!-- Specific CSS goes HERE -->
+{% block stylesheets %}{% endblock stylesheets %}
+
+{% block content %}
+
+	<!-- [ Main Content ] start -->
+	<div class="pcoded-main-container">
+		<div class="pcoded-content">
+			<!-- [ breadcrumb ] start -->
+			<div class="page-header">
+				<div class="page-block">
+					<div class="row align-items-center">
+						<div class="col-md-12">
+							<div class="page-header-title">
+								<h5 class="m-b-10">Release an Item</h5>
+							</div>
+							<ul class="breadcrumb">
+								<li class="breadcrumb-item"><a href="/"><i class="feather icon-home"></i></a></li>
+								<li class="breadcrumb-item"><a href="#!">Release</a></li>
+							</ul>
+						</div>
+					</div>
+				</div>
+			</div>
+			<!-- [ breadcrumb ] end -->
+			<!-- [ Main Content ] start -->
+			<div class="row">
+				<!-- [ sample-page ] start -->
+				<div class="col-sm-12">
+					<div class="card">
+
+						{#<div class="card-header">
+						</div>#}
+						<div class="card-body">
+              {% include 'includes/flashes.html' %}
+              {% if msg %}
+                <div class="alert alert-warning" role="alert">
+                {{ msg | safe }}
+                </div>
+              {% endif %}
+
+              <form role="form" method="POST" action="">
+                <div class="form-row align-items-center">
+                  <div class="col-5">
+                    <div class="form-group row">
+                      <label for="category_id" class="col-sm-4 col-form-label">Item</label>
+                      <div class="col-sm-8">
+                        {{ form.item_id(class="form-control selectize custom-options", required=True) }}
+                      </div>
+                    </div>
+                  </div>
+                  <div class="col-2 mb-3">
+                    <h4 class="text-muted text-center">
+                      <i class="feather icon-arrow-right"></i><br />
+                      <i class="feather icon-arrow-right"></i>
+                    </h4>
+                  </div>
+                  <div class="col-5">
+                    <div class="form-group row">
+                      <label for="category_id" class="col-sm-4 col-form-label">Request</label>
+                      <div class="col-sm-8">
+                        {{ form.request_id(class="form-control selectize custom-options", required=True) }}
+                      </div>
+                    </div>
+                    <div class="form-group row">
+                      <label for="category_id" class="col-sm-4 col-form-label">Request Item</label>
+                      <div class="col-sm-8">
+                        {{ form.request_item_id(class="form-control selectize custom-options", required=True) }}
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="form-row border-top border-gray pt-3 mt-3">
+                  <div class="col-4"></div>
+                  <div class="col-4">
+                    <div class="form-group row">
+                      <label for="category_id" class="col-sm-6 col-form-label">Quantity to release</label>
+                      <div class="col-sm-6">
+                        {{ form.quantity(class="form-control", required=True) }}
+                      </div>
+                    </div>
+                    <div class="form-group">
+                      <label for="formGroupExampleInput">Remarks</label>
+                      {{ form.remarks(class="form-control") }}
+                    </div>
+                  </div>
+                  <div class="col-4"></div>
+                </div>
+                <div class="form-row">
+                    <div class="col-12 text-center">
+                        <button type="submit" name="release_item" class="btn  btn-primary">Release Item</button>
+                    </div>
+                </div>
+              </form>
+						</div>
+					</div>
+				</div>
+				<!-- [ sample-page ] end -->
+			</div>
+			<!-- [ Main Content ] end -->
+		</div>
+	</div>
+	<!-- [ Main Content ] end -->
+
+{% endblock content %}
+
+<!-- Specific Page JS goes HERE  -->
+{% block javascripts %}
+<script type="text/javascript" src="/static/assets/js/release.js"></script>
+{% endblock javascripts %}

@@ -116,7 +116,8 @@ class Request(db.Model, UserMixin):
 
         if self.is_confirmed:
             if self.status == RequestStatusEnum.request.value:
-                if current_user.user_type in [UserTypeEnum.vpadmin.value, UserTypeEnum.vpacad.value, UserTypeEnum.administrator.value]:
+                if current_user.user_type in [UserTypeEnum.vpadmin.value, UserTypeEnum.vpacad.value,
+                                              UserTypeEnum.administrator.value]:
                     show = "approve"
                 else:
                     show = "progress"
@@ -137,6 +138,21 @@ class Request(db.Model, UserMixin):
 
         return show
 
+    def toDataTable(self):
+        d = {}
+
+        for column in self.__table__.columns:
+            value = str(getattr(self, column.name))
+            d[column.name] = value
+
+        d["department"] = self.department.name if self.department else ""
+        d["user"] = self.user.full_name if self.user else ""
+        statdesc = {i.value: i.description for i in RequestStatusEnum}
+        statname = {i.value: i.name for i in RequestStatusEnum}
+        d["status_description"] = statdesc[self.status]
+        d["status_name"] = statname[self.status]
+
+        return d
 
 
 class RequestLine(db.Model, UserMixin):
@@ -172,6 +188,15 @@ class RequestLine(db.Model, UserMixin):
             if hasattr(self, key):
                 if getattr(self, key) != value:
                     setattr(self, key, value)
+
+    def toDataTable(self):
+        d = {}
+
+        for column in self.__table__.columns:
+            value = str(getattr(self, column.name))
+            d[column.name] = value
+
+        return d
 
 
 def generate_number_listener_request(mapper, connection, target):
