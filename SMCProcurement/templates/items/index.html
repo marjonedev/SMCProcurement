@@ -69,7 +69,7 @@
                               <td>{{ item.model }}</td>
                               <td>{{ item.description }}</td>
                               <td class="text-right">{{ item.qty if item.qty else 0 }}</td>
-                              <td class="text-right">{{ item.unit_price }}</td>
+                              <td class="text-right">&#8369; {{ item.unit_price }}</td>
                             </tr>
                           {% endfor %}
                           {% if not items %}
