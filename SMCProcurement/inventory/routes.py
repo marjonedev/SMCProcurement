@@ -63,14 +63,6 @@ def view_inventory(id):
     inventory = db.session.query(Inventory).get(id)
     return render_template('inventories/view.html', obj=inventory)
 
-
-
-@blueprint.route('/inventories/reports', methods=["GET"])
-@login_required
-def reports():
-    inv = db.session.query(Inventory).all()
-    return render_template('inventories/index.html', inventories=inv)
-
 @blueprint.route('/inventories/release', methods=["GET", "POST"])
 @login_required
 def release():
