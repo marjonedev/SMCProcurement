@@ -25,14 +25,14 @@ def all_requests():
     if current_user.user_type == UserTypeEnum.requisitor.value:
         requests = db.session.query(Request) \
             .filter(Request.user_id == current_user.id) \
-            .order_by(Request.date_request).all()
+            .order_by(Request.date_request.desc()).all()
     elif current_user.user_type in [UserTypeEnum.vpacad.value, UserTypeEnum.vpadmin.value]:
         requests = db.session.query(Request) \
             .join(RequestType) \
             .filter(RequestType.user_type == current_user.user_type) \
-            .order_by(Request.date_request).all()
+            .order_by(Request.date_request.desc()).all()
     else:
-        requests = db.session.query(Request).order_by(Request.date_request)
+        requests = db.session.query(Request).order_by(Request.date_request.desc())
 
     return render_template('requests/index.html', requests=requests)
 
@@ -44,20 +44,27 @@ def pending_requests():
         requests = db.session.query(Request) \
             .filter(Request.user_id == current_user.id) \
             .filter(Request.status > RequestStatusEnum.draft.value) \
-            .filter(Request.status < RequestStatusEnum.done.value) \
-            .order_by(Request.date_request).all()
+            .filter(Request.status < RequestStatusEnum.vpfinance.value) \
+            .order_by(Request.date_request.desc()).all()
     elif current_user.user_type in [UserTypeEnum.vpacad.value, UserTypeEnum.vpadmin.value]:
-        requests = db.session.query(Request) \
-            .join(RequestType) \
-            .filter(RequestType.user_type == current_user.user_type) \
-            .filter(Request.status > RequestStatusEnum.draft.value) \
-            .filter(Request.status < RequestStatusEnum.done.value) \
-            .order_by(Request.date_request).all()
+        requests = db.session.query(Request)\
+            .join(RequestType)\
+            .filter(RequestType.user_type == current_user.user_type)\
+            .filter(Request.status == RequestStatusEnum.request.value)\
+            .order_by(Request.date_request.desc()).all()
+    elif current_user.user_type == UserTypeEnum.president.value:
+        requests = db.session.query(Request)\
+            .filter(Request.status == RequestStatusEnum.vp.value) \
+            .order_by(Request.date_request.desc()).all()
+    elif current_user.user_type == UserTypeEnum.vpfinance.value:
+        requests = db.session.query(Request)\
+            .filter(Request.status == RequestStatusEnum.president.value) \
+            .order_by(Request.date_request.desc()).all()
     else:
         requests = db.session.query(Request) \
-            .filter(Request.status > RequestStatusEnum.draft.value) \
-            .filter(Request.status < RequestStatusEnum.done.value) \
-            .order_by(Request.date_request).all()
+            .filter(Request.status >= RequestStatusEnum.request.value) \
+            .filter(Request.status <= RequestStatusEnum.vpfinance.value) \
+            .order_by(Request.date_request.desc()).all()
 
     return render_template('requests/index.html', requests=requests)
 

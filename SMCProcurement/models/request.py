@@ -136,7 +136,12 @@ class Request(db.Model, UserMixin):
             else:
                 show = "progress"
         else:
-            show = "confirm"
+            if self.user_id == current_user.id:
+                show = "confirm"
+            elif current_user.user_type in [UserTypeEnum.administrator.value]:
+                show = "confirm"
+            else:
+                show = "none"
 
         return show
 

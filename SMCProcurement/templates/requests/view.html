@@ -66,7 +66,7 @@
                     <input type="hidden" name="denied_remarks" />
                     </form>
                 </div>#}
-              {% else %}
+              {% elif show_header == "progress" %}
                   {% if obj.status < 8 %}
                   <div class="progress">
                   {% set progress = obj.get_progress() %}
@@ -75,6 +75,7 @@
                   </div>
                   </div>
                   {% endif %}
+              {% else %}
               {% endif %}
 						</div>
 						<div class="card-body">
