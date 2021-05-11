@@ -24,12 +24,13 @@
               </ul>
           </li>
 
+        {% if current_user.is_inventory_manager %}
           <li class="nav-item pcoded-hasmenu">
 						<a href="#!" class="nav-link "><span class="pcoded-micon"><i class="feather icon-activity"></i></span><span class="pcoded-mtext">Inventory</span></a>
 					    <ul class="pcoded-submenu">
                 <li><a href="{{ url_for("inventory_blueprint.all_inventories") }}">All Inventories</a></li>
                 <li><a href="{{ url_for("inventory_blueprint.release") }}">Release</a></li>
-                <li><a href="{{ url_for("inventory_blueprint.reports") }}">Reports</a></li>
+                <li><a href="{{ url_for("report_blueprint.inventory_reports") }}">Reports</a></li>
               </ul>
           </li>
 
@@ -59,7 +60,7 @@
                 <span class="pcoded-mtext">Suppliers</span>
               </a>
 					</li>
-
+        {% endif %}
         {% if current_user.is_admin %}
 					<li class="nav-item">
 					    <a href="{{ url_for("department_blueprint.departments") }}" class="nav-link ">

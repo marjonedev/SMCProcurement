@@ -75,6 +75,12 @@ class User(db.Model, UserMixin):
     def is_admin(self):
         return self.user_type == UserTypeEnum.administrator.value
 
+    @property
+    def is_inventory_manager(self):
+        return self.user_type in [UserTypeEnum.administrator.value,
+                                  UserTypeEnum.vpfinance.value,
+                                  UserTypeEnum.propertycustodian.value]
+
 
 @login_manager.user_loader
 def user_loader(id):
