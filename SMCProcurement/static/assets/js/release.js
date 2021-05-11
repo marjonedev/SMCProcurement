@@ -33,6 +33,7 @@ $(function (){
       function loadRequestitems(request_id){
           // if(request_id){
               $('select[name="request_item_id"]').selectize()[0].selectize.destroy();
+                $('select[name="request_item_id"]').attr("required", "required");
               $.ajax({
                   url: '/api/requests/items?request_id='+request_id,
                   type: 'GET',
