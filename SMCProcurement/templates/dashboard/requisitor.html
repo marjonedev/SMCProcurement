@@ -1,0 +1,127 @@
+{% extends "layouts/base.html" %}
+
+{% block title %} Dashboard {% endblock %}
+
+<!-- Specific CSS goes HERE -->
+{% block stylesheets %}{% endblock stylesheets %}
+
+{% block content %}
+
+<div class="pcoded-main-container">
+  <div class="pcoded-content">
+    <div class="row">
+      <div class="col-md-12 mb-4">
+        <a href="{{ url_for("request_blueprint.create_request") }}" class="btn btn-primary"><i class="feather icon-plus"></i>Create New Request</a>
+      </div>
+      <div class="col-md-6 col-xl-3">
+          <div class="card bg-c-yellow order-card">
+              <div class="card-body bg-patern-white">
+                  <h6 class="text-white">Pending Requests</h6>
+                  <h2 class="text-right text-white"><i class="feather icon-info float-left"></i><span>{{ counts["pending"] }}</span></h2>
+              </div>
+          </div>
+      </div>
+      <div class="col-md-6 col-xl-3">
+          <div class="card bg-c-purple order-card">
+              <div class="card-body bg-patern-white">
+                  <h6 class="text-white">Approved Requests</h6>
+                  <h2 class="text-right text-white"><i class="feather icon-check-circle float-left"></i><span>{{ counts["approved"] }}</span></h2>
+              </div>
+          </div>
+      </div>
+      <div class="col-md-6 col-xl-3">
+          <div class="card bg-c-green order-card">
+              <div class="card-body bg-patern-white">
+                  <h6 class="text-white">Done Requests</h6>
+                  <h2 class="text-right text-white"><i class="feather icon-thumbs-up float-left"></i><span>{{ counts["done"] }}</span></h2>
+              </div>
+          </div>
+      </div>
+      <div class="col-md-6 col-xl-3">
+          <div class="card bg-light order-card">
+              <div class="card-body bg-patern">
+                  <h6>Total Requests</h6>
+                  <h2 class="text-right"><i class="feather icon-list float-left"></i><span>{{ counts["total"] }}</span></h2>
+              </div>
+          </div>
+      </div>
+      <div class="col-lg-6">
+          <div class="card table-card">
+            <div class="card-header">
+              <h5>Recent Requests</h5>
+              <div class="card-header-right">
+                <a class="btn btn-light" href="{{ url_for("request_blueprint.all_requests") }}">View All</a>
+              </div>
+            </div>
+            <div class="card-body p-0">
+              <table class="table table-hover m-b-0">
+                <thead>
+                  <tr>
+                      <th><span>No.</span></th>
+                      <th><span>Date Requested</span></th>
+                      <th><span>Date Needed</span></th>
+                      <th><span>Status</span></th>
+                  </tr>
+                </thead>
+                <tbody>
+                {% if lists["recent"] %}
+                {% for list in lists["recent"] %}
+                  <tr>
+                    <td>{{ list.number }}</td>
+                    <td>{{ list.date_request | datepretty }}</td>
+                    <td>{{ list.date_needed | datepretty }}</td>
+                    <td><span class="badge badge-status badge-{{ RequestStatusList[list.status]['name'] }}">{{ RequestStatusList[list.status]['description'] }}</span></td>
+                  </tr>
+                {% endfor %}
+                {% else %}
+                  <tr><td colspan="4" class="text-center">No Data Available.</td></tr>
+                {% endif %}
+                </tbody>
+              </table>
+            </div>
+          </div>
+      </div>
+      <div class="col-lg-6">
+          <div class="card table-card">
+            <div class="card-header">
+              <h5>Pending Requests</h5>
+              <div class="card-header-right">
+                <a class="btn btn-warning" href="{{ url_for("request_blueprint.pending_requests") }}">View All</a>
+              </div>
+            </div>
+            <div class="card-body p-0">
+              <table class="table table-hover m-b-0">
+                <thead>
+                  <tr>
+                      <th><span>No.</span></th>
+                      <th><span>Date Requested</span></th>
+                      <th><span>Date Needed</span></th>
+                      <th><span>Status</span></th>
+                  </tr>
+                </thead>
+                <tbody>
+                {% if lists["pending"] %}
+                {% for list in lists["pending"] %}
+                  <tr>
+                    <td>{{ list.number }}</td>
+                    <td>{{ list.date_request | datepretty }}</td>
+                    <td>{{ list.date_needed | datepretty }}</td>
+                    <td><span class="badge badge-status badge-{{ RequestStatusList[list.status]['name'] }}">{{ RequestStatusList[list.status]['description'] }}</span></td>
+                  </tr>
+                {% endfor %}
+                {% else %}
+                  <tr><td colspan="4" class="text-center">No Data Available.</td></tr>
+                {% endif %}
+                </tbody>
+              </table>
+            </div>
+          </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+{% endblock content %}
+
+<!-- Specific Page JS goes HERE  -->
+{% block javascripts %}{% endblock javascripts %}
