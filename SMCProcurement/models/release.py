@@ -6,15 +6,15 @@ from datetime import datetime
 from pprint import pprint
 
 from flask_login import UserMixin
-from sqlalchemy import Binary, Column, Integer, String, ForeignKey, DateTime
+from sqlalchemy import Binary, Column, Integer, String, ForeignKey, DateTime, event
 from sqlalchemy.orm import relationship
 
 from SMCProcurement import db, login_manager
-from SMCProcurement.models import Request, Item
+from SMCProcurement.enum.request_status import RequestStatusEnum
+from SMCProcurement.models import Request, Item, RequestLine
 
 
 class Release(db.Model, UserMixin):
-
     __tablename__ = 'Release'
 
     id = Column(Integer, primary_key=True)
@@ -42,12 +42,15 @@ class Release(db.Model, UserMixin):
             setattr(self, property, value)
 
         request = db.session.query(Request).get(self.request_id)
+        request_line = db.session.query(RequestLine).get(self.request_item_id)
         self.department_id = request.department_id
         item = db.session.query(Item).get(self.item_id)
         self.category_id = item.category_id
 
         item.qty = item.qty - int(self.quantity) if item.qty else (0 - int(self.quantity))
         item.stock_out = item.stock_out + int(self.quantity) if item.stock_out else int(self.quantity)
+        request_line.stock_in = request_line.stock_in + int(self.quantity) if request_line.stock_in else int(
+            self.quantity)
 
     def __repr__(self):
         return str(self.name)
@@ -57,3 +60,29 @@ class Release(db.Model, UserMixin):
             if hasattr(self, key):
                 if getattr(self, key) != value:
                     setattr(self, key, value)
+
+
+def update_requisition_status_listener(mapper, connection, target):
+    request = db.session.query(Request).get(target.request_id)
+    pprint(target.request)
+    pprint(request)
+    qty = 0
+    stockin = 0
+    for i in request.request_lines:
+        qty += int(i.qty) if i.qty else 0
+        stockin += int(i.stock_in) if i.stock_in else 0
+
+    if stockin >= qty:
+        status = RequestStatusEnum.done.value
+    else:
+        status = RequestStatusEnum.partial.value
+
+    table = Request.__table__
+    connection.execute(
+        table.update().
+            where(Request.id == target.request_id).
+            values(status=status)
+    )
+
+
+event.listen(Release, 'after_insert', update_requisition_status_listener)

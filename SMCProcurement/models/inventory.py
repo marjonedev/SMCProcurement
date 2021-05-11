@@ -102,5 +102,4 @@ def generate_number_listener_inventory(mapper, connection, target):
             values(number="INV%05d" % target.id)
     )
 
-
 event.listen(Inventory, 'after_insert', generate_number_listener_inventory)

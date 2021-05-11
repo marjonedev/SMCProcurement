@@ -92,8 +92,10 @@ class Request(db.Model, UserMixin):
 
         if self.status == 1:
             label = "Draft"
-        elif 1 < self.status < 6:
+        elif 1 < self.status < 5:
             label = "Pending for Approval"
+        elif self.status == 5:
+            label = "Waiting for availability"
         elif self.status == 6:
             label = "Partially Done"
         else:
@@ -165,6 +167,7 @@ class RequestLine(db.Model, UserMixin):
     qty = Column(Integer, default=1)
     unit_price = Column(Numeric(precision=10, scale=2), default=0.0)
     total = Column(Numeric(precision=10, scale=2), default=0.0)
+    stock_in = Column(Integer, default=0)
 
     def __init__(self, **kwargs):
 
