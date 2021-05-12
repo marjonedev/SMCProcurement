@@ -1,5 +1,5 @@
 from SMCProcurement.department import blueprint
-from flask import render_template, redirect, url_for, request, flash
+from flask import render_template, redirect, url_for, request, flash, jsonify
 from flask_login import login_required, current_user
 from SMCProcurement import login_manager, db
 from jinja2 import TemplateNotFound
@@ -56,3 +56,9 @@ def delete_department(id):
         except Exception as msg:
             flash('Error: Unable to delete department, {}. '.format(msg), "error")
             return redirect(url_for('department_blueprint.departments'))
+
+@blueprint.route('/api/departments', methods=["GET"])
+@login_required
+def api_get_departments():
+    departments = db.session.query(Department).all()
+    return jsonify([i.toDict() for i in departments])

@@ -26530,6 +26530,10 @@ header .logo{
     font-size: 14px;
 }
 
+.badge-12{
+    font-size: 12px;
+}
+
 .badge-draft {
     color: #212529;
     background-color: #f8f9fa;

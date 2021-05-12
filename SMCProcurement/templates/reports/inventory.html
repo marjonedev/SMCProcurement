@@ -1,0 +1,86 @@
+{% extends "layouts/base.html" %}
+
+{% block title %} Inventory Report {% endblock %}
+
+<!-- Specific CSS goes HERE -->
+{% block stylesheets %}
+  <link rel="stylesheet" type="text/css" href="/static/assets/lib/DataTables/datatables.min.css"/>
+{% endblock stylesheets %}
+
+{% block content %}
+
+	<!-- [ Main Content ] start -->
+	<div class="pcoded-main-container">
+		<div class="pcoded-content">
+			<!-- [ breadcrumb ] start -->
+			<div class="page-header">
+				<div class="page-block">
+					<div class="row align-items-center">
+						<div class="col-md-12">
+							<div class="page-header-title">
+								<h5 class="m-b-10">Inventory Report</h5>
+							</div>
+							<ul class="breadcrumb">
+								<li class="breadcrumb-item"><a href="../index.html"><i class="feather icon-home"></i></a></li>
+								<li class="breadcrumb-item"><a href="#!">Inventory Report</a></li>
+							</ul>
+						</div>
+					</div>
+				</div>
+			</div>
+			<!-- [ breadcrumb ] end -->
+			<!-- [ Main Content ] start -->
+			<div class="row">
+				<!-- [ sample-page ] start -->
+				<div class="col-sm-12">
+					<div class="card">
+						<div class="card-header">
+              <div class="card-header-right">
+
+              </div>
+						</div>
+						<div class="card-body">
+							<div class="card-body table-border-style">
+              {% include 'includes/flashes.html' %}
+                <div class="table-responsive">
+                    <table class="table hover table-hover table-sm">
+                        <thead>
+                            <tr>
+                                <th>Name</th>
+                                <th width="100">Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                          {% for item in items %}
+
+                          {% endfor %}
+                          {% if not items %}
+                            <tr>
+                              <td colspan="2" class="text-center">
+                                No Categories
+                              </td>
+                            </tr>
+                          {% endif %}
+                        </tbody>
+                    </table>
+                </div>
+              </div>
+						</div>
+					</div>
+				</div>
+				<!-- [ sample-page ] end -->
+			</div>
+			<!-- [ Main Content ] end -->
+		</div>
+	</div>
+	<!-- [ Main Content ] end -->
+
+{% endblock content %}
+
+<!-- Specific Page JS goes HERE  -->
+{% block javascripts %}
+<script type="text/javascript" src="/static/assets/lib/DataTables/datatables.min.js"></script>
+<script type="text/javascript">
+  $('.table').dataTable();
+</script>
+{% endblock javascripts %}

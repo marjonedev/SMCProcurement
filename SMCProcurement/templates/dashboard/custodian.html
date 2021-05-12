@@ -70,7 +70,7 @@
                     <td>{{ list.number }}</td>
                     <td>{{ list.date_request | datepretty }}</td>
                     <td>{{ list.date_needed | datepretty }}</td>
-                    <td><span class="badge badge-status badge-{{ RequestStatusList[list.status]['name'] }}">{{ RequestStatusList[list.status]['description'] }}</span></td>
+                    <td><span class="badge badge-12 badge-status badge-{{ RequestStatusList[list.status]['name'] }}">{{ RequestStatusList[list.status]['description'] }}</span></td>
                   </tr>
                 {% endfor %}
                 {% else %}

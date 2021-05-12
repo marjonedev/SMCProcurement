@@ -53,6 +53,12 @@
                       </div>
                   </div>
                   <div class="form-group row">
+                      <label for="department_id" class="col-sm-3 col-form-label">Department</label>
+                      <div class="col-sm-9">
+                        {{ form.department_id(class="form-control selectize", required=True) }}
+                      </div>
+                  </div>
+                  <div class="form-group row">
                       <label for="category_id" class="col-sm-3 col-form-label">Category</label>
                       <div class="col-sm-9">
                         {{ form.category_id(class="form-control selectize", required=True) }}

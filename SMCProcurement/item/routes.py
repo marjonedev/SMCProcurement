@@ -7,7 +7,7 @@ from SMCProcurement import login_manager, db
 from jinja2 import TemplateNotFound
 
 from SMCProcurement.item.forms import ItemForm
-from SMCProcurement.models import ItemCategory, Supplier
+from SMCProcurement.models import ItemCategory, Supplier, Department
 from SMCProcurement.models.item import Item
 
 
@@ -24,6 +24,7 @@ def create_item():
     form = ItemForm()
     form.category_id.choices = [(d.id, d.name) for d in ItemCategory.query.all()]
     form.supplier_id.choices = [(d.id, d.name) for d in Supplier.query.all()]
+    form.department_id.choices = [(d.id, d.name) for d in Department.query.all()]
 
     if 'create_item' in request.form:
         item = Item(**request.form)
@@ -43,6 +44,7 @@ def edit_item(id):
     form = ItemForm(obj=item)
     form.category_id.choices = [(d.id, d.name) for d in ItemCategory.query.all()]
     form.supplier_id.choices = [(d.id, d.name) for d in Supplier.query.all()]
+    form.department_id.choices = [(d.id, d.name) for d in Department.query.all()]
 
     if 'edit_item' in request.form:
         item.update(**request.form)

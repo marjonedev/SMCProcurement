@@ -30,6 +30,22 @@ function loadSelectSupplier(){
         }
     });
 }
+function loadSelectDepartment(){
+    $.ajax({
+        url: '/api/departments',
+        type: 'GET',
+        success: function(options) {
+            $('select[name="department_id"]').selectize({
+                valueField: 'id',
+                labelField: 'name',
+                searchField: 'name',
+                preload: true,
+                options: options,
+                create: false,
+            });
+        }
+    });
+}
 
 function appendItemToInventory(id, data){
         let item_code = data.item_code == "None" ? "" : data.item_code;
@@ -85,6 +101,7 @@ $(function(){
                 {"data": "model", "visible": false, "searchable": true},
                 {"data": "serial", "visible": false, "searchable": true},
                 {"data": "description", "visible": false, "searchable": true},
+                {"data": "department"},
                 {"data": "category"},
                 {"data": "supplier"},
                 {"data": "qty", className: "text-right", render: function (data){

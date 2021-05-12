@@ -16,6 +16,7 @@ from SMCProcurement import db
 class ItemForm(FlaskForm):
     name = TextField('Name', id="name", validators=[DataRequired()])
     category_id = SelectField('Category', id="category_id", validators=[DataRequired()])
+    department_id = SelectField('Department', id="department_id", validators=[DataRequired()])
     supplier_id = SelectField('Supplier', id="supplier_id", validators=[DataRequired()])
     item_code = TextField('Item Code', id="item_code")
     serial = TextField('Serial', id="serial")

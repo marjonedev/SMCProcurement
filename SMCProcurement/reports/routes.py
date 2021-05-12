@@ -17,5 +17,11 @@ from flask_login import (
 @blueprint.route('/reports/inventory')
 @login_required
 def inventory_reports():
-    return render_template('reports/inventory.html')
+    items = []
+    return render_template('reports/inventory.html', items=items)
+
+@blueprint.route('/reports/request')
+@login_required
+def request_reports():
+    return render_template('reports/request.html')
 
