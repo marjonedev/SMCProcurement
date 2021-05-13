@@ -16,7 +16,7 @@ class Item(db.Model, UserMixin):
     __tablename__ = 'Item'
 
     id = Column(Integer, primary_key=True)
-    name = Column(String, unique=True)
+    name = Column(String)
     category_id = Column(Integer, ForeignKey('ItemCategory.id'), nullable=False)
     category = relationship('ItemCategory')
     department_id = Column(Integer, ForeignKey('Department.id'), nullable=False)
