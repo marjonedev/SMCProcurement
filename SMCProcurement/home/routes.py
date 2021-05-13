@@ -40,12 +40,12 @@ def index():
         }
         recent = db.session.query(Request) \
             .filter(Request.user_id == current_user.id)\
-            .order_by(Request.date_request.desc()).limit(10).all()
+            .order_by(Request.date_request.desc(), Request.number.desc()).limit(10).all()
         pendinglist = db.session.query(Request) \
             .filter(Request.user_id == current_user.id) \
             .filter(Request.status > RequestStatusEnum.draft.value) \
             .filter(Request.status < RequestStatusEnum.vpfinance.value) \
-            .order_by(Request.date_request.desc()).limit(10).all()
+            .order_by(Request.date_request.desc(), Request.number.desc()).limit(10).all()
         request_lists = {
             "recent": recent,
             "pending": pendinglist
@@ -56,12 +56,12 @@ def index():
         recent = db.session.query(Request) \
             .join(RequestType) \
             .filter(RequestType.user_type == current_user.user_type) \
-            .order_by(Request.date_request.desc()).limit(10).all()
+            .order_by(Request.date_request.desc(), Request.number.desc()).limit(10).all()
         pendinglist = db.session.query(Request) \
             .join(RequestType) \
             .filter(RequestType.user_type == current_user.user_type) \
             .filter(Request.status == RequestStatusEnum.request.value)\
-            .order_by(Request.date_request.desc()).limit(10).all()
+            .order_by(Request.date_request.desc(), Request.number.desc()).limit(10).all()
         request_lists = {
             "recent": recent,
             "pending": pendinglist
@@ -108,10 +108,10 @@ def index():
             "total": total,
         }
         recent = db.session.query(Request) \
-            .order_by(Request.date_request.desc()).limit(10).all()
+            .order_by(Request.date_request.desc(), Request.number.desc()).limit(10).all()
         pendinglist = db.session.query(Request) \
             .filter(Request.status == RequestStatusEnum.vp.value)\
-            .order_by(Request.date_request.desc()).limit(10).all()
+            .order_by(Request.date_request.desc(), Request.number.desc()).limit(10).all()
         request_lists = {
             "recent": recent,
             "pending": pendinglist
@@ -135,10 +135,10 @@ def index():
             "total": total,
         }
         recent = db.session.query(Request) \
-            .order_by(Request.date_request.desc()).limit(10).all()
+            .order_by(Request.date_request.desc(), Request.number.desc()).limit(10).all()
         pendinglist = db.session.query(Request) \
             .filter(Request.status == RequestStatusEnum.president.value) \
-            .order_by(Request.date_request.desc()).limit(10).all()
+            .order_by(Request.date_request.desc(), Request.number.desc()).limit(10).all()
         request_lists = {
             "recent": recent,
             "pending": pendinglist
@@ -164,9 +164,9 @@ def index():
             "total": total,
         }
         recent = db.session.query(Request) \
-            .order_by(Request.date_request.desc()).limit(10).all()
+            .order_by(Request.date_request.desc(), Request.number.desc()).limit(10).all()
         inventories = db.session.query(Inventory) \
-            .order_by(Inventory.date_time.desc()).limit(10).all()
+            .order_by(Inventory.date_time.desc(), Inventory.number.desc()).limit(10).all()
         request_lists = {
             "recent": recent,
             "inventories": inventories
@@ -191,13 +191,13 @@ def index():
             "total": total,
         }
         recent = db.session.query(Request) \
-            .order_by(Request.date_request.desc()).limit(10).all()
+            .order_by(Request.date_request.desc(), Request.number.desc()).limit(10).all()
         inventories = db.session.query(Inventory) \
-            .order_by(Inventory.date_time.desc()).limit(10).all()
+            .order_by(Inventory.date_time.desc(), Inventory.number.desc()).limit(10).all()
         pendinglist = db.session.query(Request) \
             .filter(Request.status > RequestStatusEnum.draft.value) \
             .filter(Request.status < RequestStatusEnum.vpfinance.value) \
-            .order_by(Request.date_request.desc()).limit(10).all()
+            .order_by(Request.date_request.desc(), Request.number.desc()).limit(10).all()
         request_lists = {
             "recent": recent,
             "inventories": inventories,
