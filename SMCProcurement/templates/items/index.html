@@ -44,7 +44,7 @@
 							<div class="card-body table-border-style">
               {% include 'includes/flashes.html' %}
                 <div class="table-responsive">
-                    <table class="table hover table-hover table-sm">
+                    <table class="table hover table-hover table-sm w-100">
                         <thead>
                             <tr>
                                 <th>Name</th>
@@ -55,7 +55,7 @@
                                 <th>Brand</th>
                                 <th>Model</th>
                                 <th>Description</th>
-                                <th class="text-right">Qty<br/>On Stock</th>
+                                <th class="text-right">Qty<br/>On Hand</th>
                                 <th class="text-right">Unit<br/>Price</th>
                             </tr>
                         </thead>
@@ -108,7 +108,8 @@
                 "visible": false,
                 "searchable": true
             }
-        ]
+        ],
+      "sScrollX": '100%'
   });
 
   $('.table tbody').on('click', 'tr', function (e) {

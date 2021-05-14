@@ -5,6 +5,7 @@
 <!-- Specific CSS goes HERE -->
 {% block stylesheets %}
   <link rel="stylesheet" type="text/css" href="/static/assets/lib/DataTables/datatables.min.css"/>
+  <link rel="stylesheet" href="{{ url_for("static", filename="assets/css/plugins/flatpickr.theme.material_blue.css") }}" />
 {% endblock stylesheets %}
 
 {% block content %}
@@ -35,35 +36,78 @@
 				<div class="col-sm-12">
 					<div class="card">
 						<div class="card-header">
-              <div class="card-header-right">
-
-              </div>
+              <form action="" method="POST">
+                  <div class="form-row align-items-center">
+                    <div class="col-auto">
+                      <label for="report_by">Reports By</label>
+                      {{ form.report_by(class="form-control") }}
+                    </div>
+                    <div class="col-auto">
+                      <label for="report_date">Select Date</label>
+                      <input id="report_date"  class="form-control" value="" required="required">
+                      {{ form.start_date(class="start_date") }}
+                      {{ form.end_date(class="end_date") }}
+                    </div>
+                    <div class="col-auto">
+                      <label for="generate">&nbsp;</label>
+                      <button type="submit" id="generate" name="generate_report" class="btn btn-primary form-control">Generate</button>
+                    </div>
+                  </div>
+                </form>
 						</div>
 						<div class="card-body">
 							<div class="card-body table-border-style">
               {% include 'includes/flashes.html' %}
+
+                {% if by == "1" %}
+                <form action="{{ url_for("report_blueprint.print_inventory_report") }}" target="_blank" method="POST">
+                {% if items %}
                 <div class="table-responsive">
-                    <table class="table hover table-hover table-sm">
+                    <table class="table hover table-hover table-sm w-100">
                         <thead>
                             <tr>
+                                <th>Department</th>
                                 <th>Name</th>
-                                <th width="100">Actions</th>
+                                <th>Category</th>
+                                <th>Supplier</th>
+                                <th>Item Code</th>
+                                <th>Brand</th>
+                                <th>Model</th>
+                                <th>Description</th>
+                                <th class="text-right">Unit Price</th>
+                                <th class="text-right">Qty<br />On Hand</th>
+                                <th class="text-right">Qty<br />Released</th>
+                                <th>Remarks</th>
                             </tr>
                         </thead>
                         <tbody>
                           {% for item in items %}
-
+                          <tr>
+                          <td>{{ item.department.name }}</td>
+                          <td>{{ item.name }}</td>
+                          <td>{{ item.category.name }}</td>
+                          <td>{{ item.supplier.name }}</td>
+                          <td>{{ item.item_code }}</td>
+                          <td>{{ item.brand }}</td>
+                          <td>{{ item.model }}</td>
+                          <td>{{ item.description }}</td>
+                          <td>{{ item.unit_price }}</td>
+                          <td>{{ item.qty }}</td>
+                          <td>{{ item.stock_out }}</td>
+                          <td>
+                            <input type="hidden" name="inventory_items-{{ item.id }}-id" value="{{ item.id }}" />
+                            <input class="form-control wid-150" id="inventory_items-{{ item.id }}-remarks" name="inventory_items-{{ item.id }}-remarks" type="text" value="" />
+                          </td>
+                          </tr>
                           {% endfor %}
-                          {% if not items %}
-                            <tr>
-                              <td colspan="2" class="text-center">
-                                No Categories
-                              </td>
-                            </tr>
-                          {% endif %}
                         </tbody>
                     </table>
                 </div>
+                {% endif %}
+                <button type="submit" name="print_report" class="btn btn-primary">Print Report</button>
+                </form>
+                {% endif %}
+
               </div>
 						</div>
 					</div>
@@ -80,7 +124,35 @@
 <!-- Specific Page JS goes HERE  -->
 {% block javascripts %}
 <script type="text/javascript" src="/static/assets/lib/DataTables/datatables.min.js"></script>
+<script src="{{ url_for("static", filename="assets/js/plugins/flatpickr.min.js") }}"></script>
 <script type="text/javascript">
-  $('.table').dataTable();
+  $('.table').dataTable({
+      searching: false,
+      "ordering": false,
+      "sScrollX": '100%'
+  });
+   $("#report_date").flatpickr({
+        mode: "range",
+        maxDate: "today",
+        dateFormat: "Y-m-d",
+       onChange: function (dates){
+           let start = dates[0] ? dates[0].toISOString() : null;
+           let end = dates[1] ? dates[1].toISOString() : null;
+           console.log(start, end)
+           if(start){
+               start = DateTime.fromISO(start).toISODate()
+           }
+           if(end){
+               end = DateTime.fromISO(end).toISODate();
+           }
+           console.log(start, end)
+           $(".start_date").val(start)
+           $(".end_date").val(end)
+       }
+    });
+  $('.flatpickr-input:visible').on('focus', function () {
+      $(this).blur()
+  })
+  $('.flatpickr-input:visible').prop('readonly', false)
 </script>
 {% endblock javascripts %}

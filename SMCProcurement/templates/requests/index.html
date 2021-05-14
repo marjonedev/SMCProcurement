@@ -47,7 +47,7 @@
               {% include 'includes/flashes.html' %}
 
                 <div class="table-responsive">
-                    <table class="table hover table-hover table-sm">
+                    <table class="table hover table-hover table-sm w-100">
                         <thead>
                             <tr>
                                 <th>Reference No.</th>
@@ -98,7 +98,8 @@ $(function (){
                     return DateTime.fromISO(data).setLocale("en").toLocaleString(DateTime.DATE_FULL);
                 },
                 "targets": [2, 3]
-            },]
+            },],
+      "sScrollX": '100%'
   });
    $('.table tbody').on('click', 'tr', function (e) {
       e.preventDefault();

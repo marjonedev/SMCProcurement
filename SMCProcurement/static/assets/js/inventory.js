@@ -93,6 +93,11 @@ $(function(){
                 "contentType":"application/json"
             },
             "columns": [
+                {"data": "id", "render": function (data, type, row, meta){
+                    str = "<input class='item-data' type='hidden' value='"+JSON.stringify(row)+"'>";
+                    str += "<button class='btn btn-dark btn-sm select-item' data-id='"+data+"'>Select</button>";
+                    return str
+                }},
                 {"data": "name"},
                 {"data": "item_code", render: function (data){
                     return data == "None" ? "" : data;
@@ -109,13 +114,9 @@ $(function(){
                 }},
                 {"data": "unit_price", className: "text-right", "render": function (data, type, row, meta){
                         return  "&#8369; "+ data;
-                }},
-                {"data": "id", "render": function (data, type, row, meta){
-                    str = "<input class='item-data' type='hidden' value='"+JSON.stringify(row)+"'>";
-                    str += "<button class='btn btn-dark btn-sm select-item' data-id='"+data+"'>Select</button>";
-                    return str
                 }}
-            ]
+            ],
+            "sScrollX": '100%'
         });
     });
 
