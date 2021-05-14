@@ -26650,3 +26650,7 @@ header .logo{
 .selectize-control.custom-options .selectize-dropdown-content{
     padding: 5px 8px;
 }
+
+.table.table-print td, .table.table-print th{
+    padding: 0.5rem !important;
+}

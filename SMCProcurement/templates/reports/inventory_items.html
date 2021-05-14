@@ -1,0 +1,59 @@
+<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <meta charset="utf-8">
+    <meta name="pdfkit-page-size" content="Legal"/>
+    <meta name="pdfkit-orientation" content="Landscape"/>
+    <link rel="stylesheet" href="http://smcprocurement.herokuapp.com/static/assets/css/style.css">
+</head>
+<body class="bg-white">
+    <div class="container w-100" style="page-break-before: always; max-width: 100% !important;">
+      <div class="row">
+        <div class="col-3"></div>
+        <div class="col-6 text-center">
+          <h6>ST. MICHAEL'S COLLEGE</h6>
+          <p>Quezon Avenue, Iligan City</p>
+          <h4 class="pt-2">INVENTORY REPORT</h4>
+          <p>From {{ start_date }} to {{ end_date }}</p>
+        </div>
+        <div class="col-3"></div>
+      </div>
+      <div class="row pt-4">
+        <div class="col-12">
+          <table class="table table-bordered table-condensed table-print">
+            <thead>
+              <th>Name</th>
+              <th>Department</th>
+              <th>Category</th>
+              <th>Supplier</th>
+              <th>Item Code</th>
+              <th>Brand</th>
+              <th>Model</th>
+              <th>Description</th>
+              <th class="text-right" width="100">Unit Price</th>
+              <th class="text-right" width="80">Qty<br />On Hand</th>
+              <th class="text-right" width="80">Qty<br />Released</th>
+            </thead>
+            <tbody>
+              {% for item in items %}
+              <tr>
+                <td>{{ item.name }}</td>
+                <td>{{ item.department.name }}</td>
+                <td>{{ item.category.name }}</td>
+                <td>{{ item.supplier.name }}</td>
+                <td>{{ item.item_code }}</td>
+                <td>{{ item.brand }}</td>
+                <td>{{ item.model }}</td>
+                <td>{{ item.description }}</td>
+                <td class="text-right">&#8369; {{ item.unit_price }}</td>
+                <td class="text-right">{{ item.qty }}</td>
+                <td class="text-right">{{ item.stock_out }}</td>
+              </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+</body>
+</html>

@@ -60,7 +60,7 @@
               {% include 'includes/flashes.html' %}
 
                 {% if by == "1" %}
-                <form action="{{ url_for("report_blueprint.print_inventory_report") }}" target="_blank" method="POST">
+                <form action="{{ url_for("report_blueprint.print_inventory_report") }}" target="_blank" method="POST" id="reportTable">
                 {% if items %}
                 <div class="table-responsive">
                     <table class="table hover table-hover table-sm w-100">
@@ -104,7 +104,10 @@
                     </table>
                 </div>
                 {% endif %}
-                <button type="submit" name="print_report" class="btn btn-primary">Print Report</button>
+                {{ form.start_date(class="start_date") }}
+                {{ form.end_date(class="end_date") }}
+                <input type="hidden" name="report_by" value="{{ form.report_by.data }}">
+                <input type="hidden" name="print_report" value="1">
                 </form>
                 {% endif %}
 
@@ -124,12 +127,23 @@
 <!-- Specific Page JS goes HERE  -->
 {% block javascripts %}
 <script type="text/javascript" src="/static/assets/lib/DataTables/datatables.min.js"></script>
+<script type="text/javascript" src="/static/assets/lib/DataTables/dataTables.buttons.min.js"></script>
 <script src="{{ url_for("static", filename="assets/js/plugins/flatpickr.min.js") }}"></script>
 <script type="text/javascript">
   $('.table').dataTable({
       searching: false,
       "ordering": false,
-      "sScrollX": '100%'
+      "sScrollX": '100%',
+      dom: '<"row"<"col-sm-12 col-md-8"l><"col-sm-12 col-md-4 text-right"B>>frt<"row"<"col-sm-12 col-md-5"i><"col-sm-12 col-md-7"p>>',
+      buttons: [
+            {
+                text: 'Print / Download',
+                className: 'btn btn-info pl-3 pr-3',
+                action: function ( e, dt, node, config ) {
+                    $("#reportTable").trigger("submit");
+                }
+            }
+        ]
   });
    $("#report_date").flatpickr({
         mode: "range",

@@ -14,14 +14,24 @@ from SMCProcurement import db
 
 ## login and registration
 class InventoryReportForm(FlaskForm):
+    class Meta:
+        csrf = False
     report_by = SelectField('Name', id="report_by", choices=[(1, "All Items"), (2, "Departments")])
-    start_date = HiddenField('Start Date', id="start_date")
-    end_date = HiddenField('Start Date', id="end_date")
+    start_date = HiddenField('Start Date')
+    end_date = HiddenField('End Date')
 
 class InventoryItemPrintForm(FlaskForm):
+    class Meta:
+        csrf = False
     remarks = StringField("Remarks")
     id = HiddenField('ID')
 
 class InventoryPrintForm(FlaskForm):
+    class Meta:
+        csrf = False
+
+    start_date = HiddenField('Start Date')
+    end_date = HiddenField('End Date')
+    report_by = HiddenField('Report By')
     inventory_items = FieldList(FormField(InventoryItemPrintForm))
 
