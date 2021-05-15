@@ -206,12 +206,14 @@ class RequestLine(db.Model, UserMixin):
             return "Pending for Approval"
         elif self.request.status == RequestStatusEnum.vpfinance.value:
             return "Approved"
+        elif self.request.status == RequestStatusEnum.denied.value:
+            return "Unapproved"
         elif self.request.status == RequestStatusEnum.partial.value:
+            if self.stock_in > self.qty:
+                return "Released"
             return "Partially Released"
         elif self.request.status == RequestStatusEnum.done.value:
             return "Released"
-        elif self.request.status == RequestStatusEnum.denied.value:
-            return "Unapproved"
         else: return ""
 
     def toDataTable(self):
