@@ -181,4 +181,9 @@ def datepretty(value, format="%B %d, %Y"):
     local_dt = value.astimezone(tz)
     return local_dt.strftime(format)
 
+@blueprint.app_template_filter()
+def stritdp(value, format="%B %d, %Y"):
+    dt = datetime.strptime(value, '%Y-%m-%d')
+    return dt.strftime(format)
+
 

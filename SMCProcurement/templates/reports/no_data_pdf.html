@@ -14,7 +14,6 @@
           <h6>ST. MICHAEL'S COLLEGE</h6>
           <p>Quezon Avenue, Iligan City</p>
           <h4 class="pt-2">INVENTORY REPORT</h4>
-          <p>From {{ start_date }} to {{ end_date }}</p>
         </div>
         <div class="col-3"></div>
       </div>
@@ -35,21 +34,7 @@
               <th class="text-right" width="80">Qty<br />Released</th>
             </thead>
             <tbody>
-              {% for item in items %}
-              <tr>
-                <td>{{ item.name }}</td>
-                <td>{{ item.department.name }}</td>
-                <td>{{ item.category.name }}</td>
-                <td>{{ item.supplier.name }}</td>
-                <td>{{ item.item_code }}</td>
-                <td>{{ item.brand }}</td>
-                <td>{{ item.model }}</td>
-                <td>{{ item.description }}</td>
-                <td class="text-right">&#8369; {{ item.unit_price }}</td>
-                <td class="text-right">{{ item.qty }}</td>
-                <td class="text-right">{{ item.stock_out }}</td>
-              </tr>
-              {% endfor %}
+              <td colspan="11" class="text-center">No Data Available.</td>
             </tbody>
           </table>
         </div>

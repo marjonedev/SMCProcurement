@@ -36,7 +36,7 @@
 				<div class="col-sm-12">
 					<div class="card">
 						<div class="card-header">
-              <form action="" method="POST">
+              <form action="" method="POST" class="border border-gray p-2 bg-light">
                   <div class="form-row align-items-center">
                     <div class="col-auto">
                       <label for="report_by">Reports By</label>
@@ -44,7 +44,7 @@
                     </div>
                     <div class="col-auto">
                       <label for="report_date">Select Date</label>
-                      <input id="report_date"  class="form-control" value="" required="required">
+                      <input id="report_date"  class="form-control" style="min-width: 230px;" value="" required="required">
                       {{ form.start_date(class="start_date") }}
                       {{ form.end_date(class="end_date") }}
                     </div>
@@ -56,12 +56,12 @@
                 </form>
 						</div>
 						<div class="card-body">
-							<div class="card-body table-border-style">
+							<div class="card-body table-border-style p-0">
               {% include 'includes/flashes.html' %}
 
-                {% if by == "1" %}
                 <form action="{{ url_for("report_blueprint.print_inventory_report") }}" target="_blank" method="POST" id="reportTable">
                 {% if items %}
+                  <h6 class="text-muted mb-3">Result from {{ form.start_date.data | stritdp }} to {{ form.end_date.data | stritdp }}</h6>
                 <div class="table-responsive">
                     <table class="table hover table-hover table-sm w-100">
                         <thead>
@@ -91,19 +91,18 @@
                           <td>{{ item.brand }}</td>
                           <td>{{ item.model }}</td>
                           <td>{{ item.description }}</td>
-                          <td>{{ item.unit_price }}</td>
-                          <td>{{ item.qty }}</td>
-                          <td>{{ item.stock_out }}</td>
+                          <td class="text-right">&#8369; {{ item.unit_price | default(0.00) }}</td>
+                          <td class="text-right">{{ item.qty | default(0) }}</td>
+                          <td class="text-right">{{ item.stock_out | default(0) }}</td>
                           <td>
                             <input type="hidden" name="inventory_items-{{ item.id }}-id" value="{{ item.id }}" />
-                            <input class="form-control wid-150" id="inventory_items-{{ item.id }}-remarks" name="inventory_items-{{ item.id }}-remarks" type="text" value="" />
+                            <input class="form-control wid-150" id="inventory_items-{{ item.id }}-remarks" name="inventory_items-{{ item.id }}-remarks" type="text" value=""  data-toggle="tooltip" data-placement="left" title="" data-original-title="{{ item.name }}" />
                           </td>
                           </tr>
                           {% endfor %}
                         </tbody>
                     </table>
                 </div>
-                {% endif %}
                 {{ form.start_date(class="start_date") }}
                 {{ form.end_date(class="end_date") }}
                 <input type="hidden" name="report_by" value="{{ form.report_by.data }}">
@@ -148,7 +147,7 @@
    $("#report_date").flatpickr({
         mode: "range",
         maxDate: "today",
-        dateFormat: "Y-m-d",
+        dateFormat: "F d, Y",
        onChange: function (dates){
            let start = dates[0] ? dates[0].toISOString() : null;
            let end = dates[1] ? dates[1].toISOString() : null;
