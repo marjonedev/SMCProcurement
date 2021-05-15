@@ -81,8 +81,7 @@
               <a href="/users" class="nav-link "><span class="pcoded-micon"><i class="feather icon-users"></i></span><span class="pcoded-mtext">Users</span></a>
           </li>
         {% endif %}
-        {% if current_user.is_admin %}
-{#          This is just sample pages#}
+        {#{% if current_user.is_admin %}
 					<li class="nav-item pcoded-menu-caption">
 						<label>UI Element</label>
 					</li>
@@ -141,11 +140,11 @@
 						<label>Action zone</label>
 					</li>
 					<li class="nav-item">
-					    <a href="{{ url_for('base_blueprint.logout') }}" 
+					    <a href="{{ url_for('base_blueprint.logout') }}"
 						   class="nav-link "><span class="pcoded-micon">
 						   <i class="feather icon-log-out"></i></span><span class="pcoded-mtext">Logout</span></a>
 					</li>
-        {% endif %}
+        {% endif %}#}
 				</ul>
 
 			</div>
