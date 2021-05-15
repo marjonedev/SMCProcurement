@@ -209,7 +209,7 @@ class RequestLine(db.Model, UserMixin):
         elif self.request.status == RequestStatusEnum.denied.value:
             return "Unapproved"
         elif self.request.status == RequestStatusEnum.partial.value:
-            if self.stock_in > self.qty:
+            if self.stock_in >= self.qty:
                 return "Released"
             return "Partially Released"
         elif self.request.status == RequestStatusEnum.done.value:
