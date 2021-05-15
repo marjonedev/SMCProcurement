@@ -44,7 +44,7 @@
                     </div>
                     <div class="col-auto">
                       <label for="report_date">Select Date</label>
-                      <input id="report_date"  class="form-control" style="min-width: 230px;" value="" required="required">
+                      <input id="report_date"  class="form-control" style="min-width: 300px;" value="" required="required">
                       {{ form.start_date(class="start_date") }}
                       {{ form.end_date(class="end_date") }}
                     </div>
@@ -63,7 +63,7 @@
                 {% if items %}
                   <h6 class="text-muted mb-3">Result from {{ form.start_date.data | stritdp }} to {{ form.end_date.data | stritdp }}</h6>
                 <div class="table-responsive">
-                    <table class="table hover table-hover table-sm w-100">
+                    <table class="table table-bordered hover table-hover table-sm w-100">
                         <thead>
                             <tr>
                                 <th>Department</th>
@@ -95,14 +95,17 @@
                           <td class="text-right">{{ item.qty | default(0) }}</td>
                           <td class="text-right">{{ item.stock_out | default(0) }}</td>
                           <td>
-                            <input type="hidden" name="inventory_items-{{ item.id }}-id" value="{{ item.id }}" />
-                            <input class="form-control wid-150" id="inventory_items-{{ item.id }}-remarks" name="inventory_items-{{ item.id }}-remarks" type="text" value=""  data-toggle="tooltip" data-placement="left" title="" data-original-title="{{ item.name }}" />
+                            <input class="form-control wid-150 itemremark" data-id="{{ item.id }}" type="text" value="" data-toggle="tooltip" data-placement="left" title="" data-original-title="{{ item.name }}" />
                           </td>
                           </tr>
                           {% endfor %}
                         </tbody>
                     </table>
                 </div>
+                  {% for item2 in items %}
+                    <input type="hidden" name="inventory_items-{{ item2.id }}-id" value="{{ item2.id }}" />
+                    <input class="form-control wid-150" id="inventory_items-{{ item2.id }}-remarks" name="inventory_items-{{ item2.id }}-remarks" type="hidden" value="" />
+                  {% endfor %}
                 {{ form.start_date(class="start_date") }}
                 {{ form.end_date(class="end_date") }}
                 <input type="hidden" name="report_by" value="{{ form.report_by.data }}">
@@ -129,7 +132,7 @@
 <script type="text/javascript" src="/static/assets/lib/DataTables/dataTables.buttons.min.js"></script>
 <script src="{{ url_for("static", filename="assets/js/plugins/flatpickr.min.js") }}"></script>
 <script type="text/javascript">
-  $('.table').dataTable({
+  var table = $('.table').dataTable({
       searching: false,
       "ordering": false,
       "sScrollX": '100%',
@@ -144,6 +147,19 @@
             }
         ]
   });
+  $( '.table' ).on( 'change', 'input', function () {
+    //Get the cell of the input
+    var cell = $(this).closest('td');
+
+    //update the input value
+    $(this).attr('value', $(this).val());
+    var id = $(this).data("id");
+    $("#inventory_items-"+id+"-remarks").attr('value', $(this).val());
+
+    //invalidate the DT cache
+    table.cell($(cell)).invalidate().draw();
+
+  } );
    $("#report_date").flatpickr({
         mode: "range",
         maxDate: "today",

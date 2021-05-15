@@ -13,3 +13,20 @@ class InvItem:
         self.qty = item.qty
         self.stock_out = item.stock_out
         self.remarks = [r["remarks"] for r in data if r["id"] == str(item.id)][0]
+
+
+class RQItem:
+    def __init__(self, item, data):
+        self.name = item.name
+        self.department = item.request.department.name
+        self.number = item.request.number
+        self.description = item.description
+        self.user = item.request.user.full_name
+        self.date_request = item.request.date_request
+        self.date_needed = item.request.date_needed
+        self.sy_start = item.request.sy_start
+        self.sy_end = item.request.sy_end
+        self.qty = item.qty
+        self.status = item.status
+        self.unit_price = item.unit_price
+        self.remarks = [r["remarks"] for r in data if r["id"] == str(item.id)][0]

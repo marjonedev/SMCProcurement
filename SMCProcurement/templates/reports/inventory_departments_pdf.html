@@ -5,6 +5,11 @@
     <meta name="pdfkit-page-size" content="Legal"/>
     <meta name="pdfkit-orientation" content="Landscape"/>
     <link rel="stylesheet" href="http://smcprocurement.herokuapp.com/static/assets/css/style.css">
+  <style>
+    div.no-break{
+        page-break-inside: avoid !important;
+    }
+  </style>
 </head>
 <body class="bg-white">
     <div class="container w-100" style="page-break-before: always; max-width: 100% !important;">
@@ -22,21 +27,24 @@
         <div class="col-12">
         {% if items %}
         {% for category, data in items %}
+          <div class="no-break mb-5">
           <h4>{{ category | upper }}</h4>
           {% if data %}
-            <table class="table table-bordered table-condensed table-print mb-5">
-              <thead>
-                <th width="15%">Name</th>
-                <th width="15%">Category</th>
-                <th width="10%">Supplier</th>
-                <th width="8%">Item Code</th>
-                <th width="8%">Brand</th>
-                <th width="8%">Model</th>
-                <th width="20%">Description</th>
+            <table class="table table-bordered table-sm table-print">
+            <thead>
+              <tr>
+                <th class="text-left" width="15%">Name</th>
+                <th class="text-left" width="15%">Category</th>
+                <th class="text-left" width="10%">Supplier</th>
+                <th class="text-left" width="8%">Item Code</th>
+                <th class="text-left" width="8%">Brand</th>
+                <th class="text-left" width="8%">Model</th>
+                <th class="text-left" width="20%">Description</th>
                 <th class="text-right" width="100">Unit Price</th>
                 <th class="text-right" width="80">Qty<br />On Hand</th>
                 <th class="text-right" width="80">Qty<br />Released</th>
-                <th width="16%">Remarks</th>
+                <th class="text-left" width="16%">Remarks</th>
+              </tr>
               </thead>
               <tbody>
                 {% for item in data %}
@@ -57,6 +65,7 @@
               </tbody>
             </table>
           {% endif %}
+          </div>
         {% endfor %}
         {% endif %}
         </div>

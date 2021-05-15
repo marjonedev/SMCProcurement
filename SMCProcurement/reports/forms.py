@@ -35,3 +35,25 @@ class InventoryPrintForm(FlaskForm):
     report_by = HiddenField('Report By')
     inventory_items = FieldList(FormField(InventoryItemPrintForm))
 
+class RequestReportForm(FlaskForm):
+    class Meta:
+        csrf = False
+    report_by = SelectField('Name', id="report_by", choices=[(1, "All Items"), (2, "Departments")])
+    start_date = HiddenField('Start Date')
+    end_date = HiddenField('End Date')
+
+class RequestItemPrintForm(FlaskForm):
+    class Meta:
+        csrf = False
+    remarks = StringField("Remarks")
+    id = HiddenField('ID')
+
+class RequestPrintForm(FlaskForm):
+    class Meta:
+        csrf = False
+
+    start_date = HiddenField('Start Date')
+    end_date = HiddenField('End Date')
+    report_by = HiddenField('Report By')
+    request_items = FieldList(FormField(RequestItemPrintForm))
+

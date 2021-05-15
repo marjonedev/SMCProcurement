@@ -197,6 +197,23 @@ class RequestLine(db.Model, UserMixin):
                 if getattr(self, key) != value:
                     setattr(self, key, value)
 
+    @property
+    def status(self):
+        if self.request.status in [RequestStatusEnum.draft.value,
+                                   RequestStatusEnum.request.value,
+                                   RequestStatusEnum.vp.value,
+                                   RequestStatusEnum.president.value]:
+            return "Pending for Approval"
+        elif self.request.status == RequestStatusEnum.vpfinance.value:
+            return "Approved"
+        elif self.request.status == RequestStatusEnum.partial.value:
+            return "Partially Released"
+        elif self.request.status == RequestStatusEnum.done.value:
+            return "Released"
+        elif self.request.status == RequestStatusEnum.denied.value:
+            return "Unapproved"
+        else: return ""
+
     def toDataTable(self):
         d = {}
 

@@ -1,0 +1,187 @@
+{% extends "layouts/base.html" %}
+
+{% block title %} Requisition Report {% endblock %}
+
+<!-- Specific CSS goes HERE -->
+{% block stylesheets %}
+  <link rel="stylesheet" type="text/css" href="/static/assets/lib/DataTables/datatables.min.css"/>
+  <link rel="stylesheet" href="{{ url_for("static", filename="assets/css/plugins/flatpickr.theme.material_blue.css") }}" />
+{% endblock stylesheets %}
+
+{% block content %}
+
+	<!-- [ Main Content ] start -->
+	<div class="pcoded-main-container">
+		<div class="pcoded-content">
+			<!-- [ breadcrumb ] start -->
+			<div class="page-header">
+				<div class="page-block">
+					<div class="row align-items-center">
+						<div class="col-md-12">
+							<div class="page-header-title">
+								<h5 class="m-b-10">Requisition Report</h5>
+							</div>
+							<ul class="breadcrumb">
+								<li class="breadcrumb-item"><a href="../index.html"><i class="feather icon-home"></i></a></li>
+								<li class="breadcrumb-item"><a href="#!">Requisition Report</a></li>
+							</ul>
+						</div>
+					</div>
+				</div>
+			</div>
+			<!-- [ breadcrumb ] end -->
+			<!-- [ Main Content ] start -->
+			<div class="row">
+				<!-- [ sample-page ] start -->
+				<div class="col-sm-12">
+					<div class="card">
+						<div class="card-header">
+              <form action="" method="POST" class="border border-gray p-2 bg-light">
+                  <div class="form-row align-items-center">
+                    <div class="col-auto">
+                      <label for="report_by">Reports By</label>
+                      {{ form.report_by(class="form-control") }}
+                    </div>
+                    <div class="col-auto">
+                      <label for="report_date">Select Date</label>
+                      <input id="report_date"  class="form-control" style="min-width: 300px;" value="" required="required">
+                      {{ form.start_date(class="start_date") }}
+                      {{ form.end_date(class="end_date") }}
+                    </div>
+                    <div class="col-auto">
+                      <label for="generate">&nbsp;</label>
+                      <button type="submit" id="generate" name="generate_report" class="btn btn-primary form-control">Generate</button>
+                    </div>
+                  </div>
+                </form>
+						</div>
+						<div class="card-body">
+							<div class="card-body table-border-style p-0">
+              {% include 'includes/flashes.html' %}
+
+                <form action="{{ url_for("report_blueprint.print_request_report") }}" target="_blank" method="POST" id="reportTable">
+                {% if items %}
+                  <h6 class="text-muted mb-3">Result from {{ form.start_date.data | stritdp }} to {{ form.end_date.data | stritdp }}</h6>
+                <div class="table-responsive">
+                    <table class="table table-bordered hover table-hover table-sm w-100">
+                        <thead>
+                            <tr>
+                                <th>Department</th>
+                                <th>Request No.</th>
+                                <th>Item Name</th>
+                                <th>Description</th>
+                                <th>Requisitor</th>
+                                <th>Request Date</th>
+                                <th>Date Needed</th>
+                                <th>S.Y</th>
+                                <th>Status</th>
+                                <th class="text-right">Quantity</th>
+                                <th class="text-right">Unit Price</th>
+                                <th>Remarks</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                          {% for item in items %}
+                          <tr>
+                          <td>{{ item.request.department.name }}</td>
+                          <td>{{ item.request.number }}</td>
+                          <td>{{ item.name }}</td>
+                          <td>{{ item.description }}</td>
+                          <td>{{ item.request.user.full_name }}</td>
+                          <td>{{ item.request.date_request | datepretty }}</td>
+                          <td>{{ item.request.date_needed | datepretty }}</td>
+                          <td>{{ item.request.sy_start }} - {{ item.request.sy_end }}</td>
+                          <td>{{ item.status }}</td>
+                          <td class="text-right">{{ item.qty | default(0) }}</td>
+                          <td class="text-right">&#8369; {{ item.unit_price | default(0.00) }}</td>
+                          <td>
+                            <input class="form-control wid-150 itemremark" data-id="{{ item.id }}" type="text" value="" data-toggle="tooltip" data-placement="left" title="" data-original-title="{{ item.name }}" />
+                          </td>
+                          </tr>
+                          {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+                  {% for item2 in items %}
+                    <input type="hidden" name="request_items-{{ item2.id }}-id" value="{{ item2.id }}" />
+                    <input class="form-control wid-150" id="request_items-{{ item2.id }}-remarks" name="request_items-{{ item2.id }}-remarks" type="hidden" value="" />
+                  {% endfor %}
+                {{ form.start_date(class="start_date") }}
+                {{ form.end_date(class="end_date") }}
+                <input type="hidden" name="report_by" value="{{ form.report_by.data }}">
+                <input type="hidden" name="print_report" value="1">
+                </form>
+                {% endif %}
+
+              </div>
+						</div>
+					</div>
+				</div>
+				<!-- [ sample-page ] end -->
+			</div>
+			<!-- [ Main Content ] end -->
+		</div>
+	</div>
+	<!-- [ Main Content ] end -->
+
+{% endblock content %}
+
+<!-- Specific Page JS goes HERE  -->
+{% block javascripts %}
+<script type="text/javascript" src="/static/assets/lib/DataTables/datatables.min.js"></script>
+<script type="text/javascript" src="/static/assets/lib/DataTables/dataTables.buttons.min.js"></script>
+<script src="{{ url_for("static", filename="assets/js/plugins/flatpickr.min.js") }}"></script>
+<script type="text/javascript">
+  var table = $('.table').dataTable({
+      searching: false,
+      "ordering": false,
+      "sScrollX": '100%',
+      dom: '<"row"<"col-sm-12 col-md-8"l><"col-sm-12 col-md-4 text-right"B>>frt<"row"<"col-sm-12 col-md-5"i><"col-sm-12 col-md-7"p>>',
+      buttons: [
+            {
+                text: 'Print / Download',
+                className: 'btn btn-info pl-3 pr-3',
+                action: function ( e, dt, node, config ) {
+                    $("#reportTable").trigger("submit");
+                }
+            }
+        ]
+  });
+  $( '.table' ).on( 'change', 'input', function () {
+    //Get the cell of the input
+    var cell = $(this).closest('td');
+
+    //update the input value
+    $(this).attr('value', $(this).val());
+    var id = $(this).data("id");
+    $("#request_items-"+id+"-remarks").attr('value', $(this).val());
+
+    //invalidate the DT cache
+    table.cell($(cell)).invalidate().draw();
+
+  } );
+   $("#report_date").flatpickr({
+        mode: "range",
+        maxDate: "today",
+        dateFormat: "F d, Y",
+       onChange: function (dates){
+           let start = dates[0] ? dates[0].toISOString() : null;
+           let end = dates[1] ? dates[1].toISOString() : null;
+           console.log(start, end)
+           if(start){
+               start = DateTime.fromISO(start).toISODate()
+           }
+           if(end){
+               end = DateTime.fromISO(end).toISODate();
+           }
+           console.log(start, end)
+           $(".start_date").val(start)
+           $(".end_date").val(end)
+       }
+    });
+  $('.flatpickr-input:visible').on('focus', function () {
+      $(this).blur()
+  })
+  $('.flatpickr-input:visible').prop('readonly', false)
+</script>
+{% endblock javascripts %}

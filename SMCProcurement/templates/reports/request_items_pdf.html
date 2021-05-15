@@ -13,7 +13,7 @@
         <div class="col-6 text-center">
           <h6>ST. MICHAEL'S COLLEGE</h6>
           <p>Quezon Avenue, Iligan City</p>
-          <h4 class="pt-2">INVENTORY REPORT</h4>
+          <h4 class="pt-2">REQUISITION REPORT</h4>
           <p>{{ start_date | stritdp }} to {{ end_date | stritdp }}</p>
         </div>
         <div class="col-3"></div>
@@ -23,34 +23,34 @@
           <table class="table table-bordered table-sm table-print">
             <thead>
             <tr>
-              <th class="text-left" width="12%">Name</th>
-              <th class="text-left" width="10%">Department</th>
-              <th class="text-left" width="12%">Category</th>
-              <th class="text-left" width="10%">Supplier</th>
-              <th class="text-left" width="8%">Item Code</th>
-              <th class="text-left" width="8%">Brand</th>
-              <th class="text-left" width="8%">Model</th>
-              <th class="text-left" width="17%">Description</th>
-              <th class="text-right" width="100">Unit Price</th>
-              <th class="text-right" width="80">Qty<br />On Hand</th>
-              <th class="text-right" width="80">Qty<br />Released</th>
-              <th class="text-left" width="15%">Remarks</th>
+              <th class="text-left" width="10%">Item Name</th>
+              <th class="text-left" width="8%">Request No.</th>
+              <th class="text-left" width="8%">Department</th>
+              <th class="text-left" width="12%">Description</th>
+              <th class="text-left" width="10%">Requisitor</th>
+              <th class="text-left" width="8%">Request Date</th>
+              <th class="text-left" width="8%">Date Needed</th>
+              <th class="text-left" width="10%">S.Y</th>
+              <th class="text-left" width="10%">Status</th>
+              <th class="text-right" width="80">Quantity</th>
+              <th class="text-right" width="80">Unit Price</th>
+              <th class="text-left" width="14%">Remarks</th>
             </tr>
             </thead>
             <tbody>
               {% for item in items %}
               <tr>
                 <td>{{ item.name }}</td>
+                <td>{{ item.number }}</td>
                 <td>{{ item.department }}</td>
-                <td>{{ item.category }}</td>
-                <td>{{ item.supplier }}</td>
-                <td>{{ item.item_code }}</td>
-                <td>{{ item.brand }}</td>
-                <td>{{ item.model }}</td>
                 <td>{{ item.description }}</td>
-                <td class="text-right">&#8369; {{ item.unit_price }}</td>
+                <td>{{ item.user }}</td>
+                <td>{{ item.date_request }}</td>
+                <td>{{ item.date_needed }}</td>
+                <td>{{ item.sy_start }} - {{ item.sy_end }}</td>
+                <td>{{ item.status }}</td>
                 <td class="text-right">{{ item.qty }}</td>
-                <td class="text-right">{{ item.stock_out }}</td>
+                <td class="text-right">&#8369; {{ item.unit_price }}</td>
                 <td>{{ item.remarks }}</td>
               </tr>
               {% endfor %}
