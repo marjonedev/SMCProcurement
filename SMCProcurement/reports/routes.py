@@ -62,7 +62,6 @@ def print_inventory_report():
 
     if "print_report" in request.form:
         formData = form.data
-        pprint(formData["inventory_items"])
 
         if formData["report_by"] == "1":
             items = db.session.query(Item) \
@@ -143,7 +142,6 @@ def print_request_report():
 
     if "print_report" in request.form:
         formData = form.data
-        pprint(formData)
         if formData["report_by"] == "1":
             items = db.session.query(RequestLine) \
                 .join(Request) \

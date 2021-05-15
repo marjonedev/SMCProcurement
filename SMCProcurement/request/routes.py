@@ -148,12 +148,9 @@ def edit_request(id):
 
         db.session.commit()
 
-        pprint(searchToDeleteLine)
-        pprint(lineList)
         for sd in searchToDeleteLine:
             if sd.id not in [i for i in lineList]:
-                pprint("to delete")
-                pprint(sd.id)
+
                 db.session.query(RequestLine).filter_by(id=sd.id).delete()
                 db.session.commit()
 

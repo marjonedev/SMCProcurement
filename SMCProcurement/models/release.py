@@ -64,8 +64,7 @@ class Release(db.Model, UserMixin):
 
 def update_requisition_status_listener(mapper, connection, target):
     request = db.session.query(Request).get(target.request_id)
-    pprint(target.request)
-    pprint(request)
+
     qty = 0
     stockin = 0
     for i in request.request_lines:

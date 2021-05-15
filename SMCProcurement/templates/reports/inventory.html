@@ -167,14 +167,12 @@
        onChange: function (dates){
            let start = dates[0] ? dates[0].toISOString() : null;
            let end = dates[1] ? dates[1].toISOString() : null;
-           console.log(start, end)
            if(start){
                start = DateTime.fromISO(start).toISODate()
            }
            if(end){
                end = DateTime.fromISO(end).toISODate();
            }
-           console.log(start, end)
            $(".start_date").val(start)
            $(".end_date").val(end)
        }
