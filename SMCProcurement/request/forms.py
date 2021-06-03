@@ -16,22 +16,15 @@ from SMCProcurement import db
 
 ## login and registration
 class RequestLineForm(FlaskForm):
-    name = StringField("Name")
-    description = StringField("Description")
     qty = IntegerField("Quantity", widget=NumberInput())
-    unit_price = DecimalField("Unit Price", widget=NumberInput(step="any"))
+    unit_price = HiddenField("Unit Price")
+    total = HiddenField("Total")
     id = HiddenField("ID")
+    item_id = HiddenField("Item Id")
 
 class RequestForm(FlaskForm):
-    # department_id = SelectField('Department', id="department_id", validators=[DataRequired()])
     date_needed = DateField('Date Needed', id="date_needed", validators=[DataRequired()])
-    endorsed_by = StringField("Endorsed by", id="endorsed_by")
+    request_type_id = SelectField('Request Type', id="request_type", validators=[DataRequired()])
     request_lines = FieldList(FormField(RequestLineForm), min_entries=1)
     submit_request = SubmitField('Submit')
-
-    # sy_start = TextField('SY From', id="sy_start", default=get_sy()["start"])
-    # sy_end = TextField('SY To', id="sy_end", default=get_sy()["end"])
-    # date_requested = DateField('Request Date', id="date_requested")
-    # user_id = SelectField("Requisitor", id="user_id")
-    # request_type_id = TextField("Request Type", id="request_type_id")
 

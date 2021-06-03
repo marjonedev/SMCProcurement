@@ -26,8 +26,6 @@ class User(db.Model, UserMixin):
     department_id = Column(Integer, ForeignKey('Department.id'))
     department = relationship("Department")
     user_type = Column(Integer, Enum(UserTypeEnum), nullable=False, default=100)
-    request_type_id = Column(Integer, ForeignKey("RequestType.id"))
-    request_type = relationship("RequestType")
 
     def __init__(self, **kwargs):
         for property, value in kwargs.items():

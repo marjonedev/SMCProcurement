@@ -10,7 +10,7 @@ from SMCProcurement import db
 from flask import render_template, redirect, url_for, request, flash, session, abort, make_response
 
 from SMCProcurement.enum.request_status import RequestStatusEnum
-from SMCProcurement.models import Inventory, Item, InventoryItem, RequestLine, Request
+from SMCProcurement.models import Inventory, Item, RequestLine, Request
 from SMCProcurement.pdf.pdf_manager import make_pdf_from_raw_html, make_pdf_from_url, _get_pdfkit_config
 from SMCProcurement.reports import blueprint
 from flask_login import (
@@ -40,14 +40,12 @@ def inventory_reports():
 
         if formData["report_by"] == "1":
             items = db.session.query(Item)\
-                .join(InventoryItem)\
                 .join(Inventory)\
                 .filter(func.DATE(Inventory.date_time) <= end_date)\
                 .filter(func.DATE(Inventory.date_time) >= start_date)\
                 .order_by(Inventory.date_time.asc()).all()
         else:
             items = db.session.query(Item)\
-                .join(InventoryItem)\
                 .join(Inventory)\
                 .filter(func.DATE(Inventory.date_time) <= end_date)\
                 .filter(func.DATE(Inventory.date_time) >= start_date)\
@@ -65,7 +63,6 @@ def print_inventory_report():
 
         if formData["report_by"] == "1":
             items = db.session.query(Item) \
-                .join(InventoryItem) \
                 .join(Inventory) \
                 .filter(func.DATE(Inventory.date_time) <= formData["end_date"]) \
                 .filter(func.DATE(Inventory.date_time) >= formData["start_date"]) \
@@ -74,7 +71,6 @@ def print_inventory_report():
             html = render_template("reports/inventory_items_pdf.html", items=items, start_date=formData["start_date"], end_date=formData["end_date"])
         elif formData["report_by"] == "2":
             items = db.session.query(Item) \
-                .join(InventoryItem) \
                 .join(Inventory) \
                 .filter(func.DATE(Inventory.date_time) <= formData["end_date"]) \
                 .filter(func.DATE(Inventory.date_time) >= formData["start_date"]) \

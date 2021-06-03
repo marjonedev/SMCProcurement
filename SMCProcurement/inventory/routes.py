@@ -7,7 +7,7 @@ from flask import render_template, redirect, url_for, request, flash, session, a
 from SMCProcurement.enum.request_status import RequestStatusEnum
 from SMCProcurement.inventory import blueprint
 from SMCProcurement.inventory.forms import InventoryForm, ReleaseForm
-from SMCProcurement.models import Inventory, Request, InventoryItem, Release
+from SMCProcurement.models import Inventory, Request, Release
 from flask_login import (
     current_user,
     login_required,
@@ -46,8 +46,6 @@ def create_inventory():
                 "purchased_date": line["purchased_date"],
                 "qty": line["qty"]
             }
-            invLine = InventoryItem(**lineData)
-            inventory.inventory_items.append(invLine)
 
         db.session.commit()
 

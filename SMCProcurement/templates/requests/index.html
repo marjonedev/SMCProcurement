@@ -47,7 +47,7 @@
               {% include 'includes/flashes.html' %}
 
                 <div class="table-responsive">
-                    <table class="table hover table-hover table-sm w-100">
+                    <table class="table hover table-hover w-100">
                         <thead>
                             <tr>
                                 <th>Reference No.</th>
@@ -55,7 +55,7 @@
                                 <th>Date Requested</th>
                                 <th>Date Needed</th>
                                 <th>Department</th>
-                                <th>Status</th>
+                                <th width="140">Status</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -66,7 +66,7 @@
                               <td>{{ request.date_request }}</td>
                               <td>{{ request.date_needed }}</td>
                               <td>{{ request.department.name }}</td>
-                              <td><span class="badge badge-status badge-{{ RequestStatusList[request.status]['name'] }}">{{ RequestStatusList[request.status]['description'] }}</span></td>
+                              <td><span class="badge badge-12 badge-{{ RequestStatusList[request.status]['name'] }}">{{ RequestStatusList[request.status]['description'] }}</span></td>
                             </tr>
                           {% endfor %}
                         </tbody>
@@ -92,7 +92,7 @@
 <script type="text/javascript">
 $(function (){
     var table =  $('.table').DataTable({
-      "order": [[ 2, "desc" ], [0, "desc"]],
+      "order": [],
       "columnDefs": [{
                 "render": function ( data, type, row ) {
                     return DateTime.fromISO(data).setLocale("en").toLocaleString(DateTime.DATE_FULL);

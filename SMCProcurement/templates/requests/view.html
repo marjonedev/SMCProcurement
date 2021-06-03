@@ -123,12 +123,12 @@
                         {{ obj.date_needed.strftime('%B %d, %Y') }}
                       </div>
                     </div>
-                    <div class="form-group row">
+                    {#<div class="form-group row">
                       <div class="col-sm-4"><span class="hljs-strong">Endorsed by:</span></div>
                       <div class="col-sm-8">
                         {{ obj.endorsed_by }}
                       </div>
-                    </div>
+                    </div>#}
                     <div class="form-group row">
                       <div class="col-sm-4"><span class="hljs-strong">Status:</span></div>
                       <div class="col-sm-8">
@@ -141,10 +141,11 @@
                 <div class="row pt-3">
                   <div class="col-md-12">
                     <div class="table-responsive">
-                      <table class="table hover table-hover table-sm">
+                      <table class="table hover table-hover">
                         <thead>
                             <tr>
-                                <th>Name</th>
+                                <th width="160">Name</th>
+                                <th width="150">Category</th>
                                 <th>Description</th>
                                 <th width="100" class="text-right">Quantity</th>
                                 <th width="150" class="text-right">Unit Price</th>
@@ -152,12 +153,13 @@
                             </tr>
                         </thead>
                         <tbody>
-                          {% for item in obj.request_lines %}
+                          {% for item in obj_lines %}
                             <tr data-line-id="{{ item.id }}">
-                              <td>{{ item.name }}</td>
-                              <td>{{ item.description }}</td>
+                              <td class="column-wrap">{{ item.item.name }}</td>
+                              <td class="column-wrap">{{ item.item.category.name }}</td>
+                              <td>{{ item.item.description }}</td>
                               <td class="text-right">{{ item.qty }}</td>
-                              <td class="text-right">&#8369; {{ item.unit_price }}</td>
+                              <td class="text-right">&#8369; {{ item.item.unit_price }}</td>
                               <td class="text-right">&#8369; {{ item.total }}</td>
                             </tr>
                           {% endfor %}

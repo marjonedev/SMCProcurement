@@ -26654,3 +26654,29 @@ header .logo{
 .table.table-print td, .table.table-print th{
     padding: 0.5rem !important;
 }
+
+
+div.dataTables_wrapper div.dataTables_filter{
+    text-align: right;
+}
+
+div.dataTables_wrapper div.dataTables_filter input {
+    margin-left: .5em;
+    display: inline-block;
+    width: auto;
+}
+
+div.dataTables_wrapper div.dataTables_length select {
+    width: auto;
+    display: inline-block;
+}
+
+div.dataTables_wrapper div.dataTables_paginate ul.pagination {
+    margin: 2px 0;
+    white-space: nowrap;
+    justify-content: flex-end;
+}
+
+td.column-wrap{
+    white-space: normal !important;
+}

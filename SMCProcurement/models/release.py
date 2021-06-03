@@ -19,7 +19,7 @@ class Release(db.Model, UserMixin):
 
     id = Column(Integer, primary_key=True)
     item_id = Column(Integer, ForeignKey('Item.id'))
-    item = relationship('Item', backref="releases", foreign_keys=[item_id])
+    item = relationship('Item')
     request_item_id = Column(Integer, ForeignKey('RequestLine.id'))
     request_item = relationship('RequestLine', backref="releases", foreign_keys=[request_item_id])
     request_id = Column(Integer, ForeignKey('Request.id'))

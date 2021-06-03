@@ -166,7 +166,7 @@ def index():
         recent = db.session.query(Request) \
             .order_by(Request.date_request.desc(), Request.number.desc()).limit(10).all()
         inventories = db.session.query(Inventory) \
-            .order_by(Inventory.date_time.desc(), Inventory.number.desc()).limit(10).all()
+            .order_by(Inventory.date_time.desc(), Inventory.id.desc()).limit(10).all()
         request_lists = {
             "recent": recent,
             "inventories": inventories
@@ -193,7 +193,7 @@ def index():
         recent = db.session.query(Request) \
             .order_by(Request.date_request.desc(), Request.number.desc()).limit(10).all()
         inventories = db.session.query(Inventory) \
-            .order_by(Inventory.date_time.desc(), Inventory.number.desc()).limit(10).all()
+            .order_by(Inventory.date_time.desc(), Inventory.id.desc()).limit(10).all()
         pendinglist = db.session.query(Request) \
             .filter(Request.status > RequestStatusEnum.draft.value) \
             .filter(Request.status < RequestStatusEnum.vpfinance.value) \

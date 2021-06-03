@@ -53,25 +53,18 @@
                   {{ form.hidden_tag() }}
                   <div class="row">
                     <div class="col-md-6">
-                      {#<div class="form-group row">
-                          <label for="department" class="col-sm-3 col-form-label">Department</label>
+                      <div class="form-group row">
+                          <label for="request_type_id" class="col-sm-3 col-form-label">Request Type</label>
                           <div class="col-sm-9">
-                            {{ form.department_id(class="form-control") }}
+                            {{ form.request_type_id(class="form-control", required=True) }}
                           </div>
-                      </div>#}
+                      </div>
+                    </div>
+                    <div class="col-md-6">
                       <div class="form-group row">
                           <label for="inputEmail3" class="col-sm-3 col-form-label">Date Needed</label>
                           <div class="col-sm-9">
                             {{ form.date_needed(class="form-control flatpickr") }}
-                          </div>
-                      </div>
-                    </div>
-
-                    <div class="col-md-6">
-                      <div class="form-group row">
-                          <label for="department" class="col-sm-3 col-form-label">Endorsed by</label>
-                          <div class="col-sm-9">
-                            {{ form.endorsed_by(class="form-control") }}
                           </div>
                       </div>
                     </div>
@@ -85,47 +78,37 @@
                         <table class="table" id="requestItems">
                           <thead>
                             <th width="">Name</th>
+                            <th width="">Category</th>
                             <th width="">Description</th>
-                            <th class="text-right" width="110">Quantity</th>
                             <th class="text-right" width="125">Unit Price</th>
+                            <th class="text-right" width="100">Quantity</th>
                             <th class="text-right" width="100">Subtotal</th>
                             <th width="80"></th>
                           </thead>
                           <tbody>
 
-                          {% set i = namespace(value=0)  %}
-                          {% for line in form.request_lines %}
-                              <tr id="lines_{{ i.value }}">
-                                <td>
-                                  {{ line.form.name(class="form-control form-control-sm", required=True) }}
-                                </td>
-                                <td>
-                                  {{ line.form.description(class="form-control form-control-sm") }}
-                                </td>
-                                <td class="text-right">
-                                  {{ line.form.qty(class="form-control form-control-sm text-right qty") }}
-                                </td>
-                                <td class="text-right">
-                                  {{ line.form.unit_price(class="form-control form-control-sm text-right price") }}
-                                </td>
-                                {% if line.form.qty.data == None %}
-                                  {% set qty = 0  %}
-                                {% else %}
-                                  {% set qty = line.form.qty.data  %}
-                                {% endif %}
-                                {% if line.form.unit_price.data == None %}
-                                  {% set unit_price = 0  %}
-                                {% else %}
-                                  {% set unit_price = line.form.unit_price.data  %}
-                                {% endif %}
-                                <td class="text-right"><input type="text" class="form-control-sm form-control-plaintext text-right total" readonly="readonly" value="{{ "%.2f"|format(qty * unit_price) }}"></td>
-                                <td>
-                                  {{ line.form.hidden_tag() }}
-                                  <button type="button" role="button" class="btn delete btn-danger feather icon-delete"></button>
-                                </td>
-                              </tr>
-                            {% set i.value = i.value + 1 %}
+                          {% for line in obj_lines %}
+                            <tr id="lines_{{ line.id }}">
+                              <td>{{ line.item.name }}</td>
+                              <td>{{ line.item.category.name }}</td>
+                              <td>{{ line.item.description }}</td>
+                              <td class="text-right">
+                                <input class="form-control-sm form-control-plaintext text-right price" id="request_lines-{{ line.id }}-unit_price" name="request_lines-{{ line.id }}-unit_price" type="number" value="{{ line.item.unit_price }}" readonly>
+                              </td>
+                              <td class="text-right">
+                                <input class="form-control form-control-sm  text-right qty" id="request_lines-{{ line.id }}-qty" name="request_lines-{{ line.id }}-qty" type="number" value="{{ line.qty }}" required>
+                              </td>
+                              <td class="text-right">
+                                <input type="text" name="request_lines-{{ line.id }}-total" class="form-control-sm form-control-plaintext text-right total" readonly value="{{ line.total }}">
+                              </td>
+                              <td>
+                                <input id="request_lines-{{ line.id }}-id" name="request_lines-{{ line.id }}-item_id" type="hidden" value="{{ line.id }}">
+                                <input class="item_id" id="request_lines-{{ line.id }}-item_id" name="request_lines-{{ line.id }}-item_id" type="hidden" value="{{ line.item_id }}">
+                                <button type="button" role="button" class="btn delete btn-danger feather icon-delete"></button>
+                              </td>
+                            </tr>
                           {% endfor %}
+
                           </tbody>
                         </table>
                       <button type="button" id="addItem" class="btn btn-dark btn-sm btn-add-entry">Add Item</button>
@@ -150,90 +133,102 @@
 	</div>
 	<!-- [ Main Content ] end -->
 
+  <div class="modal fade" id="addItemModal" data-backdrop="static" tabindex="-1" aria-labelledby="addItemModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+      <div class="modal-content">
+        <div class="modal-header p-2 pl-3 pr-3">
+          <h5 class="modal-title" id="addItemModalLabel">Add Request Item</h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+          <ul class="nav nav-pills nav-justified mb-3" id="pills-tab" role="tablist">
+            <li class="nav-item" role="presentation">
+              <a class="nav-link new-item-tab active" id="existingItemTab" data-toggle="pill" href="#existingItemContent" role="tab" aria-selected="true" data-existing="1">Select Existing Item</a>
+            </li>
+            <li class="nav-item" role="presentation">
+              <a class="nav-link new-item-tab" id="newItemTab" data-toggle="pill" href="#newItemContent" role="tab" aria-selected="false" data-existing="0">New Item</a>
+            </li>
+          </ul>
+          <div class="tab-content" id="pills-tabContent">
+            <div class="tab-pane fade show active" id="existingItemContent" role="tabpanel" aria-labelledby="pills-existing-item-tab" >
+               <div class="mt-4">
+                <table class="table table-small w-100 responsive" style="width: 100%" id="searchItemTable">
+                  <thead>
+                    <th></th>
+                    <th style="width: 20%">Name</th>
+                    <th>Category</th>
+                    <th style="width: 30%">Description</th>
+                    <th>Brand</th>
+                    <th>Model</th>
+                    <th style="width: 20%" class="text-right">Price</th>
+                    <th>Purchased Date</th>
+                    <th>Code</th>
+                    <th>Serial</th>
+                    <th>Supplier</th>
+                  </thead>
+                  <tbody>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+
+            <div class="tab-pane fade" id="newItemContent" role="tabpanel" aria-labelledby="pills-new-item-tab">
+              <form action="POST" id="createNewItemForm" class="pt-4">
+                  <div class="alert alert-danger new-error" style="display: none" role="alert"></div>
+                  <div class="form-group row">
+                      <label for="name" class="col-sm-3 col-form-label">Name</label>
+                      <div class="col-sm-9">
+                        <input class="form-control" id="name" name="name" required="" type="text" value="">
+                      </div>
+                  </div>
+                  <div class="form-group row">
+                      <label for="category_id" class="col-sm-3 col-form-label">Category</label>
+                      <div class="col-sm-9">
+                        <select class="form-control" id="category_id" name="category_id" required="" placeholder="Select Category.."></select>
+                      </div>
+                  </div>
+                  <div class="form-group row">
+                      <label for="description" class="col-sm-3 col-form-label">Description</label>
+                      <div class="col-sm-9">
+                        <input class="form-control" id="description" name="description" type="text" value="">
+                      </div>
+                  </div>
+                  <div class="form-group row">
+                      <label for="unit_price" class="col-sm-3 col-form-label">Unit Price</label>
+                      <div class="col-sm-9">
+                        <input class="form-control" id="unit_price" name="unit_price" required="" step="any" type="number" value="0.00">
+                      </div>
+                  </div>
+                  <div class="form-group row">
+                      <div class="col-sm-10">
+                          <button type="submit" name="create_item" class="btn  btn-primary">Create and Add for Request</button>
+                      </div>
+                  </div>
+              </form>
+
+            </div>
+
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-light" data-dismiss="modal">Cancel</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
 {% endblock content %}
 
 <!-- Specific Page JS goes HERE  -->
 {% block javascripts %}
   <script src="{{ url_for("static", filename="assets/js/plugins/flatpickr.min.js") }}"></script>
+  <script type="text/javascript" src="/static/assets/lib/DataTables/datatables.min.js"></script>
+  <script type="text/javascript" src="/static/assets/js/request_edit.js"></script>
+
   <script type="text/javascript">
-  $(function(){
-
-    $(".flatpickr").flatpickr({
-        minDate: "today",
-        altInput: true,
-        defaultDate: "today",
-        altFormat: "F j, Y",
-        dateFormat: "Y-m-d"
-    });
-
-    var tbody = $('table#requestItems tbody');
-    var tr = tbody.find("tr:last");
-    var num = tr ? parseInt($(tr).attr('id').split('_')[1]) : 0;
-
-    $('button#addItem').on('click', function (e){
-        e.preventDefault();
-        let csrf = $('#csrf_token').val();
-        num++;
-        if(tr){
-            let str = '<tr id="lines_'+num+'">' +
-                '<td><input class="form-control form-control-sm" id="request_lines-'+num+'-name" name="request_lines-'+num+'-name" type="text" value="" required="required"></td>' +
-                '<td><input class="form-control form-control-sm" id="request_lines-'+num+'-description" name="request_lines-'+num+'-description" type="text" value=""></td>' +
-                '<td class="text-right"><input class="form-control form-control-sm text-right qty" id="request_lines-'+num+'-qty" name="request_lines-'+num+'-qty" type="number" value=""></td>' +
-                '<td class="text-right"><input class="form-control form-control-sm text-right price" id="request_lines-'+num+'-unit_price" name="request_lines-'+num+'-unit_price" step="any" type="number" value=""></td>' +
-                '<td class="text-right"><input type="text" class="form-control-sm form-control-plaintext text-right total" readonly="readonly" value="0.00"></td>' +
-                '<td>' +
-                '<input id="request_lines-0-id" name="request_lines-'+num+'-id" type="hidden" value="">' +
-                '<input id="request_lines-0-csrf_token" name="request_lines-'+num+'-csrf_token" type="hidden" value="'+csrf+'">' +
-                '<button type="button" role="button" class="btn delete btn-danger feather icon-delete"></button>' +
-                '</td>' +
-                '</tr>';
-            tbody.append(str);
-        }
-    });
-
-    $(document).on('click', 'button.delete', function (e){
-        e.preventDefault();
-        let $this = $(this)
-
-        if($("#requestItems tbody").find('tr').length > 1){
-            $this.closest("tr").remove();
-        }else{
-            $.alert({
-                title: 'Please don\'t do it.',
-                content: 'Atleast 1 item needs to be retained.',
-                type: 'red',
-                typeAnimated: true,
-                buttons: {
-                    ok: {
-                        text: 'Ok',
-                        btnClass: 'btn-red',
-                        action: function(){
-                        }
-                    }
-                }
-            });
-        }
-
-    });
-
-    $(document).on('change', 'input.qty, input.price', function (){
-        let $this = $(this);
-        let a = $this.val();
-        let b;
-
-        if($this.hasClass('qty')){
-          b = $this.closest('tr').find('input.price').val()
-        }else{
-          b = $this.closest('tr').find('input.qty').val()
-        }
-
-        a = isNaN(parseFloat(a)) ? 0 : a;
-        b = isNaN(parseFloat(b)) ? 0 : b;
-
-        $this.closest('tr').find('input.total').val(get_total(a, b).toFixed(2));
-    });
-
-  });
+    loadSelectCategory();
   </script>
 {% endblock javascripts %}
 {% include 'requests/script.html' %}

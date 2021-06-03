@@ -59,7 +59,6 @@ class Request(db.Model, UserMixin):
         self.sy_end = sy["end"]
         self.date_requested = date.today()
         self.user_id = current_user.id
-        self.request_type_id = current_user.request_type_id
         self.department_id = current_user.department_id
 
     def update(self, **kwargs):
@@ -167,10 +166,9 @@ class RequestLine(db.Model, UserMixin):
 
     id = Column(Integer, primary_key=True)
     request_id = Column(Integer, ForeignKey("Request.id"), nullable=False)
-    name = Column(String)
-    description = Column(String)
+    item_id = Column(Integer, ForeignKey('Item.id'))
+    item = relationship('Item', backref="releases", foreign_keys=[item_id])
     qty = Column(Integer, default=1)
-    unit_price = Column(Numeric(precision=10, scale=2), default=0.0)
     total = Column(Numeric(precision=10, scale=2), default=0.0)
     stock_in = Column(Integer, default=0)
 
@@ -183,13 +181,8 @@ class RequestLine(db.Model, UserMixin):
             if property == 'qty':
                 if value is None:
                     value = 0
-            if property == 'unit_price':
-                if value is None:
-                    value = 0
 
             setattr(self, property, value)
-
-        self.total = round(float(self.qty) * float(self.unit_price), 2)
 
     def update(self, **kwargs):
         for key, value in kwargs.items():

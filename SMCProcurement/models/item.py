@@ -5,7 +5,7 @@ Copyright (c) 2019 - present AppSeed.us
 import json
 
 from flask_login import UserMixin
-from sqlalchemy import Binary, Column, Integer, String, ForeignKey, Numeric, event
+from sqlalchemy import Binary, Column, Integer, String, ForeignKey, Numeric, event, Date
 from sqlalchemy.orm import relationship
 from sqlalchemy.types import Enum
 
@@ -16,11 +16,11 @@ class Item(db.Model, UserMixin):
     __tablename__ = 'Item'
 
     id = Column(Integer, primary_key=True)
-    name = Column(String)
+    name = Column(String, nullable=False)
     category_id = Column(Integer, ForeignKey('ItemCategory.id'), nullable=False)
     category = relationship('ItemCategory')
-    department_id = Column(Integer, ForeignKey('Department.id'), nullable=False)
-    department = relationship('Department')
+    # department_id = Column(Integer, ForeignKey('Department.id'), nullable=False)
+    # department = relationship('Department')
     supplier_id = Column(Integer, ForeignKey('Supplier.id'))
     supplier = relationship('Supplier')
     item_code = Column(String)
@@ -32,6 +32,7 @@ class Item(db.Model, UserMixin):
     unit_price = Column(Numeric(precision=10, scale=2), default=0.0)
     stock_in = Column(Integer, default=0)
     stock_out = Column(Integer, default=0)
+    purchased_date = Column(Date)
 
     def __init__(self, **kwargs):
         for property, value in kwargs.items():
@@ -65,11 +66,6 @@ class Item(db.Model, UserMixin):
             for col2 in self.supplier.__table__.columns:
                 d["supplier"][col2.name] = str(getattr(self.supplier, col2.name))
 
-        d["department"] = {}
-        if self.department:
-            for col2 in self.department.__table__.columns:
-                d["department"][col2.name] = str(getattr(self.department, col2.name))
-
         return d
 
     def toDataTable(self):
@@ -81,7 +77,6 @@ class Item(db.Model, UserMixin):
 
         d["category"] = self.category.name if self.category else ""
         d["supplier"] = self.supplier.name if self.supplier else ""
-        d["department"] = self.department.name if self.department else ""
 
         return d
 

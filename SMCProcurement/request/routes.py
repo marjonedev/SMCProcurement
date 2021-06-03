@@ -25,14 +25,14 @@ def all_requests():
     if current_user.user_type == UserTypeEnum.requisitor.value:
         requests = db.session.query(Request) \
             .filter(Request.user_id == current_user.id) \
-            .order_by(Request.date_request.desc()).all()
+            .order_by(Request.date_request.desc(), Request.number.desc()).all()
     elif current_user.user_type in [UserTypeEnum.vpacad.value, UserTypeEnum.vpadmin.value]:
         requests = db.session.query(Request) \
             .join(RequestType) \
             .filter(RequestType.user_type == current_user.user_type) \
-            .order_by(Request.date_request.desc()).all()
+            .order_by(Request.date_request.desc(), Request.number.desc()).all()
     else:
-        requests = db.session.query(Request).order_by(Request.date_request.desc())
+        requests = db.session.query(Request).order_by(Request.date_request.desc(), Request.number.desc())
 
     return render_template('requests/index.html', requests=requests)
 
@@ -75,14 +75,13 @@ def create_request():
     if "submit_request" in request.form:
 
         form = RequestForm(request.form)
-        # form.department_id.choices = [(d.id, d.name) for d in Department.query.all()]
+        form.request_type_id.choices = [(d.id, d.name) for d in RequestType.query.all()]
 
         formData = form.data
 
         data = {
-            # "department_id": formData["department_id"],
-            "date_needed": formData["date_needed"],
-            "endorsed_by": formData["endorsed_by"]
+            "request_type_id": formData["request_type_id"],
+            "date_needed": formData["date_needed"]
         }
 
         req = Request(**data)
@@ -91,10 +90,9 @@ def create_request():
 
         for line in formData["request_lines"]:
             lineData = {
-                "name": line["name"],
-                "description": line["description"],
+                "item_id": line["item_id"],
                 "qty": line["qty"],
-                "unit_price": line["unit_price"]
+                "total": line["total"],
             }
             requestLine = RequestLine(**lineData)
             req.request_lines.append(requestLine)
@@ -106,6 +104,7 @@ def create_request():
 
     else:
         form = RequestForm()
+        form.request_type_id.choices = [(d.id, d.name.capitalize()) for d in RequestType.query.all()]
         # form.department_id.choices = [(d.id, d.name) for d in Department.query.all()]
         # form.department_id.default = current_user.department_id
         # form.process()
@@ -122,14 +121,13 @@ def edit_request(id):
         return redirect(url_for('request_blueprint.view_request', id=id))
 
     form = RequestForm(request.form, obj=req)
-    # form.department_id.choices = [(d.id, d.name) for d in Department.query.all()]
+    form.request_type_id.choices = [(d.id, d.name) for d in RequestType.query.all()]
 
     if "submit_request" in request.form:
         formData = form.data
         data = {
-            # "department_id": formData["department_id"],
-            "date_needed": formData["date_needed"],
-            "endorsed_by": formData["endorsed_by"]
+            "request_type_id": formData["request_type_id"],
+            "date_needed": formData["date_needed"]
         }
         req.update(**data)
 
@@ -138,26 +136,35 @@ def edit_request(id):
         lineList = []
         for line in formData['request_lines']:
             if not line['id']:
-                line.pop('id')
-                reqLine = RequestLine(**line)
+                lineData = {
+                    "item_id": line["item_id"],
+                    "qty": line["qty"],
+                    "total": line["total"],
+                }
+                reqLine = RequestLine(**lineData)
                 req.request_lines.append(reqLine)
             else:
                 lineList.append(int(line['id']))
-                reqLine = db.session.query(RequestLine).get(line['id'])
-                reqLine.update(**line)
+                reqLine = db.session.query(RequestLine).get(int(line['id']))
+                lineData = {
+                    "qty": line["qty"],
+                    "total": line["total"],
+                }
+                reqLine.update(**lineData)
 
         db.session.commit()
 
         for sd in searchToDeleteLine:
             if sd.id not in [i for i in lineList]:
-
                 db.session.query(RequestLine).filter_by(id=sd.id).delete()
                 db.session.commit()
 
         flash("Request successfully updated!")
         return redirect(url_for('request_blueprint.view_request', id=id))
 
-    return render_template('requests/edit.html', form=form, obj=req)
+    req_lines = RequestLine.query.filter(RequestLine.request_id == id).order_by(RequestLine.id.asc()).all()
+
+    return render_template('requests/edit.html', form=form, obj=req, obj_lines=req_lines)
 
 
 @blueprint.route('/requests/<id>/delete', methods=["POST"])
@@ -196,7 +203,8 @@ def confirm_request(id):
 def view_request(id):
     try:
         req = db.session.query(Request).get(id)
-        return render_template('requests/view.html', obj=req)
+        req_lines = RequestLine.query.filter(RequestLine.request_id == id).order_by(RequestLine.id.asc()).all()
+        return render_template('requests/view.html', obj=req, obj_lines=req_lines)
     except:
         return render_template('page-404.html'), 404
 

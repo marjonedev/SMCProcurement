@@ -11,7 +11,6 @@ class InventoryItemForm(FlaskForm):
 
     item_id = TextField("Item Id")
     qty = IntegerField("Quantity", widget=NumberInput())
-    purchased_date = TextField("Purchased Date")
 
 
 class InventoryForm(FlaskForm):
