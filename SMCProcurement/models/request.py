@@ -4,7 +4,7 @@ Copyright (c) 2019 - present AppSeed.us
 """
 
 from flask_login import UserMixin, current_user
-from sqlalchemy import Binary, Column, Integer, String, ForeignKey, Date, DateTime, Numeric
+from sqlalchemy import Binary, Column, Integer, String, ForeignKey, Date, DateTime, Numeric, Boolean
 from sqlalchemy.orm import relationship
 from sqlalchemy.types import Enum
 from datetime import date, datetime
@@ -43,6 +43,7 @@ class Request(db.Model, UserMixin):
     updated_on = Column(DateTime, nullable=False, default=datetime.utcnow, onupdate=datetime.utcnow)
     request_lines = relationship("RequestLine", cascade="all, delete-orphan", backref="request")
     denied_remarks = Column(String)
+    president_approval = Column(Boolean, default=True)
 
     def __init__(self, **kwargs):
         # super(Request, self).__init__(**kwargs)
@@ -92,7 +93,11 @@ class Request(db.Model, UserMixin):
         if self.status == 1:
             label = "Draft"
         elif 1 < self.status < 5:
-            label = "Pending for Approval"
+            if self.status == 4 and not self.president_approval:
+                label = "Waiting for availability"
+                percentage = ((current + 1) / max) * 100
+            else:
+                label = "Pending for Approval"
         elif self.status == 5:
             label = "Waiting for availability"
         elif self.status == 6:
@@ -123,13 +128,16 @@ class Request(db.Model, UserMixin):
                 else:
                     show = "progress"
             elif self.status == RequestStatusEnum.vp.value:
-                if current_user.user_type in [UserTypeEnum.president.value, UserTypeEnum.administrator.value]:
+                if current_user.user_type in [UserTypeEnum.vpfinance.value, UserTypeEnum.administrator.value]:
                     show = "approve"
                 else:
                     show = "progress"
-            elif self.status == RequestStatusEnum.president.value:
-                if current_user.user_type in [UserTypeEnum.vpfinance.value, UserTypeEnum.administrator.value]:
-                    show = "approve"
+            elif self.status == RequestStatusEnum.vpfinance.value:
+                if self.president_approval:
+                    if current_user.user_type in [UserTypeEnum.president.value, UserTypeEnum.administrator.value]:
+                        show = "approve"
+                    else:
+                        show = "progress"
                 else:
                     show = "progress"
             else:

@@ -55,17 +55,17 @@
               {% elif show_header == "approve" %}
                 <div class="card-header-right">
                   <form role="form" method="POST" id="approveForm">
+                    <div class="form-check form-check-inline">
+                      <input class="form-check-input" type="checkbox" checked name="president_approval" value="1" id="presidentApproval">
+                      <label class="form-check-label" for="presidentApproval">
+                        President Approval
+                      </label>
+                    </div>
                     <input type="hidden" name="approve_request" value="1">
                     <button id="approve_request" type="submit" class="btn btn-sm btn-success">Approve <i class="feather icon-check-square"></i></button>
                   </form>
                 <button id="decline_request" role="button" type="button" class="btn btn-sm btn-danger ml-2">Decline <i class="feather icon-x-square"></i></button>
                 </div>
-                {#<div class="card-header-right">
-                  <form role="form" method="POST" id="declineForm">
-                    <input type="hidden" name="decline_request" value="1">
-                    <input type="hidden" name="denied_remarks" />
-                    </form>
-                </div>#}
               {% elif show_header == "progress" %}
                   {% if obj.status < 8 %}
                   <div class="progress">
@@ -103,9 +103,9 @@
                       </div>
                     </div>
                     <div class="form-group row">
-                      <div class="col-sm-4"><span class="hljs-strong">Date Requested:</span></div>
+                      <div class="col-sm-4"><span class="hljs-strong">Request Type:</span></div>
                       <div class="col-sm-8">
-                        {{ obj.date_request.strftime('%B %d, %Y') }}
+                        {{ obj.request_type.name | capitalize }}
                       </div>
                     </div>
                   </div>
@@ -115,6 +115,12 @@
                       <div class="col-sm-4"><span class="hljs-strong">SY:</span></div>
                       <div class="col-sm-8">
                         {{ obj.sy_start }} - {{ obj.sy_end }}
+                      </div>
+                    </div>
+                    <div class="form-group row">
+                      <div class="col-sm-4"><span class="hljs-strong">Date Requested:</span></div>
+                      <div class="col-sm-8">
+                        {{ obj.date_request.strftime('%B %d, %Y') }}
                       </div>
                     </div>
                     <div class="form-group row">

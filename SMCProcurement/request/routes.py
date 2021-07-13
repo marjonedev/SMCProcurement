@@ -40,6 +40,7 @@ def all_requests():
 @blueprint.route('/requests/pending')
 @login_required
 def pending_requests():
+
     if current_user.user_type == UserTypeEnum.requisitor.value:
         requests = db.session.query(Request) \
             .filter(Request.user_id == current_user.id) \
@@ -54,16 +55,16 @@ def pending_requests():
             .order_by(Request.date_request.desc()).all()
     elif current_user.user_type == UserTypeEnum.president.value:
         requests = db.session.query(Request)\
-            .filter(Request.status == RequestStatusEnum.vp.value) \
+            .filter(Request.status == RequestStatusEnum.vpfinance.value) \
             .order_by(Request.date_request.desc()).all()
     elif current_user.user_type == UserTypeEnum.vpfinance.value:
         requests = db.session.query(Request)\
-            .filter(Request.status == RequestStatusEnum.president.value) \
+            .filter(Request.status == RequestStatusEnum.vp.value) \
             .order_by(Request.date_request.desc()).all()
     else:
         requests = db.session.query(Request) \
             .filter(Request.status >= RequestStatusEnum.request.value) \
-            .filter(Request.status <= RequestStatusEnum.vpfinance.value) \
+            .filter(Request.status <= RequestStatusEnum.president.value) \
             .order_by(Request.date_request.desc()).all()
 
     return render_template('requests/index.html', requests=requests)
@@ -213,12 +214,19 @@ def view_request(id):
 @login_required
 def approve_request(id):
     if 'approve_request' in request.form.to_dict():
-
+        toPres = False
         try:
             obj = db.session.query(Request).get(id)
             approved = False
+
+            if "president_approval" in request.form.to_dict() and obj.status == RequestStatusEnum.vp.value:
+                toPres = True
+
             if obj.status in [RequestStatusEnum.request.value, RequestStatusEnum.vp.value,
-                              RequestStatusEnum.president.value]:
+                              RequestStatusEnum.vpfinance.value]:
+                if not toPres:
+                    obj.president_approval = False
+
                 obj.status += 1
                 db.session.commit()
                 approved = True
