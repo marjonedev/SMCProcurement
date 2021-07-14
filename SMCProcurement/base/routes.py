@@ -158,6 +158,8 @@ def inject_custom_functions():
 
 @blueprint.app_template_filter()
 def datetimeiso(value, format="%Y-%m-%d %H:%M:%S"):
+    if not value:
+        return ""
     tz = pytz.timezone('Asia/Hong_Kong')
     utc = pytz.timezone('UTC')
     value = utc.localize(value, is_dst=None).astimezone(pytz.utc)
@@ -166,6 +168,8 @@ def datetimeiso(value, format="%Y-%m-%d %H:%M:%S"):
 
 @blueprint.app_template_filter()
 def datetimepretty(value, format="%B %d, %Y, %I:%M %p"):
+    if not value:
+        return ""
     tz = pytz.timezone('Asia/Hong_Kong')
     utc = pytz.timezone('UTC')
     value = utc.localize(value, is_dst=None).astimezone(pytz.utc)
@@ -174,6 +178,8 @@ def datetimepretty(value, format="%B %d, %Y, %I:%M %p"):
 
 @blueprint.app_template_filter()
 def datepretty(value, format="%B %d, %Y"):
+    if not value:
+        return ""
     tz = pytz.timezone('Asia/Hong_Kong')
     utc = pytz.timezone('UTC')
     value = datetime.combine(value, datetime.min.time())
@@ -183,6 +189,8 @@ def datepretty(value, format="%B %d, %Y"):
 
 @blueprint.app_template_filter()
 def stritdp(value, format="%B %d, %Y"):
+    if not value:
+        return ""
     dt = datetime.strptime(value, '%Y-%m-%d')
     return dt.strftime(format)
 

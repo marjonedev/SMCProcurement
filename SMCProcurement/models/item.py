@@ -19,8 +19,6 @@ class Item(db.Model, UserMixin):
     name = Column(String, nullable=False)
     category_id = Column(Integer, ForeignKey('ItemCategory.id'), nullable=False)
     category = relationship('ItemCategory')
-    # department_id = Column(Integer, ForeignKey('Department.id'), nullable=False)
-    # department = relationship('Department')
     supplier_id = Column(Integer, ForeignKey('Supplier.id'))
     supplier = relationship('Supplier')
     item_code = Column(String)
@@ -39,6 +37,9 @@ class Item(db.Model, UserMixin):
             if hasattr(value, '__iter__') and not isinstance(value, str):
                 value = value[0]
 
+            if property == "purchased_date" and value == "":
+                value = None
+
             setattr(self, property, value)
 
     def __repr__(self):
@@ -48,6 +49,8 @@ class Item(db.Model, UserMixin):
         for key, value in kwargs.items():
             if hasattr(self, key):
                 if getattr(self, key) != value:
+                    if key == "purchased_date" and value == "":
+                        value = None
                     setattr(self, key, value)
 
     def toDict(self):

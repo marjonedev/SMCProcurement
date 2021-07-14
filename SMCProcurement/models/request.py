@@ -175,7 +175,7 @@ class RequestLine(db.Model, UserMixin):
     id = Column(Integer, primary_key=True)
     request_id = Column(Integer, ForeignKey("Request.id"), nullable=False)
     item_id = Column(Integer, ForeignKey('Item.id'))
-    item = relationship('Item', backref="releases", foreign_keys=[item_id])
+    item = relationship('Item', backref="request_lines", foreign_keys=[item_id])
     qty = Column(Integer, default=1)
     total = Column(Numeric(precision=10, scale=2), default=0.0)
     stock_in = Column(Integer, default=0)

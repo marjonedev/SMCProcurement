@@ -3,7 +3,9 @@
 {% block title %} Edit Item: {{ obj.name }}  {% endblock %}
 
 <!-- Specific CSS goes HERE -->
-{% block stylesheets %}{% endblock stylesheets %}
+{% block stylesheets %}
+<link rel="stylesheet" href="{{ url_for("static", filename="assets/css/plugins/flatpickr.theme.material_blue.css") }}" />
+{% endblock stylesheets %}
 
 {% block content %}
 
@@ -53,12 +55,6 @@
                       </div>
                   </div>
                   <div class="form-group row">
-                      <label for="department_id" class="col-sm-3 col-form-label">Department</label>
-                      <div class="col-sm-9">
-                        {{ form.department_id(class="form-control selectize", required=True) }}
-                      </div>
-                  </div>
-                  <div class="form-group row">
                       <label for="category_id" class="col-sm-3 col-form-label">Category</label>
                       <div class="col-sm-9">
                         {{ form.category_id(class="form-control selectize", required=True) }}
@@ -95,6 +91,12 @@
                       </div>
                   </div>
                   <div class="form-group row">
+                      <label for="purchased_date" class="col-sm-3 col-form-label">Purchased Date</label>
+                      <div class="col-sm-9">
+                        {{ form.purchased_date(class="form-control flatpickr") }}
+                      </div>
+                  </div>
+                  <div class="form-group row">
                       <label for="unit_price" class="col-sm-3 col-form-label">Unit Price</label>
                       <div class="col-sm-9">
                         {{ form.unit_price(class="form-control", required=True) }}
@@ -122,9 +124,16 @@
 
 <!-- Specific Page JS goes HERE  -->
 {% block javascripts %}
+<script src="{{ url_for("static", filename="assets/js/plugins/flatpickr.min.js") }}"></script>
 <script type="text/javascript">
   $(function (){
-      $('.selectize').selectize()
+      $('.selectize').selectize();
+      const flatpickr = $(".flatpickr").flatpickr({
+        altInput: true,
+        defaultDate: "{{ obj.purchased_date }}",
+        altFormat: "F j, Y",
+        dateFormat: "Y-m-d"
+    });
   });
 </script>
 {% endblock javascripts %}

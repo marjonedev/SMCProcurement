@@ -47,29 +47,33 @@
                     <table class="table hover table-hover table-sm w-100">
                         <thead>
                             <tr>
-                                <th>Name</th>
-                                <th>Department</th>
-                                <th>Category</th>
-                                <th>Supplier</th>
-                                <th>Item Code</th>
-                                <th>Brand</th>
-                                <th>Model</th>
-                                <th>Description</th>
-                                <th class="text-right">Qty<br/>On Hand</th>
-                                <th class="text-right">Unit<br/>Price</th>
+                              <th style="width: 20%">Name</th>
+                              <th>Category</th>
+                              <th style="width: 30%">Description</th>
+                              <th>Code</th>
+                              <th>Brand</th>
+                              <th>Model</th>
+                              <th style="width: 20%" class="text-right">Price</th>
+                              <th>Purchased Date</th>
+                              <th>Serial</th>
+                              <th>Supplier</th>
+                              <th class="text-right">Qty<br/>On Hand</th>
+                              <th class="text-right">Unit<br/>Price</th>
                             </tr>
                         </thead>
                         <tbody>
                           {% for item in items %}
                             <tr data-item-id="{{ item.id }}" class="hoverable">
                               <td>{{ item.name }}</td>
-                              <td>{{ item.department.name }}</td>
                               <td>{{ item.category.name }}</td>
-                              <td>{{ item.supplier.name }}</td>
-                              <td>{{ item.item_code }}</td>
+                              <td>{{ item.description }}</td>
+                              <td>{{ item.code }}</td>
                               <td>{{ item.brand }}</td>
                               <td>{{ item.model }}</td>
-                              <td>{{ item.description }}</td>
+                              <td>{{ item.unit_price }}</td>
+                              <td>{{ item.purchased_date | datepretty}}</td>
+                              <td>{{ item.serial }}</td>
+                              <td>{{ item.supplier.name }}</td>
                               <td class="text-right">{{ item.qty if item.qty else 0 }}</td>
                               <td class="text-right">&#8369; {{ item.unit_price }}</td>
                             </tr>
