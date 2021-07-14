@@ -226,6 +226,8 @@ def approve_request(id):
                               RequestStatusEnum.vpfinance.value]:
                 if not toPres:
                     obj.president_approval = False
+                else:
+                    obj.president_approval = True
 
                 obj.status += 1
                 db.session.commit()
