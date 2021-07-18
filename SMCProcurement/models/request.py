@@ -217,12 +217,38 @@ class RequestLine(db.Model, UserMixin):
             return "Released"
         else: return ""
 
+    @property
+    def qty_needed(self):
+        qty = self.qty - self.stock_in
+
+        if qty < 0:
+            return 0
+
+        return qty
+
     def toDataTable(self):
         d = {}
 
         for column in self.__table__.columns:
             value = str(getattr(self, column.name))
             d[column.name] = value
+
+        return d
+
+    def toReleaseDataTable(self):
+        d = {}
+
+        for column in self.__table__.columns:
+            value = str(getattr(self, column.name))
+            d[column.name] = value
+        d["name"] = self.item.name
+        d["category"] = self.item.category.name
+        d["request"] = self.request.number
+        d["department"] = self.request.department.name
+        d["department_id"] = self.request.department.id
+        d["price"] = self.item.unit_price
+        d["qty_needed"] = self.qty_needed
+        d["qty_available"] = self.item.qty
 
         return d
 

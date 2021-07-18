@@ -20,7 +20,7 @@ class InventoryForm(FlaskForm):
     submit = SubmitField('Submit')
     inventory_items = FieldList(FormField(InventoryItemForm))
 
-class ReleaseForm(FlaskForm):
+class ReleaseLineForm(FlaskForm):
     class Meta:
         csrf = False
 
@@ -30,4 +30,11 @@ class ReleaseForm(FlaskForm):
     department_id = SelectField("Department")
     quantity = IntegerField("Quantity", widget=NumberInput())
     remarks = TextAreaField("Remarks")
+
+class ReleaseForm(FlaskForm):
+    class Meta:
+        csrf = False
+
+    submit = SubmitField('Submit')
+    release_lines = FieldList(FormField(ReleaseLineForm))
 

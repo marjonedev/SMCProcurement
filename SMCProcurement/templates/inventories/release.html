@@ -16,11 +16,11 @@
 					<div class="row align-items-center">
 						<div class="col-md-12">
 							<div class="page-header-title">
-								<h5 class="m-b-10">Release an Item</h5>
+								<h5 class="m-b-10">Release Items</h5>
 							</div>
 							<ul class="breadcrumb">
 								<li class="breadcrumb-item"><a href="/"><i class="feather icon-home"></i></a></li>
-								<li class="breadcrumb-item"><a href="#!">Release</a></li>
+								<li class="breadcrumb-item"><a href="#!">Release Items</a></li>
 							</ul>
 						</div>
 					</div>
@@ -32,71 +32,46 @@
 				<!-- [ sample-page ] start -->
 				<div class="col-sm-12">
 					<div class="card">
-
-						{#<div class="card-header">
-						</div>#}
 						<div class="card-body">
-              {% include 'includes/flashes.html' %}
+              <div class="table-border-style pt-3">
+
               {% if msg %}
                 <div class="alert alert-warning" role="alert">
                 {{ msg | safe }}
                 </div>
               {% endif %}
 
-              <form role="form" method="POST" action="">
-                <div class="form-row align-items-center">
-                  <div class="col-5">
-                    <div class="form-group row">
-                      <label for="category_id" class="col-sm-4 col-form-label">Item</label>
-                      <div class="col-sm-8">
-                        {{ form.item_id(class="form-control selectize custom-options", required=True) }}
-                      </div>
-                    </div>
-                  </div>
-                  <div class="col-2 mb-3">
-                    <h4 class="text-muted text-center">
-                      <i class="feather icon-arrow-right"></i><br />
-                      <i class="feather icon-arrow-right"></i>
-                    </h4>
-                  </div>
-                  <div class="col-5">
-                    <div class="form-group row">
-                      <label for="category_id" class="col-sm-4 col-form-label">Request</label>
-                      <div class="col-sm-8">
-                        {{ form.request_id(class="form-control selectize custom-options", required=True) }}
-                      </div>
-                    </div>
-                    <div class="form-group row">
-                      <label for="category_id" class="col-sm-4 col-form-label">Request Item</label>
-                      <div class="col-sm-8">
-                        {{ form.request_item_id(class="form-control selectize custom-options", required=True) }}
-                      </div>
-                    </div>
-                  </div>
-                </div>
+              <form role="form" method="post" action="">
+                {{ form.hidden_tag() }}
 
-                <div class="form-row border-top border-gray pt-3 mt-3">
-                  <div class="col-4"></div>
-                  <div class="col-4">
-                    <div class="form-group row">
-                      <label for="category_id" class="col-sm-6 col-form-label">Quantity to release</label>
-                      <div class="col-sm-6">
-                        {{ form.quantity(class="form-control", required=True) }}
-                      </div>
-                    </div>
-                    <div class="form-group">
-                      <label for="formGroupExampleInput">Remarks</label>
-                      {{ form.remarks(class="form-control") }}
-                    </div>
+                <div class="table-border-style">
+                  <div class="table-responsive pb-1">
+                      <table class="table table-small" id="releaseItems">
+                        <thead>
+                          <th>Request No.</th>
+                          <th width="">Name</th>
+                          <th>Category</th>
+                          <th>Department</th>
+                          <th class="text-right">Price</th>
+                          <th class="text-right">Qty<br />Needed</th>
+                          <th class="text-right">Qty<br />Available</th>
+                          <th class="text-right" style="width: 8%">Qty<br />Release</th>
+                          <th>Remarks</th>
+                          <th></th>
+                        </thead>
+                        <tbody>
+                        </tbody>
+                      </table>
+                      <button type="button" id="addItem" class="btn btn-dark btn-sm btn-add-entry">Add Item</button>
                   </div>
-                  <div class="col-4"></div>
                 </div>
-                <div class="form-row">
-                    <div class="col-12 text-center">
-                        <button type="submit" name="release_item" class="btn  btn-primary">Release Item</button>
-                    </div>
+                <div class="form-group row mt-4 border-top border-gray pt-2">
+                  <div class="col-sm-10">
+                     {{form.submit(class="btn btn-primary btn-submit", value="Save")}}
+                  </div>
                 </div>
               </form>
+              </div>
 						</div>
 					</div>
 				</div>
@@ -107,9 +82,149 @@
 	</div>
 	<!-- [ Main Content ] end -->
 
+
+  <div class="modal fade" id="addItemModal" data-backdrop="static" tabindex="-1" aria-labelledby="addItemModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+      <div class="modal-content">
+        <div class="modal-header p-2 pl-3 pr-3">
+          <h5 class="modal-title" id="addItemModalLabel">Add Inventory Item</h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+          <div class="table-responsive mt-4">
+            <table class="table table-small w-100" id="searchItemTable">
+              <thead>
+                <th></th>
+                <th>Request No.</th>
+                <th style="width: 20%">Name</th>
+                <th>Category</th>
+                <th>Department</th>
+                <th class="text-right">Price</th>
+                <th class="text-right">Qty Needed</th>
+                <th class="text-right">Qty Available</th>
+              </thead>
+              <tbody>
+              </tbody>
+            </table>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-light" data-dismiss="modal">Cancel</button>
+        </div>
+      </div>
+    </div>
+  </div>
 {% endblock content %}
 
 <!-- Specific Page JS goes HERE  -->
 {% block javascripts %}
-<script type="text/javascript" src="/static/assets/js/release.js"></script>
+  <script src="{{ url_for("static", filename="assets/js/plugins/flatpickr.min.js") }}"></script>
+  <script type="text/javascript" src="/static/assets/lib/DataTables/datatables.min.js"></script>
+  <script type="text/javascript">
+
+  function appendItemToRelease(id, data){
+    let str = '<tr id="lines_'+id+'">' +
+        '<td>'+data.request+'</td>' +
+        '<td>'+data.name+'</td>' +
+        '<td>'+data.category+'</td>' +
+        '<td>'+data.department+'</td>' +
+        '<td class="text-right">'+data.price+'</td>' +
+        '<td class="text-right">'+data.qty_needed+'</td>' +
+        '<td class="text-right">'+data.qty_available+'</td>' +
+        '<td><input class="form-control form-control-sm text-right" id="release_lines-'+id+'-quantity" name="release_lines-'+id+'-quantity" type="number" value="" min="1" max="'+data.qty_needed+'" required></td>' +
+        '<td><textarea id="release_lines-'+id+'-remarks" name="release_lines-'+id+'-remarks" class="form-control"></textarea></td>' +
+        '<td>' +
+        '<input id="release_lines-'+id+'-item_id" name="release_lines-'+id+'-item_id" class="item_id" type="hidden" value="'+data.item_id+'">' +
+        '<input id="release_lines-'+id+'-request_id" name="release_lines-'+id+'-request_id" class="request_id" type="hidden" value="'+data.request_id+'">' +
+        '<input id="release_lines-'+id+'-request_item_id" name="release_lines-'+id+'-request_item_id" class="request_item_id" type="hidden" value="'+data.id+'">' +
+        '<input id="release_lines-'+id+'-department_id" name="release_lines-'+id+'-department_id" class="department_id" type="hidden" value="'+data.department_id+'">' +
+        '<button type="button" role="button" class="btn delete btn-danger feather icon-delete"></button>' +
+        '</td>' +
+        '</tr>';
+
+    $("#releaseItems").find("tbody").append(str);
+    $('#addItemModal').modal("hide");
+  }
+
+  $(function(){
+
+    $('button#addItem').on('click', function (e){
+      e.preventDefault();
+      $('#addItemModal').modal("show")
+    });
+
+    $('#addItemModal').on('show.bs.modal', function (e) {
+
+        let arr = [];
+        $.each($("#releaseItems").find(".request_item_id"), function (i, v){
+            arr.push($(v).val())
+        });
+
+        $('#searchItemTable').DataTable({
+            "ajax": {
+                "url": "/api/release_items?except="+arr.join(','),
+                "dataType": "json",
+                "method": "POST",
+                "dataSrc": "data",
+                "contentType":"application/json"
+            },
+            "columns": [
+                {"data": "id", "render": function (data, type, row, meta){
+                    str = "<input class='item-data' type='hidden' value='"+JSON.stringify(row)+"'>";
+                    str += "<button class='btn btn-dark btn-sm select-item' data-id='"+data+"'>Select</button>";
+                    return str
+                }},
+                {"data": "request"},
+                {"data": "name"},
+                {"data": "category"},
+                {"data": "department"},
+                {"data": "price", className: "text-right", "render": function (data, type, row, meta){
+                        return  "&#8369; "+ data;
+                }},
+                {"data": "qty_needed", className: "text-right", render: function (data){
+                    return data == "None" ? 0 : data;
+                }},
+                {"data": "qty_available", className: "text-right", render: function (data){
+                    return data == "None" ? 0 : data;
+                }}
+            ],
+            "sScrollX": '100%'
+        });
+    });
+
+    $('#addItemModal').on('hidden.bs.modal', function (e) {
+      $('#searchItemTable').DataTable().clear().destroy();
+      $('.new-error').text("").hide();
+    });
+
+    $(document).on("click", ".select-item", function (e){
+        e.preventDefault();
+        let id = $(this).data("id");
+        let data = $(this).closest("tr").find(".item-data").val();
+        data = JSON.parse(data);
+        appendItemToRelease(id, data);
+    });
+
+    $("#searchExistingForm").on("submit", function(e){ e.preventDefault(); return false; });
+
+    $(document).on('click', 'button.delete', function (e){
+        e.preventDefault();
+        $(this).closest("tr").remove();
+    });
+
+    $(".flatpickr").flatpickr({
+      minDate: "today",
+      altInput: true,
+      defaultDate: "today",
+      altFormat: "F j, Y",
+      dateFormat: "Y-m-d"
+    });
+
+
+
+  });
+
+  </script>
 {% endblock javascripts %}

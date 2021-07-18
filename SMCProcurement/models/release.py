@@ -5,7 +5,7 @@ Copyright (c) 2019 - present AppSeed.us
 from datetime import datetime
 from pprint import pprint
 
-from flask_login import UserMixin
+from flask_login import UserMixin, current_user
 from sqlalchemy import Binary, Column, Integer, String, ForeignKey, DateTime, event
 from sqlalchemy.orm import relationship
 
@@ -28,8 +28,8 @@ class Release(db.Model, UserMixin):
     user = relationship('User', backref="releases", foreign_keys=[user_id])
     department_id = Column(Integer, ForeignKey('Department.id'))
     department = relationship('Department')
-    category_id = Column(Integer, ForeignKey('ItemCategory.id'))
-    category = relationship('ItemCategory')
+    # category_id = Column(Integer, ForeignKey('ItemCategory.id'))
+    # category = relationship('ItemCategory')
     date_time = Column(DateTime, nullable=False, default=datetime.utcnow)
     quantity = Column(Integer)
     remarks = Column(String)
@@ -41,12 +41,10 @@ class Release(db.Model, UserMixin):
 
             setattr(self, property, value)
 
-        request = db.session.query(Request).get(self.request_id)
-        request_line = db.session.query(RequestLine).get(self.request_item_id)
-        self.department_id = request.department_id
-        item = db.session.query(Item).get(self.item_id)
-        self.category_id = item.category_id
+        self.user_id = current_user.id
 
+        request_line = db.session.query(RequestLine).get(self.request_item_id)
+        item = db.session.query(Item).get(self.item_id)
         item.qty = item.qty - int(self.quantity) if item.qty else (0 - int(self.quantity))
         item.stock_out = item.stock_out + int(self.quantity) if item.stock_out else int(self.quantity)
         request_line.stock_in = request_line.stock_in + int(self.quantity) if request_line.stock_in else int(
@@ -55,11 +53,11 @@ class Release(db.Model, UserMixin):
     def __repr__(self):
         return str(self.name)
 
-    def update(self, **kwargs):
-        for key, value in kwargs.items():
-            if hasattr(self, key):
-                if getattr(self, key) != value:
-                    setattr(self, key, value)
+    # def update(self, **kwargs):
+    #     for key, value in kwargs.items():
+    #         if hasattr(self, key):
+    #             if getattr(self, key) != value:
+    #                 setattr(self, key, value)
 
 
 def update_requisition_status_listener(mapper, connection, target):
