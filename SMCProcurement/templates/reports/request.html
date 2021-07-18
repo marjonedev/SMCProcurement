@@ -6,6 +6,7 @@
 {% block stylesheets %}
   <link rel="stylesheet" type="text/css" href="/static/assets/lib/DataTables/datatables.min.css"/>
   <link rel="stylesheet" href="{{ url_for("static", filename="assets/css/plugins/flatpickr.theme.material_blue.css") }}" />
+  <link rel="stylesheet" href="{{ url_for("static", filename="assets/css/plugins/daterangepicker.css") }}" />
 {% endblock stylesheets %}
 
 {% block content %}
@@ -85,15 +86,15 @@
                           <tr>
                           <td>{{ item.request.department.name }}</td>
                           <td>{{ item.request.number }}</td>
-                          <td>{{ item.name }}</td>
-                          <td>{{ item.description }}</td>
+                          <td>{{ item.item.name }}</td>
+                          <td>{{ item.item.description }}</td>
                           <td>{{ item.request.user.full_name }}</td>
                           <td>{{ item.request.date_request | datepretty }}</td>
                           <td>{{ item.request.date_needed | datepretty }}</td>
                           <td>{{ item.request.sy_start }} - {{ item.request.sy_end }}</td>
                           <td>{{ item.status }}</td>
                           <td class="text-right">{{ item.qty | default(0) }}</td>
-                          <td class="text-right">&#8369; {{ item.unit_price | default(0.00) }}</td>
+                          <td class="text-right">&#8369; {{ item.item.unit_price | default(0.00) }}</td>
                           <td>
                             <input class="form-control wid-150 itemremark" data-id="{{ item.id }}" type="text" value="" data-toggle="tooltip" data-placement="left" title="" data-original-title="{{ item.name }}" />
                           </td>
@@ -130,7 +131,8 @@
 {% block javascripts %}
 <script type="text/javascript" src="/static/assets/lib/DataTables/datatables.min.js"></script>
 <script type="text/javascript" src="/static/assets/lib/DataTables/dataTables.buttons.min.js"></script>
-<script src="{{ url_for("static", filename="assets/js/plugins/flatpickr.min.js") }}"></script>
+<script src="{{ url_for("static", filename="assets/js/plugins/moment-with-locales.js") }}"></script>
+<script src="{{ url_for("static", filename="assets/js/plugins/daterangepicker.js") }}"></script>
 <script type="text/javascript">
   var table = $('.table').dataTable({
       searching: false,
@@ -160,26 +162,25 @@
     table.cell($(cell)).invalidate().draw();
 
   } );
-   $("#report_date").flatpickr({
-        mode: "range",
-        maxDate: "today",
-        dateFormat: "F d, Y",
-       onChange: function (dates){
-           let start = dates[0] ? dates[0].toISOString() : null;
-           let end = dates[1] ? dates[1].toISOString() : null;
-           if(start){
-               start = DateTime.fromISO(start).toISODate()
-           }
-           if(end){
-               end = DateTime.fromISO(end).toISODate();
-           }
-           $(".start_date").val(start)
-           $(".end_date").val(end)
-       }
-    });
-  $('.flatpickr-input:visible').on('focus', function () {
-      $(this).blur()
-  })
-  $('.flatpickr-input:visible').prop('readonly', false)
+
+  $("#report_date").daterangepicker({
+    "autoApply": true,
+    "ranges": {
+        "Last 7 Days": [moment().subtract(6, 'days'), moment()],
+        "Last 30 Days": [moment().subtract(29, 'days'), moment()],
+        "This Month": [moment().startOf('month'), moment().endOf('month')],
+        "Last Month": [moment().startOf('month').subtract(30,'days'), moment().endOf('month').subtract(30, 'days')],
+        "This Year":  [moment().startOf('year'), moment().endOf('year')],
+        "Last Year":[moment().startOf('year').subtract(12,'months'), moment().endOf('year').subtract(12, 'months')]
+    },
+    "startDate": moment().subtract(29, 'days'),
+    "endDate": moment(),
+    "maxDate": moment(),
+      "alwaysShowCalendars": true,
+  }, function(start, end, label) {
+      $(".start_date").val(start.format('YYYY-MM-DD'))
+     $(".end_date").val(end.format('YYYY-MM-DD'))
+    console.log('New date range selected: ' + start.format('YYYY-MM-DD') + ' to ' + end.format('YYYY-MM-DD') + ' (predefined range: ' + label + ')');
+  });
 </script>
 {% endblock javascripts %}

@@ -16,7 +16,7 @@ from SMCProcurement import db
 class InventoryReportForm(FlaskForm):
     class Meta:
         csrf = False
-    report_by = SelectField('Name', id="report_by", choices=[(1, "All Items"), (2, "Departments")])
+    report_by = SelectField('Name', id="report_by", choices=[(1, "All"), (2, "Department"), (3, "Category")])
     start_date = HiddenField('Start Date')
     end_date = HiddenField('End Date')
 
@@ -38,7 +38,7 @@ class InventoryPrintForm(FlaskForm):
 class RequestReportForm(FlaskForm):
     class Meta:
         csrf = False
-    report_by = SelectField('Name', id="report_by", choices=[(1, "All Items"), (2, "Departments")])
+    report_by = SelectField('Name', id="report_by", choices=[(1, "All"), (2, "Department")])
     start_date = HiddenField('Start Date')
     end_date = HiddenField('End Date')
 

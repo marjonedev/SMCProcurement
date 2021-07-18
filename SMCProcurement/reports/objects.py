@@ -17,10 +17,10 @@ class InvItem:
 
 class RQItem:
     def __init__(self, item, data):
-        self.name = item.name
+        self.name = item.item.name
         self.department = item.request.department.name
         self.number = item.request.number
-        self.description = item.description
+        self.description = item.item.description
         self.user = item.request.user.full_name
         self.date_request = item.request.date_request
         self.date_needed = item.request.date_needed
@@ -28,5 +28,5 @@ class RQItem:
         self.sy_end = item.request.sy_end
         self.qty = item.qty
         self.status = item.status
-        self.unit_price = item.unit_price
+        self.unit_price = item.item.unit_price
         self.remarks = [r["remarks"] for r in data if r["id"] == str(item.id)][0]
