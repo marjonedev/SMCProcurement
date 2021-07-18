@@ -30,35 +30,21 @@ function loadSelectSupplier(){
         }
     });
 }
-function loadSelectDepartment(){
-    $.ajax({
-        url: '/api/departments',
-        type: 'GET',
-        success: function(options) {
-            $('select[name="department_id"]').selectize({
-                valueField: 'id',
-                labelField: 'name',
-                searchField: 'name',
-                preload: true,
-                options: options,
-                create: false,
-            });
-        }
-    });
-}
 
 function appendItemToInventory(id, data){
         let item_code = data.item_code == "None" ? "" : data.item_code;
         let brand = data.brand == "None" ? "" : data.brand;
         let model = data.model == "None" ? "" : data.model;
+        const purchased_date = (data.purchased_date == "None" || data.purchased_date == "")  ? '' : DateTime.fromISO(data.purchased_date).setLocale('us').toFormat("LLLL dd, yyyy");
         let str = '<tr id="lines_'+id+'">' +
             '<td>'+data.name+'</td>' +
+            '<td>'+data.category+'</td>' +
             '<td>'+item_code+'</td>' +
             '<td>'+brand+'</td>' +
             '<td>'+model+'</td>' +
-            '<td><input class="form-control form-control-sm flatpickr" id="inventory_items-'+id+'-purchased_date" name="inventory_items-'+id+'-purchased_date" type="text" value=""></td>' +
+            '<td>'+ purchased_date +'</td>' +
             '<td class="text-right">&#8369; '+data.unit_price+'</td>' +
-            '<td><input class="form-control form-control-sm" id="inventory_items-'+id+'-unit_price" name="inventory_items-'+id+'-qty" type="number" value="" required></td>' +
+            '<td><input class="form-control form-control-sm text-right" id="inventory_items-'+id+'-unit_price" name="inventory_items-'+id+'-qty" type="number" value="" required></td>' +
             '<td>' +
             '<input id="inventory_items-'+id+'-id" name="inventory_items-'+id+'-item_id" type="hidden" value="'+id+'">' +
             '<button type="button" role="button" class="btn delete btn-danger feather icon-delete"></button>' +
@@ -66,13 +52,6 @@ function appendItemToInventory(id, data){
             '</tr>';
 
         $("#inventoryItems").find("tbody").append(str);
-        $('#inventory_items-'+id+'-purchased_date').flatpickr({
-            minDate: "today",
-            altInput: true,
-            defaultDate: "today",
-            altFormat: "F j, Y",
-            dateFormat: "Y-m-d"
-        });
         $('#addItemModal').modal("hide");
     }
 
@@ -99,21 +78,23 @@ $(function(){
                     return str
                 }},
                 {"data": "name"},
+                {"data": "category"},
+                {"data": "description", "visible": false, "searchable": true},
                 {"data": "item_code", render: function (data){
                     return data == "None" ? "" : data;
                 }},
                 {"data": "brand", "visible": false, "searchable": true},
                 {"data": "model", "visible": false, "searchable": true},
+                {"data": "unit_price", className: "text-right", "render": function (data, type, row, meta){
+                        return  "&#8369; "+ data;
+                }},
+                {"data": "purchased_date", "render": function (data, type, row, meta){
+                    return data == "None" ? "" : DateTime.fromISO(data).setLocale('us').toFormat("LLLL dd, yyyy");
+                }},
                 {"data": "serial", "visible": false, "searchable": true},
-                {"data": "description", "visible": false, "searchable": true},
-                {"data": "department"},
-                {"data": "category"},
                 {"data": "supplier"},
                 {"data": "qty", className: "text-right", render: function (data){
                     return data == "None" ? 0 : data;
-                }},
-                {"data": "unit_price", className: "text-right", "render": function (data, type, row, meta){
-                        return  "&#8369; "+ data;
                 }}
             ],
             "sScrollX": '100%'

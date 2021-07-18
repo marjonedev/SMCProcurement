@@ -17,8 +17,8 @@ from flask_login import (
 
 @blueprint.route('/inventories')
 @login_required
-def all_inventories():
-    inv = db.session.query(Inventory).all()
+def recent_inventories():
+    inv = db.session.query(Inventory).order_by(Inventory.date_time.desc(), Inventory.id.desc()).all()
     return render_template('inventories/index.html', inventories=inv)
 
 
@@ -29,9 +29,7 @@ def create_inventory():
     if "submit" in request.form:
         form = InventoryForm(request.form)
         formData = form.data
-
-        inventory = Inventory()
-        db.session.add(inventory)
+        pprint(formData)
 
         if not formData["inventory_items"]:
             flash("Error. Atleast one item required.", "error")
@@ -39,18 +37,18 @@ def create_inventory():
 
 
         for line in formData["inventory_items"]:
-            if not line["purchased_date"]:
-                line["purchased_date"] = date.today()
             lineData = {
-                "item_id": line["item_id"],
-                "purchased_date": line["purchased_date"],
+                "item_id": int(line["item_id"]),
                 "qty": line["qty"]
             }
+            pprint(lineData)
+            inventory = Inventory(**lineData)
+            db.session.add(inventory)
 
         db.session.commit()
 
         flash("Success! Inventory Created", "message")
-        return redirect(url_for("inventory_blueprint.all_inventories"))
+        return redirect(url_for("inventory_blueprint.recent_inventories"))
     else:
         form = InventoryForm()
         return render_template('inventories/create.html', form=form)

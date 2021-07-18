@@ -28,7 +28,8 @@
           <li class="nav-item pcoded-hasmenu">
 						<a href="#!" class="nav-link "><span class="pcoded-micon"><i class="feather icon-activity"></i></span><span class="pcoded-mtext">Inventory</span></a>
 					    <ul class="pcoded-submenu">
-                <li><a href="{{ url_for("inventory_blueprint.all_inventories") }}">All Inventories</a></li>
+                <li><a href="{{ url_for("inventory_blueprint.create_inventory") }}">Add Inventory</a></li>
+                <li><a href="{{ url_for("inventory_blueprint.recent_inventories") }}">Recent Inventories</a></li>
                 <li><a href="{{ url_for("inventory_blueprint.release") }}">Release</a></li>
               </ul>
           </li>

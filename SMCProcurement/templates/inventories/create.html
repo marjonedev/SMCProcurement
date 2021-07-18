@@ -19,12 +19,12 @@
 					<div class="row align-items-center">
 						<div class="col-md-12">
 							<div class="page-header-title">
-								<h5 class="m-b-10">New Inventory</h5>
+								<h5 class="m-b-10">Add Inventory</h5>
 							</div>
 							<ul class="breadcrumb">
 								<li class="breadcrumb-item"><a href="/"><i class="feather icon-home"></i></a></li>
 								<li class="breadcrumb-item"><a href="/inventories">Inventories</a></li>
-								<li class="breadcrumb-item"><a href="#!">New</a></li>
+								<li class="breadcrumb-item"><a href="#!">Add</a></li>
 							</ul>
 						</div>
 					</div>
@@ -59,6 +59,7 @@
                         <table class="table table-small" id="inventoryItems">
                           <thead>
                             <th width="">Name</th>
+                            <th>Category</th>
                             <th>Code</th>
                             <th>Brand</th>
                             <th>Model</th>
@@ -119,17 +120,17 @@
                 <table class="table table-small w-100" id="searchItemTable">
                   <thead>
                     <th></th>
-                    <th width="">Name</th>
+                    <th style="width: 20%">Name</th>
+                    <th>Category</th>
+                    <th style="width: 30%">Description</th>
                     <th>Code</th>
                     <th>Brand</th>
                     <th>Model</th>
+                    <th style="width: 20%" class="text-right">Price</th>
+                    <th>Purchased Date</th>
                     <th>Serial</th>
-                    <th>Description</th>
-                    <th>Department</th>
-                    <th>Category</th>
                     <th>Supplier</th>
-                    <th class="text-right">Qty<br />On Hand</th>
-                    <th class="text-right">Price</th>
+                    <th class="text-right">Qty<br />On Stock</th>
                   </thead>
                   <tbody>
                   </tbody>
@@ -147,15 +148,21 @@
                       </div>
                   </div>
                   <div class="form-group row">
-                      <label for="department_id" class="col-sm-3 col-form-label">Department</label>
-                      <div class="col-sm-9">
-                        <select class="form-control" id="department_id" name="department_id" required="" placeholder="Select Department.."></select>
-                      </div>
-                  </div>
-                  <div class="form-group row">
                       <label for="category_id" class="col-sm-3 col-form-label">Category</label>
                       <div class="col-sm-9">
                         <select class="form-control" id="category_id" name="category_id" required="" placeholder="Select Category.."></select>
+                      </div>
+                  </div>
+                  <div class="form-group row">
+                      <label for="description" class="col-sm-3 col-form-label">Description</label>
+                      <div class="col-sm-9">
+                        <input class="form-control" id="description" name="description" type="text" value="">
+                      </div>
+                  </div>
+                  <div class="form-group row">
+                      <label for="unit_price" class="col-sm-3 col-form-label">Unit Price</label>
+                      <div class="col-sm-9">
+                        <input class="form-control" id="unit_price" name="unit_price" required="" step="any" type="number" value="0.00">
                       </div>
                   </div>
                   <div class="form-group row">
@@ -183,9 +190,9 @@
                       </div>
                   </div>
                   <div class="form-group row">
-                      <label for="description" class="col-sm-3 col-form-label">Description</label>
+                      <label for="purchased_date" class="col-sm-3 col-form-label">Purchased Date</label>
                       <div class="col-sm-9">
-                        <input class="form-control" id="description" name="description" type="text" value="">
+                        <input class="form-control flatpickr" id="purchased_date" name="purchased_date" type="text" value="">
                       </div>
                   </div>
                   <div class="form-group row">

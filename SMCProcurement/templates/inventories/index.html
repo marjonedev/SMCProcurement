@@ -19,11 +19,11 @@
 					<div class="row align-items-center">
 						<div class="col-md-12">
 							<div class="page-header-title">
-								<h5 class="m-b-10">Inventories</h5>
+								<h5 class="m-b-10">Recent Inventories</h5>
 							</div>
 							<ul class="breadcrumb">
 								<li class="breadcrumb-item"><a href="/"><i class="feather icon-home"></i></a></li>
-								<li class="breadcrumb-item"><a href="#!">Inventories</a></li>
+								<li class="breadcrumb-item"><a href="#!">Recent Inventories</a></li>
 							</ul>
 						</div>
 					</div>
@@ -36,33 +36,36 @@
 				<div class="col-sm-12">
 					<div class="card">
 
-						<div class="card-header">
-              <div class="card-header-right">
-								<a href="/inventories/create" type="button" class="btn btn-primary"><i class="feather icon-plus"></i> Create</a>
-							</div>
-						</div>
 						<div class="card-body">
               <div class="table-border-style pt-3">
 
               {% include 'includes/flashes.html' %}
 
                 <div class="table-responsive">
-                    <table class="table hover table-hover table-sm w-100">
+                    <table class="table table-hover table-sm w-100">
                         <thead>
                             <tr>
-                                <th>Reference No.</th>
+                                <th>Item Name</th>
+                                <th>Category</th>
                                 <th>Date & Time</th>
-                                <th class="text-right">Total Items</th>
-                                <th class="text-right">Total Cost</th>
+                                <th>Purchased Date</th>
+                                <th>SY</th>
+                                <th class="text-right">Price</th>
+                                <th class="text-right">Qty Allocated</th>
+                                <th class="text-right">Qty</th>
                             </tr>
                         </thead>
                         <tbody>
                           {% for inventory in inventories %}
-                            <tr data-line-id="{{ inventory.id }}" class="hoverable">
-                              <td>{{ inventory.number }}</td>
-                              <td>{{ inventory.date_time | datetimeiso }}</td>
-                              <td class="text-right">{{ inventory.total_items }}</td>
-                              <td class="text-right">&#8369; {{ inventory.total_cost }}</td>
+                            <tr data-line-id="{{ inventory.id }}">
+                              <td>{{ inventory.item.name }}</td>
+                              <td>{{ inventory.item.category.name }}</td>
+                              <td>{{ inventory.date_time | datetimepretty }}</td>
+                              <td>{{ inventory.item.purchased_date | datepretty }}</td>
+                              <td>{{ inventory.sy_start }} - {{ inventory.sy_end }}</td>
+                              <td class="text-right">&#8369; {{ inventory.item.unit_price }}</td>
+                              <td class="text-right">{{ inventory.qty }}</td>
+                              <td class="text-right">{{ inventory.item.qty }}</td>
                             </tr>
                           {% endfor %}
                         </tbody>
@@ -87,23 +90,11 @@
 <script type="text/javascript" src="/static/assets/lib/DataTables/datatables.min.js"></script>
 <script type="text/javascript">
 $(function (){
-    var table =  $('.table').DataTable({
-        "columnDefs": [{
-                "render": function ( data, type, row ) {
-                    return DateTime.fromISO(data).setLocale("en").toLocaleString(DateTime.DATETIME_MED);
-                },
-                "targets": [1]
-            },],
-      "sScrollX": '100%'
+    $('.table').DataTable({
+      "order": [],
+      "sScrollX": '100%',
+      "pageLength": 50
     });
-     $('.table tbody').on('click', 'tr', function (e) {
-        e.preventDefault();
-        let id = $(this).data('lineId');
-        if(id){
-          window.location.href = "/inventories/"+id;
-        }
-        return false;
-     });
 })
 
 </script>
