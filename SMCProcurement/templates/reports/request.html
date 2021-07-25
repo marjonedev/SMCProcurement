@@ -5,7 +5,6 @@
 <!-- Specific CSS goes HERE -->
 {% block stylesheets %}
   <link rel="stylesheet" type="text/css" href="/static/assets/lib/DataTables/datatables.min.css"/>
-  <link rel="stylesheet" href="{{ url_for("static", filename="assets/css/plugins/flatpickr.theme.material_blue.css") }}" />
   <link rel="stylesheet" href="{{ url_for("static", filename="assets/css/plugins/daterangepicker.css") }}" />
 {% endblock stylesheets %}
 
@@ -162,6 +161,9 @@
     table.cell($(cell)).invalidate().draw();
 
   } );
+
+  $(".start_date").val(moment().subtract(29, 'days').format('YYYY-MM-DD'))
+  $(".end_date").val(moment().format('YYYY-MM-DD'))
 
   $("#report_date").daterangepicker({
     "autoApply": true,

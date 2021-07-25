@@ -1,9 +1,9 @@
 
 class InvItem:
-    def __init__(self, item, data):
+    def __init__(self, item, request, data):
         self.name = item.name
         self.category = item.category.name
-        self.department = item.department.name
+        self.department = request.department.name
         self.supplier = item.supplier.name
         self.item_code = item.item_code
         self.brand = item.brand

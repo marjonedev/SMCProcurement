@@ -4,6 +4,7 @@ from datetime import date, datetime
 from pprint import pprint
 
 import pdfkit
+from flask_sqlalchemy import get_debug_queries
 from sqlalchemy import func
 
 from SMCProcurement import db
@@ -39,17 +40,23 @@ def inventory_reports():
         report_by = formData["report_by"]
 
         if formData["report_by"] == "1":
-            items = db.session.query(Item)\
+            items = db.session.query(Item, Request)\
                 .join(Inventory)\
+                .join(RequestLine)\
+                .join(Request, RequestLine.request_id==Request.id)\
                 .filter(func.DATE(Inventory.date_time) <= end_date)\
                 .filter(func.DATE(Inventory.date_time) >= start_date)\
                 .order_by(Inventory.date_time.asc()).all()
+
         else:
-            items = db.session.query(Item)\
+            items = db.session.query(Item, Request)\
                 .join(Inventory)\
+                .join(RequestLine, Item.id==RequestLine.item_id)\
+                .join(Request, RequestLine.request_id==Request.id)\
                 .filter(func.DATE(Inventory.date_time) <= end_date)\
                 .filter(func.DATE(Inventory.date_time) >= start_date)\
-                .order_by(Item.department_id.asc(), Inventory.date_time.asc()).all()
+                .order_by(Request.department_id.asc(), Inventory.date_time.asc()).all()
+
 
     return render_template('reports/inventory.html', items=items, form=form, by=report_by)
 
@@ -62,19 +69,23 @@ def print_inventory_report():
         formData = form.data
 
         if formData["report_by"] == "1":
-            items = db.session.query(Item) \
-                .join(Inventory) \
+            items = db.session.query(Item, Request) \
+                .join(Inventory)\
+                .join(RequestLine)\
+                .join(Request, RequestLine.request_id==Request.id)\
                 .filter(func.DATE(Inventory.date_time) <= formData["end_date"]) \
                 .filter(func.DATE(Inventory.date_time) >= formData["start_date"]) \
                 .order_by(Inventory.date_time.asc()).all()
             items = __convert_to_invitems(items, formData["inventory_items"])
             html = render_template("reports/inventory_items_pdf.html", items=items, start_date=formData["start_date"], end_date=formData["end_date"])
         elif formData["report_by"] == "2":
-            items = db.session.query(Item) \
-                .join(Inventory) \
+            items = db.session.query(Item, Request) \
+                .join(Inventory)\
+                .join(RequestLine)\
+                .join(Request, RequestLine.request_id==Request.id)\
                 .filter(func.DATE(Inventory.date_time) <= formData["end_date"]) \
                 .filter(func.DATE(Inventory.date_time) >= formData["start_date"]) \
-                .order_by(Item.department_id.asc(), Inventory.date_time.asc()).all()
+                .order_by(Request.department_id.asc(), Inventory.date_time.asc()).all()
 
             items = __convert_to_invitems(items, formData["inventory_items"])
             items = __categorize_items(items)
@@ -94,7 +105,7 @@ def print_inventory_report():
 def __convert_to_invitems(items, inventory_items):
     invItems = []
     for item in items:
-        invItems.append(InvItem(item, inventory_items))
+        invItems.append(InvItem(item[0], item[1], inventory_items))
 
     return list(invItems)
 

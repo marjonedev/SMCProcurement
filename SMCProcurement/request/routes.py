@@ -202,12 +202,12 @@ def confirm_request(id):
 @blueprint.route('/requests/<id>', methods=["GET"])
 @login_required
 def view_request(id):
-    try:
+    # try:
         req = db.session.query(Request).get(id)
         req_lines = RequestLine.query.filter(RequestLine.request_id == id).order_by(RequestLine.id.asc()).all()
         return render_template('requests/view.html', obj=req, obj_lines=req_lines)
-    except:
-        return render_template('page-404.html'), 404
+    # except:
+    #     return render_template('page-404.html'), 404
 
 
 @blueprint.route('/requests/<id>/approve', methods=["POST"])
